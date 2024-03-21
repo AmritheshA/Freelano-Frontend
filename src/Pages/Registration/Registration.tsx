@@ -6,7 +6,6 @@ function Registration() {
   return (
     <div>
       {/* <Details_1/> */}
-
       <Details_2/>
     </div>
   )
