@@ -1,11 +1,11 @@
 import Navbar from "./Navbar";
-import AuthForm from "./AuthForm";
+import LoginForm from './LoginForm';
 
 function Login() {
   return (
     <div className="min-h-screen bg-blue-200">
       <Navbar />
-      <AuthForm flag={true} />
+      <LoginForm />
     </div>
   );
 }

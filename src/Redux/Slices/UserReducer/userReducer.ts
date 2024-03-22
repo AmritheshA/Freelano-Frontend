@@ -1,13 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { userLoginAction } from '../../Actions/UserActions/userActions';
+import { userLoginAction, userOauthLogin, userRegisterAction } from '../../Actions/UserActions/userActions';
 import { getCookie, removeCookie } from "typescript-cookie";
 import { jwtDecode } from 'jwt-decode';
-import DecodedToken from "../../../Interfaces/userInterface"
+import DecodedToken from "../../../Interfaces/userInterface";
+import { toast } from 'react-toastify';
+
 
 interface userDetails {
   loading: boolean;
   user: any;
-  message: String;
+  message: string;
   error: any;
 }
 
@@ -53,17 +55,55 @@ const userReducer = createSlice({
       .addCase(userLoginAction.pending, (state, action) => {
         state.loading = true;
         state.message = "Loading";
-        state.error = null;
       })
       .addCase(userLoginAction.fulfilled, (state, action) => {
+        toast.success(action.payload.message);
         state.loading = false;
         state.user = action.payload;
         state.message = action.payload.message;
-        state.error = null;
       })
       .addCase(userLoginAction.rejected, (state, action) => {
+        const mesg = (action.payload as { message: string }).message;
+        toast.error(mesg == "Invalid email or password." ? mesg : "Bad Credentials");
         state.error = action.error;
-        state.message = "Faild To Login"
+        state.message = mesg;
+        state.loading = false;
+      })
+      // User Register Reducer
+      .addCase(userRegisterAction.pending, (state, action) => {
+        state.loading = true;
+        state.message = "Loading";
+      })
+      .addCase(userRegisterAction.fulfilled, (state, action) => {
+        toast.success("Registed Successfully");
+        state.loading = false;
+        state.user = action.payload;
+        state.message = "Registed Successfully";
+        state.error = null;
+      })
+      .addCase(userRegisterAction.rejected, (state, action) => {
+        const errMessage = (action.payload as { message: string }).message
+        toast.warn(errMessage);
+        state.error = action.error;
+        state.message = errMessage;
+        state.loading = false;
+      })
+      // User oAuth Reducer
+      .addCase(userOauthLogin.pending, (state, action) => {
+        state.loading = true;
+        state.message = "Loading";
+      })
+      .addCase(userOauthLogin.fulfilled, (state, action) => {
+        toast.warn("Logged In Successfully");
+        state.loading = false;
+        state.message = "Logged In Successfully";
+        state.user = action.payload;
+      })
+      .addCase(userOauthLogin.rejected, (state, action) => {
+        const errMessage = (action.payload as { message: string }).message
+        toast.warn(errMessage);
+        state.error = action.error;
+        state.message = errMessage;
         state.loading = false;
       })
   }
