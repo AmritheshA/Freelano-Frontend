@@ -47,8 +47,7 @@ const initialState: userDetails = {
 const userReducer = createSlice({
   name: 'userReducer',
   initialState,
-  reducers: {
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       // User Login Reducer
@@ -64,7 +63,7 @@ const userReducer = createSlice({
       })
       .addCase(userLoginAction.rejected, (state, action) => {
         const mesg = (action.payload as { message: string }).message;
-        toast.error(mesg == "Invalid email or password." ? mesg : "Bad Credentials");
+        toast.warn(mesg);
         state.error = action.error;
         state.message = mesg;
         state.loading = false;
@@ -82,10 +81,10 @@ const userReducer = createSlice({
         state.error = null;
       })
       .addCase(userRegisterAction.rejected, (state, action) => {
-        const errMessage = (action.payload as { message: string }).message
-        toast.warn(errMessage);
+        
+        toast.warn("Something went wrong");
         state.error = action.error;
-        state.message = errMessage;
+        state.message = "Something went wrong";
         state.loading = false;
       })
       // User oAuth Reducer

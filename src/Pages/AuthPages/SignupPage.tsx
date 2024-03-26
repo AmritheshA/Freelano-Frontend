@@ -1,4 +1,4 @@
-import SignUp from "../../Components/Authentication/SignUp";
+import SignUp from "../../Component/Authentication/SignUp";
 
 function SignupPage() {
   return (

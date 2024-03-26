@@ -15,9 +15,15 @@ export const userLoginAction = createAsyncThunk(
           "Content-Type": "application/json",
         },
       };
+      console.log("calling func");
+      
       const response = await axiosInstance.post('/api/v1/auth/login', userCredentail, config);
       const data = response.data;
+      console.log("calling func1");
+      console.log(data);
+      
       const decodedJwt = jwtDecode<JwtPayload>(data.accessToken);
+      console.log("calling func2");
       console.log("Authenticated Successfully");
 
       return {
@@ -27,6 +33,8 @@ export const userLoginAction = createAsyncThunk(
         role: decodedJwt.role,
       }
     } catch (error: any) {
+      console.log(error.message);
+      
       return rejectWithValue(handleErrors(error));
     }
   }
