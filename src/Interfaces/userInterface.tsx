@@ -3,6 +3,7 @@ export default interface userDetails {
     email: string;
     userName:string;
     role:string;
+    token:string;
   }
 
 export default  interface DecodedToken {

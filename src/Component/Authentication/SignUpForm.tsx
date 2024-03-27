@@ -7,6 +7,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, TypeDispatch } from "../../Redux/Store";
 import ScaleLoader from "react-spinners/ScaleLoader";
 import { userRegisterAction } from "../../Redux/Actions/UserActions/userActions";
+import axiosInstance from "@/Config/AxiosConfig/axiosConfig";
+import { toast } from "react-toastify";
 
 
 
@@ -18,8 +20,8 @@ function AuthForm() {
   const isLoaded = state.loading;
 
   const initialValues = {
-    email: "testUser@gmail.com",
-    userName:"Amrithesh",
+    email: " ",
+    userName: "Amrithesh",
     password: "password",
     confirmPassword: "password"
   };
@@ -35,9 +37,31 @@ function AuthForm() {
       .required('Confirm Password is required')
   });
 
-  const handleSubmit = (values: any, { setSubmitting }: any) => {
-    dispatch(userRegisterAction(values))
-    setSubmitting(false);
+  const handleSubmit = async (values: any, { setSubmitting }: any) => {
+
+    // dispatch(userRegisterAction(values))
+
+    console.log(values);
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const role = "FREELANCER";
+    try {
+      const respose = await axiosInstance.post(`/api/v1/auth/sendMail`, { ...values, role }, config);
+      console.log(respose.data);
+      toast("Check your mail for verification")
+      setSubmitting(false);
+    } catch (error: any) {
+      if (error.response && error.response.data) {
+        toast(error.response.data);
+      } else {
+        toast("something went wrong")
+      }
+    }
+
+
   };
 
   return (
@@ -64,7 +88,7 @@ function AuthForm() {
                 name="userName"
                 component="div"
                 className="text-red-600"
-              />  
+              />
               <label className="mt-7 text-sm text-slate-900">Email</label>
               <Field
                 type="text"

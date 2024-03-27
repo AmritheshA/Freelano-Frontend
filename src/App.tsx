@@ -15,21 +15,16 @@ function App() {
   const user = useSelector((state: RootState) => state.userDetails.user);
   user ? console.log("user is authenticated") : console.log("user is not authenticated");
 
-
-
-
   return (
-
     <Routes>
       <Route path="/login" element={user ? <Navigate to={"/home"} /> : <LoginPage />} />
       <Route path="/signup" element={user ? <Navigate to={"/home"} /> : <SignupPage />} />
       <Route path="/home" element={<ClientHomePage />} />
       <Route path="/selection" element={<FreelancerReg />} />
-      <Route path="/verify-email" element={<VerifyEmail />} />
+      <Route path="/verifyEmail" element={user ? <Navigate to={"/home"} /> : <VerifyEmail />} />
       <Route path="/page-1" element={<Registration />} />
       <Route path="/landingpage" element={<LandingPage />} />
     </Routes>
-
   );
 }
 

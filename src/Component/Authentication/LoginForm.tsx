@@ -32,10 +32,7 @@ function LoginForm() {
     });
 
     const handleSubmit = (values: any, { setSubmitting }: any) => {
-
-        console.log("dispatch called");
-        dispatch(userLoginAction(values));
-        console.log("Form submitted with values:", values);
+        dispatch(userLoginAction(values))
         setSubmitting(false);
 
     };

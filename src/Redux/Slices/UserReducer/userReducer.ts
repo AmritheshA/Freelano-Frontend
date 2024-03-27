@@ -81,7 +81,6 @@ const userReducer = createSlice({
         state.error = null;
       })
       .addCase(userRegisterAction.rejected, (state, action) => {
-        
         toast.warn("Something went wrong");
         state.error = action.error;
         state.message = "Something went wrong";
