@@ -39,9 +39,6 @@ function AuthForm() {
 
   const handleSubmit = async (values: any, { setSubmitting }: any) => {
 
-    // dispatch(userRegisterAction(values))
-
-    console.log(values);
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -60,8 +57,6 @@ function AuthForm() {
         toast("something went wrong")
       }
     }
-
-
   };
 
   return (

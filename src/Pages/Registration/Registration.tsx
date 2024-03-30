@@ -1,11 +1,39 @@
-import Details_1 from "@/Component/Registration/Details_1"
+
+import React from 'react';
+import Details_1 from '@/Component/Registration/Details_1';
+import Details_2 from '@/Component/Registration/Details_2';
+import Details_3 from '@/Component/Registration/Details_3';
+import Details_4 from '@/Component/Registration/Details_4';
+import Details_5 from '@/Component/Registration/Details_5';
+import Details_6 from '@/Component/Registration/Details_6';
+
+interface RegistrationProps {
+  activeComponent: string;
+  handleActiveComponent: (componentName: string) => void;
+}
 
 
-function Registration() {
+const Registration: React.FC<RegistrationProps> = ({ activeComponent, handleActiveComponent }) => {
   return (
     <div>
-      <Details_1/>
-      {/* <Details_2/> */}
+      {activeComponent === 'component1' && (
+        <Details_1 setActive={handleActiveComponent} />
+      )}
+      {activeComponent === 'component2' && (
+        <Details_2 setActive={handleActiveComponent} />
+      )}
+      {activeComponent === 'component3' && (
+        <Details_3 setActive={handleActiveComponent} />
+      )}
+      {activeComponent === 'component4' && (
+        <Details_4 setActive={handleActiveComponent} />
+      )}
+      {activeComponent === 'component5' && (
+        <Details_5 setActive={handleActiveComponent} />
+      )}
+      {activeComponent === 'component5' && (
+        <Details_6 setActive={handleActiveComponent} />
+      )}
     </div>
   )
 }

@@ -98,7 +98,7 @@ export default function FreelancerHome() {
 
         <div className="flex justify-start mt-14">
           <Dialog>
-            <DialogTrigger >
+            <DialogTrigger asChild >
               <div className="relative w-[80%] h-[350px]  bg-slate-100  active:bg-slate-200 cursor-pointer border-2 rounded-md">
                 <h1 className="m-5 font-semibold text-sm text-gray-400 flex justify-start ">Posted Yesterday</h1>
                 <h1 className=" freelancerFont  ml-8 text-xl flex justify-start ">Java or Spring Boot Developer</h1>

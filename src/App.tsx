@@ -9,11 +9,18 @@ import { useSelector } from "react-redux";
 import ClientHomePage from "./Pages/HomePages/FreelancerHomePage";
 import LandingPage from "./Component/Home/LandingPage";
 import "./App.css"
+import { useState } from "react";
 
 function App() {
 
   const user = useSelector((state: RootState) => state.userDetails.user);
   user ? console.log("user is authenticated") : console.log("user is not authenticated");
+
+  const [activeComponent, setActiveComponent] = useState("component1");
+
+  const handleActiveComponent = (value:string) => {
+    setActiveComponent(value);
+  }
 
   return (
     <Routes>
@@ -22,8 +29,8 @@ function App() {
       <Route path="/home" element={<ClientHomePage />} />
       <Route path="/selection" element={<FreelancerReg />} />
       <Route path="/verifyEmail" element={user ? <Navigate to={"/home"} /> : <VerifyEmail />} />
-      <Route path="/page-1" element={<Registration />} />
       <Route path="/landingpage" element={<LandingPage />} />
+      <Route path="/registration" element={<Registration activeComponent={activeComponent} handleActiveComponent={handleActiveComponent} />} />
     </Routes>
   );
 }

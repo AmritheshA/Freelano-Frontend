@@ -1,14 +1,23 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import Alert from "@mui/material/Alert";
 
-function Details_1() {
+interface ChildComponent1Props {
+  setActive: (componentName: string) => void;
+}
+
+const Details_1: React.FC<ChildComponent1Props> = ({ setActive }) => {
   const [role, setRole] = useState<string>("");
   const [showAlert, setShowAlert] = useState<boolean>(false);
 
+  useEffect(() => {
+
+    localStorage.clear();
+
+  }, []);
+
   const handleInputeChanges = (even: ChangeEvent<HTMLInputElement>) => {
     setRole(even.target.value);
-    console.log(role);
   };
 
   const handleNextSubmit = () => {
@@ -20,6 +29,8 @@ function Details_1() {
 
       return () => clearTimeout(timeoutId);
     }
+    localStorage.setItem("role", role);
+    setActive("component2");
   };
 
   return (
@@ -58,7 +69,7 @@ function Details_1() {
           <input
             type="text"
             value={role}
-            className="border-2 border-gray-300 rounded-md py-2 px-4 sm:w-[50%] max-w-[750px] focus:outline-none focus:border-blue-500"
+            className="border-2 text-black tracking-wide font-semibold freelancerFont  border-black rounded-md py-2 px-4 sm:w-[50%] max-w-[750px] focus:outline-none focus:border-blue-500"
             placeholder="Enter your professional role..."
             onChange={handleInputeChanges}
           />
@@ -66,9 +77,10 @@ function Details_1() {
       </div>
       {/* Button */}
       <div className="absolute flex bottom-16 right-0">
-        <button className="flex mr-5 sm:mr-10 justify-center items-center gap-2 border-2 border-black w-40 h-12 rounded-3xl">
+        {/* <button
+          className="flex mr-5 sm:mr-10 justify-center items-center gap-2 border-2 border-black w-40 h-12 rounded-3xl">
           Back
-        </button>
+        </button> */}
         <button
           onClick={handleNextSubmit}
           className="flex mr-5 sm:mr-10 justify-center items-center gap-2 bg-orange-500 w-40 h-12 rounded-3xl"
