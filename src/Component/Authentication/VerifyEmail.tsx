@@ -25,7 +25,6 @@ const VerifyEmail = () => {
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
       <Loading margin="2rem" background="blue" size="2rem" />
-
       <div className="absolute top-0 left-0 p-10 sm:pl-36">
         <div className="text-white font-bold text-lg">
           <img

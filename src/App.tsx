@@ -6,10 +6,10 @@ import Registration from "./Pages/Registration/Registration";
 import VerifyEmail from "./Component/Authentication/VerifyEmail";
 import { RootState } from "./Redux/Store";
 import { useSelector } from "react-redux";
-import ClientHomePage from "./Pages/HomePages/FreelancerHomePage";
 import LandingPage from "./Component/Home/LandingPage";
 import "./App.css"
 import { useState } from "react";
+import HomePages from "./Pages/HomePages/HomePages";
 
 function App() {
 
@@ -18,7 +18,7 @@ function App() {
 
   const [activeComponent, setActiveComponent] = useState("component1");
 
-  const handleActiveComponent = (value:string) => {
+  const handleActiveComponent = (value: string) => {
     setActiveComponent(value);
   }
 
@@ -26,8 +26,8 @@ function App() {
     <Routes>
       <Route path="/login" element={user ? <Navigate to={"/home"} /> : <LoginPage />} />
       <Route path="/signup" element={user ? <Navigate to={"/home"} /> : <SignupPage />} />
-      <Route path="/home" element={<ClientHomePage />} />
-      <Route path="/selection" element={<FreelancerReg />} />
+      <Route path="/home" element={<HomePages user={user} />} />
+      <Route path="/selection" element= {<FreelancerReg />} />
       <Route path="/verifyEmail" element={user ? <Navigate to={"/home"} /> : <VerifyEmail />} />
       <Route path="/landingpage" element={<LandingPage />} />
       <Route path="/registration" element={<Registration activeComponent={activeComponent} handleActiveComponent={handleActiveComponent} />} />

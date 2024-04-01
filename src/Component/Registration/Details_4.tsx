@@ -80,7 +80,7 @@ const Details_4: React.FC<ChildComponent1Props> = ({ setActive }) => {
                 </div>
             </div>
             <div className="flex flex-col">
-                <div className="p-10 sm:pl-36 font-bold text-xl text-black ">4/7</div>
+                <div className="p-10 sm:pl-36 font-bold text-xl text-black ">4/8</div>
                 <div className="text-black pr-10 pl-10 sm:pl-36 pb-0 font-bold text-xl sm:text-4xl">
                     Looking Good.Next, tell us which languages you speak
                 </div>

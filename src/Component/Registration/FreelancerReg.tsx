@@ -4,10 +4,12 @@ import { Link } from "react-router-dom";
 
 function FreelancerReg() {
   const [selectedValue, setSelectedValue] = useState<boolean>(false);
+  const [role,setRole] = useState<string>("");
+
 
   const handleSelection = (value: boolean) => {
     setSelectedValue(!selectedValue);
-    value ? console.log("Client") : console.log("Freelancer");
+    !value ? setRole("CLIENT") : setRole("FREELANCER");
   };
 
   return (
@@ -78,7 +80,7 @@ function FreelancerReg() {
         <button
           className={` bg-orange-500 w-20 h-8 text-md rounded-xl sm:w-48 sm:h-12 `}
         >
-          <Link to="/signup">Create Account</Link>
+          <Link to={`/signup?role=${role}`}>Create Account</Link>
         </button>
         <h1 className="m-5">
           Already a user?

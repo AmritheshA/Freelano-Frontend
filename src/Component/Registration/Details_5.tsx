@@ -31,7 +31,8 @@ const Details_5: React.FC<ChildComponent1Props> = ({ setActive }) => {
         'rust',
         'dart',
         'scala',
-        'perl'
+        'perl',
+        'spring'
     ];
 
 
@@ -45,7 +46,7 @@ const Details_5: React.FC<ChildComponent1Props> = ({ setActive }) => {
                 if ((datas.some((data) => data == inputValue.trim()))) {
                     setSkills([...skills, inputValue.trim()]);
                     setInputValue('');
-                }else{
+                } else {
                     toast.warn("Skill is not registered")
                 }
             } else {
@@ -58,6 +59,14 @@ const Details_5: React.FC<ChildComponent1Props> = ({ setActive }) => {
     const handleRemoveSkill = (skillToRemove: string) => {
         setSkills(skills.filter(skill => skill !== skillToRemove));
     };
+
+    const handleNextClick = () => {
+        if (skills.length >= 3) {
+            setActive("component6")
+        }else{
+            toast("Atleast 3 skills required")
+        }
+    }
 
     useEffect(() => {
         localStorage.removeItem('skils');
@@ -86,7 +95,7 @@ const Details_5: React.FC<ChildComponent1Props> = ({ setActive }) => {
             </div>
             {/* Text */}
             <div className="flex flex-col">
-                <div className="p-10 sm:pl-36 font-bold text-xl">5/7</div>
+                <div className="p-10 sm:pl-36 font-bold text-xl">5/8</div>
                 <div className="pr-10 pl-10 sm:pl-36 pb-0 font-bold text-xl sm:text-4xl">
                     Nearly there! What work are you here to do?
                 </div>
@@ -104,9 +113,7 @@ const Details_5: React.FC<ChildComponent1Props> = ({ setActive }) => {
                             onChange={handleInputChange}
                             onKeyDown={handleInputKeyDown}
                             placeholder="Enter skills"
-                            min={3}
-                            max={5}
-                            className="p-2 mr-2 w-[350px] sm:w-[700px]  rounded-md border border-gray-400"
+                            className="p-2 mr-2 w-[350px] sm:w-[700px] focus:border-gray-400 rounded-md border border-gray-300"
                         />
                         <div>
                             {skills.map((skill, index) => (
@@ -122,7 +129,7 @@ const Details_5: React.FC<ChildComponent1Props> = ({ setActive }) => {
             <div className="absolute flex bottom-16 right-0">
 
                 <button
-                    onClick={() => setActive("component6")}
+                    onClick={handleNextClick}
                     className="flex mr-5 sm:mr-10 justify-center items-center gap-2 bg-orange-500 w-40 h-12 rounded-3xl"
                 >
                     Next <FaLongArrowAltRight />

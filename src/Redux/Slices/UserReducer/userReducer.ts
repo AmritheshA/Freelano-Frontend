@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { userLoginAction, userOauthLogin, userRegisterAction } from '../../Actions/UserActions/userActions';
+import { freelancerProfileSubmit, userLoginAction, userOauthLogin, userRegisterAction } from '../../Actions/UserActions/userActions';
 import { getCookie, removeCookie } from "typescript-cookie";
 import { jwtDecode } from 'jwt-decode';
 import DecodedToken from "../../../Interfaces/userInterface";
@@ -51,7 +51,7 @@ const userReducer = createSlice({
   extraReducers: (builder) => {
     builder
       // User Login Reducer
-      .addCase(userLoginAction.pending, (state, action) => {
+      .addCase(userLoginAction.pending, (state, _) => {
         state.loading = true;
         state.message = "Loading";
       })
@@ -69,7 +69,7 @@ const userReducer = createSlice({
         state.loading = false;
       })
       // User Register Reducer
-      .addCase(userRegisterAction.pending, (state, action) => {
+      .addCase(userRegisterAction.pending, (state, _) => {
         state.loading = true;
         state.message = "Loading";
       })
@@ -87,7 +87,7 @@ const userReducer = createSlice({
         state.loading = false;
       })
       // User oAuth Reducer
-      .addCase(userOauthLogin.pending, (state, action) => {
+      .addCase(userOauthLogin.pending, (state, _) => {
         state.loading = true;
         state.message = "Loading";
       })
@@ -103,6 +103,19 @@ const userReducer = createSlice({
         state.error = action.error;
         state.message = errMessage;
         state.loading = false;
+      })
+      // Freelancer Profile Submit
+      .addCase(freelancerProfileSubmit.pending, (state, _) => {
+        state.loading = true;
+      })
+      .addCase(freelancerProfileSubmit.fulfilled, (state, action) => {
+        toast.success(action.payload.message)
+        state.loading = false;
+        state.message = action.payload.message;
+      })
+      .addCase(freelancerProfileSubmit.rejected, (state, action) => {
+        console.log(action.payload);
+        state.error = action.payload;
       })
   }
 });

@@ -124,7 +124,7 @@ function LoginForm() {
                                     <h1 className="flex">
                                         Don’t have an account yet ?
                                         <h1 className="text-blue-800 font-semibold">
-                                            <Link to="/signup">Register</Link>
+                                            <Link to="/selection">Register</Link>
                                         </h1>
                                     </h1>
                                 </div>

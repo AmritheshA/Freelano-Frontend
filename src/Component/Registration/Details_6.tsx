@@ -17,9 +17,9 @@ const Details_6: React.FC<ChildComponent1Props> = ({ setActive }) => {
 
     const handleNextClick = () => {
     
-        if (description.split(" ").length >= 60) {
+        if (count >= 60) {
             localStorage.setItem("description",description);
-            setActive("component6")
+            setActive("component7")
         } else {
             setShowAlert(true);
             setTimeout(() => {
@@ -31,8 +31,11 @@ const Details_6: React.FC<ChildComponent1Props> = ({ setActive }) => {
     const handleDescribeChange = (eve: React.ChangeEvent<HTMLTextAreaElement>) => {
         const value = eve.target.value;
         setCount(value.trim().split(/\s+/).length);
+        console.log("count"+count);
 
-        if (value.length <= 60) {
+        console.log("length"+value.split(" ").length);
+
+        if (count < 60) {
             setDescription(value)
         } else {
             setShowAlert(true);
@@ -40,8 +43,6 @@ const Details_6: React.FC<ChildComponent1Props> = ({ setActive }) => {
                 setShowAlert(false)
             }, 1500);
         }
-
-
     }
 
     useEffect(() => {
@@ -70,7 +71,7 @@ const Details_6: React.FC<ChildComponent1Props> = ({ setActive }) => {
             </div>
             {/* Text */}
             <div className="flex flex-col">
-                <div className="p-10 sm:pl-36 font-bold text-xl">6/7</div>
+                <div className="p-10 sm:pl-36 font-bold text-xl">6/8</div>
                 <div className="pr-10 pl-10 sm:max-w-[1200px]  freelancerFont sm:pl-36 pb-0 font-semibold text-xl sm:text-4xl">
                     Great. Now write a bio to tell the world about yourself
                 </div>

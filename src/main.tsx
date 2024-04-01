@@ -13,15 +13,15 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <Provider store={store}>
-        <GoogleOAuthProvider clientId="185648007858-r1ljiemuucjleg0m1m7se6d20npuq0t6.apps.googleusercontent.com">
-          <App />
-          <ToastContainer position="top-center" theme="dark"
-          />
-        </GoogleOAuthProvider>
-      </Provider>
-    </BrowserRouter>
-  </React.StrictMode>
+  // <React.StrictMode>
+  <BrowserRouter>
+    <Provider store={store}>
+      <GoogleOAuthProvider clientId="185648007858-r1ljiemuucjleg0m1m7se6d20npuq0t6.apps.googleusercontent.com">
+        <App />
+        <ToastContainer position="top-center" theme="dark"
+        />
+      </GoogleOAuthProvider>
+    </Provider>
+  </BrowserRouter>
+  // </React.StrictMode>
 );

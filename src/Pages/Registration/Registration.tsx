@@ -6,6 +6,9 @@ import Details_3 from '@/Component/Registration/Details_3';
 import Details_4 from '@/Component/Registration/Details_4';
 import Details_5 from '@/Component/Registration/Details_5';
 import Details_6 from '@/Component/Registration/Details_6';
+import Details_7 from '@/Component/Registration/Details_7';
+import Details_8 from '@/Component/Registration/Details_8';
+
 
 interface RegistrationProps {
   activeComponent: string;
@@ -15,7 +18,7 @@ interface RegistrationProps {
 
 const Registration: React.FC<RegistrationProps> = ({ activeComponent, handleActiveComponent }) => {
   return (
-    <div>
+    <div> 
       {activeComponent === 'component1' && (
         <Details_1 setActive={handleActiveComponent} />
       )}
@@ -31,8 +34,14 @@ const Registration: React.FC<RegistrationProps> = ({ activeComponent, handleActi
       {activeComponent === 'component5' && (
         <Details_5 setActive={handleActiveComponent} />
       )}
-      {activeComponent === 'component5' && (
+      {activeComponent === 'component6' && (
         <Details_6 setActive={handleActiveComponent} />
+      )}
+       {activeComponent === 'component7' && (
+        <Details_7 setActive={handleActiveComponent} />
+      )}
+      {activeComponent === 'component8' && (
+        <Details_8 setActive={handleActiveComponent} />
       )}
     </div>
   )

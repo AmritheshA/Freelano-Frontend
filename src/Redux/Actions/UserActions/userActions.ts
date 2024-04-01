@@ -16,44 +16,44 @@ export const userLoginAction = createAsyncThunk(
           "Content-Type": "application/json",
         },
       };
-      
+
       const response = await axiosInstance.post('/api/v1/auth/login', userCredentail, config);
       const data = response.data;
 
       console.log(response.status);
       console.log(data);
-
+  
       const decodedJwt = jwtDecode<JwtPayload>(data.accessToken);
       console.log("calling func2");
       console.log("Authenticated Successfully");
 
       return {
+        userId:decodedJwt.userId,
         username: decodedJwt.userName,
         email: decodedJwt.email,
         message: data.message,
         role: decodedJwt.role,
       }
     } catch (error: any) {
-      
+
       return rejectWithValue(handleErrors(error));
     }
   }
 );
 
-
 export const userRegisterAction = createAsyncThunk(
   "user/userSignup",
   async (token: string | undefined, { rejectWithValue }) => {
 
-       try {
+    try {
 
-      const config:AxiosRequestConfig = {
+      const config: AxiosRequestConfig = {
         headers: {
           "Content-Type": "application/json",
         },
       };
-  
-      console.log("token"+token)
+
+      console.log("token" + token)
       const response = await axiosInstance.get(`/api/v1/auth/register?token=${token}`, config);
       const data = response.data;
 
@@ -69,7 +69,6 @@ export const userRegisterAction = createAsyncThunk(
     }
   }
 );
-
 
 export const userOauthLogin = createAsyncThunk(
   "user/userOauthLogin",
@@ -101,33 +100,6 @@ export const userOauthLogin = createAsyncThunk(
   }
 );
 
-// export const sendMailToUser = createAsyncThunk(
-//   "user/sendEmail", async (email: string, { rejectWithValue }): Promise<any> => {
-//     try {
-//       const userCredentail = sessionStorage.getItem("userCredentail");
-
-//       const config = {
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//       };
-//       const response = await axiosInstance.post(`/api/v1/auth/verifyEmail?token=${token}`,
-//         userCredentail,
-//         config
-//       );
-
-//     } catch (error: any) {
-//       console.error(error);
-//       if (error.response && error.response.status) {
-//         return rejectWithValue(error.response.status);
-//       } else {
-//         return rejectWithValue(error.message);
-//       }
-//     }
-//   }
-// )
-
-
 export const verifyUserEmail = createAsyncThunk(
   "user/verifyUserEmail",
   async (_, { rejectWithValue }): Promise<any> => {
@@ -142,6 +114,32 @@ export const verifyUserEmail = createAsyncThunk(
 
       console.log(data);
 
+    } catch (error: any) {
+      console.error(error);
+      if (error.response && error.response.status) {
+        return rejectWithValue(error.response.status);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);
+
+export const freelancerProfileSubmit = createAsyncThunk(
+  "user/freelancerProfileSubmit",
+  async (freelancerDetails, { rejectWithValue }): Promise<any> => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const response = await axiosInstance.post("/api/v1/freelancerService/verifyEmail", freelancerDetails, config);
+      const meessage = response.data;
+
+      return{
+        meessage
+      }
     } catch (error: any) {
       console.error(error);
       if (error.response && error.response.status) {

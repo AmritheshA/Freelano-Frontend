@@ -56,7 +56,7 @@ const Details_1: React.FC<ChildComponent1Props> = ({ setActive }) => {
       </div>
       {/* Text */}
       <div className="flex flex-col">
-        <div className="p-10 sm:pl-36 font-bold text-xl">1/7</div>
+        <div className="p-10 sm:pl-36 font-bold text-xl">1/8</div>
         <div className="pr-10 pl-10 sm:pl-36 pb-0 font-bold text-xl sm:text-4xl">
           Add a title to tell the world what you do
         </div>
@@ -69,7 +69,7 @@ const Details_1: React.FC<ChildComponent1Props> = ({ setActive }) => {
           <input
             type="text"
             value={role}
-            className="border-2 text-black tracking-wide font-semibold freelancerFont  border-black rounded-md py-2 px-4 sm:w-[50%] max-w-[750px] focus:outline-none focus:border-blue-500"
+            className="border-2 text-black tracking-wide font-semibold freelancerFont  border-gray-300 rounded-md py-2 px-4 sm:w-[50%] max-w-[750px] focus:outline-none focus:border-gray-400"
             placeholder="Enter your professional role..."
             onChange={handleInputeChanges}
           />
