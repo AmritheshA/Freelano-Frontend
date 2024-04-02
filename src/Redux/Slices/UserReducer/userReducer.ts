@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { freelancerProfileSubmit, userLoginAction, userOauthLogin, userRegisterAction } from '../../Actions/UserActions/userActions';
+import { freelancerProfileSubmit, userLoginAction, userLogoutAction, userOauthLogin, userRegisterAction } from '../../Actions/UserActions/userActions';
 import { getCookie, removeCookie } from "typescript-cookie";
 import { jwtDecode } from 'jwt-decode';
 import DecodedToken from "../../../Interfaces/userInterface";
@@ -21,6 +21,8 @@ if (accessToken) {
   const token: DecodedToken = jwtDecode(decodedToken);
   const userName = token.sub;
   const role = token.role;
+  const userId = token.userId;
+
 
   console.log("jwt Token" + decodedToken);
 
@@ -29,8 +31,9 @@ if (accessToken) {
     removeCookie("AccessToken");
   } else {
     user = {
-      username: userName,
-      role: role,
+      userId,
+      userName,
+      role,
     };
   }
 } else {
@@ -47,7 +50,14 @@ const initialState: userDetails = {
 const userReducer = createSlice({
   name: 'userReducer',
   initialState,
-  reducers: {},
+  reducers: {
+    registerUser(state) {
+      state.loading = true;
+    },
+    registerUserLoading(state) {
+      state.loading = false;
+    }
+  },
   extraReducers: (builder) => {
     builder
       // User Login Reducer
@@ -57,6 +67,8 @@ const userReducer = createSlice({
       })
       .addCase(userLoginAction.fulfilled, (state, action) => {
         toast.success(action.payload.message);
+
+
         state.loading = false;
         state.user = action.payload;
         state.message = action.payload.message;
@@ -109,16 +121,28 @@ const userReducer = createSlice({
         state.loading = true;
       })
       .addCase(freelancerProfileSubmit.fulfilled, (state, action) => {
-        toast.success(action.payload.message)
+        toast.success(action.payload.message);
         state.loading = false;
         state.message = action.payload.message;
       })
       .addCase(freelancerProfileSubmit.rejected, (state, action) => {
-        console.log(action.payload);
         state.error = action.payload;
+      })
+      .addCase(userLogoutAction.pending, (state, _) => {
+        state.loading = true;
+      })
+      .addCase(userLogoutAction.fulfilled, (state, action) => {
+        toast.success(action.payload.meessage)
+        state.message = action.payload.meessage;
+        state.loading = false;
+        state.user = null;
+      })
+      .addCase(userLogoutAction.rejected, (state, _) => {
+        state.message = "Something Went Wrong"
       })
   }
 });
 
 
 export default userReducer.reducer;
+export const { registerUser, registerUserLoading } = userReducer.actions;

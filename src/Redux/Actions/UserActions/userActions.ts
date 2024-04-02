@@ -5,7 +5,7 @@ import axiosInstance from "../../../Config/AxiosConfig/axiosConfig";
 import { handleErrors } from "../../../Util/handleErrors";
 import JwtPayload from '../../../Interfaces/userInterface'
 import { AxiosRequestConfig } from "axios";
-
+import profileDetails from '../../../Interfaces/userInterface'
 
 export const userLoginAction = createAsyncThunk(
   "user/userLogin",
@@ -22,13 +22,13 @@ export const userLoginAction = createAsyncThunk(
 
       console.log(response.status);
       console.log(data);
-  
+
       const decodedJwt = jwtDecode<JwtPayload>(data.accessToken);
       console.log("calling func2");
       console.log("Authenticated Successfully");
 
       return {
-        userId:decodedJwt.userId,
+        userId: decodedJwt.userId,
         username: decodedJwt.userName,
         email: decodedJwt.email,
         message: data.message,
@@ -60,7 +60,8 @@ export const userRegisterAction = createAsyncThunk(
       return {
         username: data.userName,
         email: data.email,
-        role: data.role
+        role: data.role,
+        userId:data.userId
       }
 
     } catch (error: any) {
@@ -88,6 +89,7 @@ export const userOauthLogin = createAsyncThunk(
       return {
         username: decodedJwt.sub,
         role: decodedJwt.role,
+        userId:decodedJwt.userId
       };
     } catch (error: any) {
       console.error(error);
@@ -127,17 +129,17 @@ export const verifyUserEmail = createAsyncThunk(
 
 export const freelancerProfileSubmit = createAsyncThunk(
   "user/freelancerProfileSubmit",
-  async (freelancerDetails, { rejectWithValue }): Promise<any> => {
+  async (freelancerDetails: profileDetails, { rejectWithValue }): Promise<any> => {
     try {
       const config = {
         headers: {
           "Content-Type": "application/json",
         },
       };
-      const response = await axiosInstance.post("/api/v1/freelancerService/verifyEmail", freelancerDetails, config);
+      const response = await axiosInstance.post("/api/v1/user/save-freelancer", freelancerDetails, config);
       const meessage = response.data;
 
-      return{
+      return {
         meessage
       }
     } catch (error: any) {
@@ -150,3 +152,28 @@ export const freelancerProfileSubmit = createAsyncThunk(
     }
   }
 );
+
+export const userLogoutAction = createAsyncThunk("user/userLogoutAction", async (_, { rejectWithValue }): Promise<any> => {
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await axiosInstance.get("/api/v1/auth/logout", config);
+    const meessage = response.data;
+
+    console.log(meessage);
+
+    return {
+      meessage
+    }
+  } catch (error: any) {
+    console.error(error);
+    if (error.response && error.response.status) {
+      return rejectWithValue(error.response.status);
+    } else {
+      return rejectWithValue(error.message);
+    }
+  }
+})

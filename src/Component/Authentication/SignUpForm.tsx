@@ -3,15 +3,17 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { RootState } from "../../Redux/Store";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, TypeDispatch } from "../../Redux/Store";
 import ScaleLoader from "react-spinners/ScaleLoader";
 import axiosInstance from "@/Config/AxiosConfig/axiosConfig";
 import { toast } from "react-toastify";
+import { registerUser, registerUserLoading } from "@/Redux/Slices/UserReducer/userReducer";
 
 
 
 function AuthForm() {
+  const dispatch:TypeDispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
 
   const state = useSelector((state: RootState) => state.userDetails);
@@ -19,10 +21,10 @@ function AuthForm() {
 
   const url = window.location.href;
   const params = new URLSearchParams(new URL(url).search);
-  const userRole = params.get("role");
+  const role = params.get("role");
 
   const initialValues = {
-    email: " ",
+    email: "",
     userName: "Amrithesh",
     password: "password",
     confirmPassword: "password"
@@ -48,8 +50,10 @@ function AuthForm() {
     };
     
     try {
-      const respose = await axiosInstance.post(`/api/v1/auth/sendMail`, { ...values, userRole }, config);
+      dispatch(registerUser());
+      const respose = await axiosInstance.post(`/api/v1/auth/sendMail`, { ...values, role }, config);
       console.log(respose.data);
+      dispatch(registerUserLoading());
       toast("Check your mail for verification")
       setSubmitting(false);
     } catch (error: any) {

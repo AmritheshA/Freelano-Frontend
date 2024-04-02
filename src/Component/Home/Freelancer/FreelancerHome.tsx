@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaLocationDot } from "react-icons/fa6";
+import { useDispatch } from "react-redux";
 import { SiLevelsdotfyi } from "react-icons/si";
 import { Link } from "react-router-dom";
 import { TechBox } from "../../Custom/TechBox";
+import userFullDetails from "@/Interfaces/userInterface";
 import {
   Dialog,
   DialogContent,
@@ -11,8 +13,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
 import { IoIosMail } from "react-icons/io";
 import { useSelector } from "react-redux";
+import { RootState, TypeDispatch } from "@/Redux/Store";
+import axiosInstance from "@/Config/AxiosConfig/axiosConfig";
+import { toast } from "react-toastify";
+import { userLogoutAction } from "@/Redux/Actions/UserActions/userActions";
 
 
 
@@ -26,8 +40,41 @@ export default function FreelancerHome() {
     { title: "Projects", src: <svg stroke="currentColor" fill="black" stroke-width="0" viewBox="0 0 24 24" height="1.5em" width="1.5em" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="#000" stroke-width="2" d="M9,15 L9,23 L1,23 L1,15 L9,15 Z M23,15 L23,23 L15,23 L15,15 L23,15 Z M9,1 L9,9 L1,9 L1,1 L9,1 Z M23,1 L23,9 L15,9 L15,1 L23,1 Z"></path></svg>, to: "/home" },
     { title: "Message ", src: <svg stroke="currentColor" fill="black" stroke-width="0" viewBox="0 0 1024 1024" height="1.5em" width="1.5em" xmlns="http://www.w3.org/2000/svg"><path d="M464 512a48 48 0 1 0 96 0 48 48 0 1 0-96 0zm200 0a48 48 0 1 0 96 0 48 48 0 1 0-96 0zm-400 0a48 48 0 1 0 96 0 48 48 0 1 0-96 0zm661.2-173.6c-22.6-53.7-55-101.9-96.3-143.3a444.35 444.35 0 0 0-143.3-96.3C630.6 75.7 572.2 64 512 64h-2c-60.6.3-119.3 12.3-174.5 35.9a445.35 445.35 0 0 0-142 96.5c-40.9 41.3-73 89.3-95.2 142.8-23 55.4-34.6 114.3-34.3 174.9A449.4 449.4 0 0 0 112 714v152a46 46 0 0 0 46 46h152.1A449.4 449.4 0 0 0 510 960h2.1c59.9 0 118-11.6 172.7-34.3a444.48 444.48 0 0 0 142.8-95.2c41.3-40.9 73.8-88.7 96.5-142 23.6-55.2 35.6-113.9 35.9-174.5.3-60.9-11.5-120-34.8-175.6zm-151.1 438C704 845.8 611 884 512 884h-1.7c-60.3-.3-120.2-15.3-173.1-43.5l-8.4-4.5H188V695.2l-4.5-8.4C155.3 633.9 140.3 574 140 513.7c-.4-99.7 37.7-193.3 107.6-263.8 69.8-70.5 163.1-109.5 262.8-109.9h1.7c50 0 98.5 9.7 144.2 28.9 44.6 18.7 84.6 45.6 119 80 34.3 34.3 61.3 74.4 80 119 19.4 46.2 29.1 95.2 28.9 145.8-.6 99.6-39.7 192.9-110.1 262.7z"></path></svg>, to: "/home" },
     { title: "Meeting", src: <svg stroke="currentColor" fill="black" stroke-width="0" viewBox="0 0 1024 1024" version="1.1" height="1.5em" width="1.5em" xmlns="http://www.w3.org/2000/svg"><defs></defs><path d="M368 724H252V608c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v116H72c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h116v116c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V788h116c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8z"></path><path d="M912 302.3L784 376V224c0-35.3-28.7-64-64-64H128c-35.3 0-64 28.7-64 64v352h72V232h576v560H448v72h272c35.3 0 64-28.7 64-64V648l128 73.7c21.3 12.3 48-3.1 48-27.6V330c0-24.6-26.7-40-48-27.7zM888 625l-104-59.8V458.9L888 399v226z" ></path><path d="M320 360c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8H208c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h112z" ></path></svg>, to: "/home" },
-  ];
 
+  ];
+  const [userInfo, setUserInfo] = useState<userFullDetails>();
+  const user = useSelector((state: RootState) => state.userDetails.user);
+  const dispatch = useDispatch<TypeDispatch>();
+
+  console.log("alskdjfa sdflkjsd sd ksd "+user.userId);
+  
+
+  const handleLogout = () => {
+    dispatch(userLogoutAction())
+  }
+
+  useEffect(() => {
+
+    if (user) {
+
+      axiosInstance.get(`/api/v1/user/getAllInfo?userId=${user.userId}`)
+        .then((response) => {
+          if (response.status === 200) {
+            console.log(response.data);
+            setUserInfo(response.data);
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          if (error.response && error.response.data) {
+            toast(error.response.data);
+          } else {
+            toast("Something went wrong");
+          }
+        });
+    }
+
+  }, [user]);
 
 
 
@@ -84,8 +131,18 @@ export default function FreelancerHome() {
                 Search
               </button>
             </div>
-            <div className="w-10 h-10 rounded-full bg-cover bg-[url('./src/assets/freelancer/profileImage.png')]">
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <div className={`w-10 h-10 rounded-full bg-cover ${userInfo ? 'bg-center bg-no-repeat' : 'bg-center bg-no-repeat'}`} style={{ backgroundImage: `url('${userInfo ? userInfo.profileImgUrl : './src/assets/freelancer/profileImage.png'}')` }}>
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel className="cursor-pointer">Settings</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuLabel onClick={handleLogout} className="cursor-pointer">Log Out</DropdownMenuLabel>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             <div className={`w-10 h-10 rounded-full bg-cover bg-[url('https://cdn-icons-png.flaticon.com/512/3119/3119338.png')]`}>
             </div>
           </div>

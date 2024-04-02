@@ -79,7 +79,7 @@ function LandingNav() {
         <div className="bg-white  shadow-xl top-0 left-0 w-full z-50">
             <div className="container mx-auto px-4 py-5 flex justify-between items-center">
                 <p className="text-3xl font-bold text-black">
-                    <Link to="/home"> 𝑭𝒓𝒆𝒆𝒍𝒂𝒏𝒐</Link>
+                    <Link to="/"> 𝑭𝒓𝒆𝒆𝒍𝒂𝒏𝒐</Link>
                 </p>
                 <nav className="md:flex hidden items-center">
                     <ul className="flex flex-col items-center md:flex-row md:space-x-8">

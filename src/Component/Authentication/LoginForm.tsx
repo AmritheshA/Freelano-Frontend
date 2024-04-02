@@ -20,7 +20,7 @@ function LoginForm() {
     const isLoaded = state.loading;
 
     const initialValues = {
-        email: "testUser@gmail.com",
+        email: "amrithesh0000@gmail.com",
         password: "password",
     };
 

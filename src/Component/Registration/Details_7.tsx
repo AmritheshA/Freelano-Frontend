@@ -35,7 +35,7 @@ const Details_7: React.FC<ChildComponent1Props> = ({ setActive }) => {
     const handleNextClick = () => {
 
         if (selectedValue.trim().length != 0) {
-            localStorage.setItem("service", selectedValue);
+            localStorage.setItem("service", JSON.stringify(selectedValue));
             setActive("component8")
         } else {
 

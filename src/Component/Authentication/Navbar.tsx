@@ -25,7 +25,7 @@ const Navbar = () => {
           <div className="hidden md:block">
             <ul className="flex space-x-4 gap-10">
               <li className="cursor-pointer text-black text-xl font-serif hover:text-white hover:bg-orange-400 rounded-lg px-4 py-2 transition duration-300">
-                <Link to="/landingpage">
+                <Link to="/">
                   Home
                 </Link>
               </li>

@@ -18,7 +18,7 @@ const Details_6: React.FC<ChildComponent1Props> = ({ setActive }) => {
     const handleNextClick = () => {
     
         if (count >= 60) {
-            localStorage.setItem("description",description);
+            localStorage.setItem("description",JSON.stringify(description));
             setActive("component7")
         } else {
             setShowAlert(true);

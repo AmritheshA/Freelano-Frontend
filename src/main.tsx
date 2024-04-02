@@ -18,7 +18,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <Provider store={store}>
       <GoogleOAuthProvider clientId="185648007858-r1ljiemuucjleg0m1m7se6d20npuq0t6.apps.googleusercontent.com">
         <App />
-        <ToastContainer position="top-center" theme="dark"
+        <ToastContainer position="top-center" autoClose={1500} theme="dark"
         />
       </GoogleOAuthProvider>
     </Provider>

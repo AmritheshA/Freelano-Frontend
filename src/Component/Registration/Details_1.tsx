@@ -29,7 +29,7 @@ const Details_1: React.FC<ChildComponent1Props> = ({ setActive }) => {
 
       return () => clearTimeout(timeoutId);
     }
-    localStorage.setItem("role", role);
+    localStorage.setItem("role",JSON.stringify(role));
     setActive("component2");
   };
 

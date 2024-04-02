@@ -1,5 +1,6 @@
 import { format } from "date-fns";
-import React, { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import * as Yup from "yup";
 import { SlCalender } from "react-icons/sl";
@@ -21,6 +22,10 @@ import {
 import { SelectOption } from "../Custom/Selects";
 import { FaCirclePlus } from "react-icons/fa6";
 import { ErrorMessage, Field, Form, Formik } from "formik";
+import { freelancerProfileSubmit } from "@/Redux/Actions/UserActions/userActions";
+import { RootState, TypeDispatch } from "@/Redux/Store";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 interface ChildComponent1Props {
     setActive: (componentName: string) => void;
@@ -40,9 +45,7 @@ const validationSchema = Yup.object().shape({
 });
 
 interface Details {
-    dateOfBirth: string| Date |undefined;
     photo: string;
-    country: string;
     streetAddress: string;
     district: string;
     city: string;
@@ -53,9 +56,7 @@ interface Details {
 
 const Details_8: React.FC<ChildComponent1Props> = () => {
     const initialValues: Details = {
-        dateOfBirth: "",
         photo: "",
-        country: "India",
         streetAddress: "",
         district: "",
         city: "",
@@ -76,28 +77,70 @@ const Details_8: React.FC<ChildComponent1Props> = () => {
         { label: "China", value: "China" },
     ];
 
+    const navigate = useNavigate();
     const [date, setDate] = useState<Date>();
-    const [country,setCountry] = useState<string>("");
-
-    const handleSubmit = (values: Details) => {
-        values.dateOfBirth = date;
-        values.photo = selectedImage;
-        values.country = country;
-        
-        console.log(values);
-    };
-
+    const [country, setCountry] = useState<string>("");
+    const dispatch: TypeDispatch = useDispatch();
+    const { user, message } = useSelector((state: RootState) => state.userDetails);
     const [selectedImage, setSelectedImage] = useState("/src/assets/image.png");
 
-    const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files && event.target.files[0]) {
-            const reader = new FileReader();
-            reader.onload = (e:any) => setSelectedImage(e.target.result);
-            reader.readAsDataURL(event.target.files[0]);
-        }
+    console.log(user);
+    
+
+    const handleSubmit = (values: Details) => {
+
+        const userData: any = {
+            freelancersAuthId: user.userId,
+            professionalRole: JSON.parse(localStorage.getItem("role") as string),
+            education: JSON.parse(localStorage.getItem("education") as string),
+            languages: JSON.parse(localStorage.getItem("languages") as string),
+            experience: JSON.parse(localStorage.getItem("experience") as string),
+            description: JSON.parse(localStorage.getItem("description") as string),
+            service: JSON.parse(localStorage.getItem("service") as string),
+            skills: JSON.parse(localStorage.getItem("skills") as string),
+            dateOfBirth: date,
+            profileImgUrl: selectedImage,
+            country: country,
+            streetAddress: values.streetAddress,
+            district: values.district,
+            city: values.city,
+            mobileNumber: values.mobile,
+            zipCode: values.zipCode,
+            isProfileComplete: true,
+        };
+
+        console.log(userData);
+
+        dispatch(freelancerProfileSubmit(userData)).then((response) => {
+            if (response.type.endsWith('fulfilled')) {
+                toast.success(message);
+                navigate("/home");
+            }
+        })
     };
 
-    
+    const handleImageChange = async (event: ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files[0]) {
+            const formData = new FormData();
+
+            formData.append("file", event.target.files[0]);
+            formData.append("upload_preset", "ml_default");
+            try {
+                const response = await fetch(import.meta.env.VITE_CLOUDINARY_URL, {
+                    method: "POST",
+                    body: formData,
+                });
+                const data = await response.json();
+                console.log(data);
+                setSelectedImage(data.secure_url);
+            } catch (error) {
+                console.error("Error uploading image to Cloudinary:", error);
+                return "";
+            }
+        };
+    }
+
+
 
     return (
         <div className="absolute bg-white w-full h-screen">
