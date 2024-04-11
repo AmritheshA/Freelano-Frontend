@@ -22,8 +22,7 @@ if (accessToken) {
   const userName = token.sub;
   const role = token.role;
   const userId = token.userId;
-
-
+  
   console.log("jwt Token" + decodedToken);
 
   if (token.exp * 1000 < Date.now()) {
@@ -67,8 +66,6 @@ const userReducer = createSlice({
       })
       .addCase(userLoginAction.fulfilled, (state, action) => {
         toast.success(action.payload.message);
-
-
         state.loading = false;
         state.user = action.payload;
         state.message = action.payload.message;

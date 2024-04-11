@@ -13,7 +13,7 @@ import { registerUser, registerUserLoading } from "@/Redux/Slices/UserReducer/us
 
 
 function AuthForm() {
-  const dispatch:TypeDispatch = useDispatch();
+  const dispatch: TypeDispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
 
   const state = useSelector((state: RootState) => state.userDetails);
@@ -48,7 +48,7 @@ function AuthForm() {
         "Content-Type": "application/json",
       },
     };
-    
+
     try {
       dispatch(registerUser());
       const respose = await axiosInstance.post(`/api/v1/auth/sendMail`, { ...values, role }, config);
@@ -57,6 +57,7 @@ function AuthForm() {
       toast("Check your mail for verification")
       setSubmitting(false);
     } catch (error: any) {
+      dispatch(registerUserLoading());
       if (error.response && error.response.data) {
         toast(error.response.data);
       } else {

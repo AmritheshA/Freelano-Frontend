@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import HomePages from "./Pages/HomePages/HomePages";
 import { toast } from "react-toastify";
 import axiosInstance from "./Config/AxiosConfig/axiosConfig";
+import Allworks from "./Component/Freelancer/Allworks";
 
 function App() {
 
@@ -25,13 +26,11 @@ function App() {
   }
 
   useEffect(() => {
-    console.log("app useEffect..........");
     if (user) {
       axiosInstance.get(`/api/v1/user/checkRegistrationCompleted?userId=${user.userId}`)
         .then((response) => {
           if (response.status === 200) {
             setIsProfileComplete(response.data);
-            console.log(response.data);
           }
         })
         .catch((error) => {
@@ -54,7 +53,8 @@ function App() {
       <Route path="/selection" element={<FreelancerReg />} />
       <Route path="/verifyEmail" element={user ? <Navigate to={"/registration"} /> : <VerifyEmail />} />
       <Route path="/" element={<LandingPage />} />
-      <Route path="/registration" element={isProfileComplete ? <Navigate to={"/home"} /> : <Registration activeComponent={activeComponent} handleActiveComponent={handleActiveComponent} />} />
+      <Route path="/registration" element={isProfileComplete || user?.role == "CLIENT" ? <Navigate to={"/home"} /> : <Registration activeComponent={activeComponent} handleActiveComponent={handleActiveComponent} />} />
+      <Route path="/jobs" element={user ? <Allworks /> : <Navigate to={"/home"} />} />
     </Routes>
   );
 }

@@ -34,16 +34,16 @@ function FreelanoFooter() {
                 <span className="block uppercase text-blueGray-500 text-sm font-semibold mb-2">Page</span>
                 <ul className="list-unstyled">
                   <li>
-                    <Link to="/home" className="text-white hover:text-blueGray-800 font-medium block pb-2 text-sm">Home</Link >
+                    <Link to="/home" className="text-white hover:text-blueGray-800 pt-2 font-medium block pb-2 text-sm">Home</Link >
                   </li>
                   <li>
-                    <Link to="/about us" className="text-white hover:text-blueGray-800 font-medium block pb-2 text-sm" >About Us</Link >
+                    <Link to="/about us" className="text-white hover:text-blueGray-800 pt-2 font-medium block pb-2 text-sm" >About Us</Link >
                   </li>
                   <li>
-                    <Link to="/home" className="text-white hover:text-blueGray-800 font-medium block pb-2 text-sm" >Find Works</Link >
+                    <Link to="/home" className="text-white hover:text-blueGray-800 pt-2 font-medium block pb-2 text-sm" >Find Works</Link >
                   </li>
                   <li>
-                    <Link to="/home" className="text-white hover:text-blueGray-800 font-medium block pb-2 text-sm" >Find Freelancer</Link >
+                    <Link to="/home" className="text-white hover:text-blueGray-800 pt-2 font-medium block pb-2 text-sm" >Find Freelancer</Link >
                   </li>
                 </ul>
               </div>
@@ -51,16 +51,16 @@ function FreelanoFooter() {
                 <span className="block uppercase text-blueGray-500 text-sm font-semibold mb-2">Service</span>
                 <ul className="list-unstyled">
                   <li>
-                    <h1 className="text-white hover:text-blueGray-800 font-medium block pb-2 text-sm" ></h1 >
+                    <h1 className="text-white hover:text-blueGray-800 pt-2 font-medium block pb-2 text-sm" ></h1 >
                   </li>
                   <li>
-                    <h1 className="text-white hover:text-blueGray-800 font-medium block pb-2 text-sm" >Job Posting</h1 >
+                    <h1 className="text-white hover:text-blueGray-800 pt-2 font-medium block pb-2 text-sm" >Job Posting</h1 >
                   </li>
                   <li>
-                    <h1 className="text-white hover:text-blueGray-800 font-medium block pb-2 text-sm" >Project Management</h1 >
+                    <h1 className="text-white hover:text-blueGray-800 pt-2 font-medium block pb-2 text-sm" >Project Management</h1 >
                   </li>
                   <li>
-                    <h1 className="text-white hover:text-blueGray-800 font-medium block pb-2 text-sm" >Contact Us</h1 >
+                    <h1 className="text-white hover:text-blueGray-800 pt-2 font-medium block pb-2 text-sm" >Contact Us</h1 >
                   </li>
                 </ul>
               </div>

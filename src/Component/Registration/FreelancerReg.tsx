@@ -2,14 +2,16 @@ import { FaUserAlt } from "react-icons/fa";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+
 function FreelancerReg() {
   const [selectedValue, setSelectedValue] = useState<boolean>(false);
-  const [role,setRole] = useState<string>("");
+  const [role, setRole] = useState<string>("CLIENT");
 
 
-  const handleSelection = (value: boolean) => {
+  const handleSelection = (value: string) => {
+
+    setRole(value);
     setSelectedValue(!selectedValue);
-    !value ? setRole("CLIENT") : setRole("FREELANCER");
   };
 
   return (
@@ -48,9 +50,10 @@ function FreelancerReg() {
             <div className="flex items-center">
               <input
                 type="radio"
+                value={"CLIENT"}
                 checked={!selectedValue}
                 className="h-6 w-6 m-2 cursor-pointer"
-                onChange={(eve: any) => handleSelection(eve.target.checked)}
+                onChange={(eve: any) => handleSelection(eve.target.value)}
               />
             </div>
           </div>
@@ -69,8 +72,9 @@ function FreelancerReg() {
               <input
                 type="radio"
                 checked={selectedValue}
+                value={"FREELANCER"}
                 className="h-6 w-6 m-2 cursor-pointer"
-                onChange={(eve: any) => handleSelection(eve.target.checked)}
+                onChange={(eve: any) => handleSelection(eve.target.value)}
               />
             </div>
           </div>
