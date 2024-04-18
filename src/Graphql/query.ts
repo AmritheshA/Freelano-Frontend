@@ -20,3 +20,5 @@ query GetAllProjects {
       freelancerId
   }
 }`;
+
+    

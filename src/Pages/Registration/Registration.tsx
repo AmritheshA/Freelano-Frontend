@@ -21,7 +21,7 @@ const Registration: React.FC<RegistrationProps> = ({ activeComponent, handleActi
     <div> 
       {activeComponent === 'component1' && (
         <Details_1 setActive={handleActiveComponent} />
-      )}
+      )} 
       {activeComponent === 'component2' && (
         <Details_2 setActive={handleActiveComponent} />
       )}

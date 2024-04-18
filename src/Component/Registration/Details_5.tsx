@@ -94,7 +94,7 @@ const Details_5: React.FC<ChildComponent1Props> = ({ setActive }) => {
                 <div className="pl-10 pt-10 sm:pl-36 ">Your skills</div>
                 <div className="pr-10 pl-10 p-2 sm:pl-36">
                     <div className="mb-4">
-                        <AddSkills onSkillChange={onSkillChange} />
+                        <AddSkills flag={true} onSkillChange={onSkillChange} />
                         {skills.map((skill, index) => (
                             <div key={index} className="relative inline-block mt-5 mr-5 rounded">
                                 <TechBox badge={<svg onClick={() => handleRemoveSkill(skill)} cursor="pointer" stroke="currentColor" fill="red" stroke-width="0" version="1.2" baseProfile="tiny" viewBox="0 0 24 24" height="1.3em" width="1.3em" xmlns="http://www.w3.org/2000/svg"><path d="M12 4c-4.419 0-8 3.582-8 8s3.581 8 8 8 8-3.582 8-8-3.581-8-8-8zm3.707 10.293c.391.391.391 1.023 0 1.414-.195.195-.451.293-.707.293s-.512-.098-.707-.293l-2.293-2.293-2.293 2.293c-.195.195-.451.293-.707.293s-.512-.098-.707-.293c-.391-.391-.391-1.023 0-1.414l2.293-2.293-2.293-2.293c-.391-.391-.391-1.023 0-1.414s1.023-.391 1.414 0l2.293 2.293 2.293-2.293c.391-.391 1.023-.391 1.414 0s.391 1.023 0 1.414l-2.293 2.293 2.293 2.293z"></path></svg>} value={skill} />

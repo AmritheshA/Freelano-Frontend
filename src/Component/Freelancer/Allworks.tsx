@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox"
 import { InputNumber } from 'primereact/inputnumber';
 import Pagination from '@mui/material/Pagination';
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -37,6 +37,9 @@ import { SiLevelsdotfyi } from "react-icons/si";
 import FreelanoFooter from "../FreelanoFooter";
 import axiosInstance from "@/Config/AxiosConfig/axiosConfig";
 import { toast } from "react-toastify";
+import { gql, useQuery } from "@apollo/client";
+import { GET_PROJECTS } from "@/Graphql/query";
+import Project from "@/Interfaces/projectInterface";
 
 
 interface City {
@@ -69,16 +72,20 @@ export default function Allworks() {
     const [hourlyType, setHourlyType] = useState(false);
     const [fixedType, setFixedType] = useState(false);
 
+    const [projects, setProjects] = useState<Project[]>([]);
+    const { error, loading, data } = useQuery(GET_PROJECTS);
+    
+
+
     // pagination
     const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
+        if (data && data.getAllProjects) {
+            setProjects(data.getAllProjects);
+        }
+    }, [data]);
 
-        // axiosInstance.get("api/v1/project-service/allproject")
-
-
-
-    }, [currentPage])
 
     const Menus = [
         { title: "Home", src: <svg stroke="currentColor" fill="black" stroke-width="0" viewBox="0 0 1024 1024" height="1.5em" width="1.5em" xmlns="http://www.w3.org/2000/svg"><path d="M946.5 505L560.1 118.8l-25.9-25.9a31.5 31.5 0 0 0-44.4 0L77.5 505a63.9 63.9 0 0 0-18.8 46c.4 35.2 29.7 63.3 64.9 63.3h42.5V940h691.8V614.3h43.4c17.1 0 33.2-6.7 45.3-18.8a63.6 63.6 0 0 0 18.7-45.3c0-17-6.7-33.1-18.8-45.2zM568 868H456V664h112v204zm217.9-325.7V868H632V640c0-22.1-17.9-40-40-40H432c-22.1 0-40 17.9-40 40v228H238.1V542.3h-96l370-369.7 23.1 23.1L882 542.3h-96.1z"></path></svg>, to: "/home" },
@@ -88,6 +95,8 @@ export default function Allworks() {
         { title: "Meeting", src: <svg stroke="currentColor" fill="black" stroke-width="0" viewBox="0 0 1024 1024" version="1.1" height="1.5em" width="1.5em" xmlns="http://www.w3.org/2000/svg"><defs></defs><path d="M368 724H252V608c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v116H72c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h116v116c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V788h116c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8z"></path><path d="M912 302.3L784 376V224c0-35.3-28.7-64-64-64H128c-35.3 0-64 28.7-64 64v352h72V232h576v560H448v72h272c35.3 0 64-28.7 64-64V648l128 73.7c21.3 12.3 48-3.1 48-27.6V330c0-24.6-26.7-40-48-27.7zM888 625l-104-59.8V458.9L888 399v226z" ></path><path d="M320 360c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8H208c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h112z" ></path></svg>, to: "/home" },
 
     ];
+
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const handleLogout = () => {
         dispatch(userLogoutAction())
@@ -116,6 +125,33 @@ export default function Allworks() {
 
     }, [user]);
 
+
+    const handleCheckBoxClick = (event: React.ChangeEvent<HTMLInputElement>, key: string) => {
+        const value = event.target.value;
+        const newSearchParams = new URLSearchParams(searchParams);
+        const paramKey = searchParams.get(key);
+        
+        if (paramKey) {
+            const paramValues = paramKey.split(',');
+
+            if (paramValues.includes(value)) {
+                paramValues.splice(paramValues.indexOf(value), 1);
+            } else {
+                paramValues.push(value);
+            }
+
+            if (paramValues.length > 0) {
+                newSearchParams.set(key, paramValues.join(','));
+            } else {
+                newSearchParams.delete(key);
+            }
+        } else {
+            newSearchParams.set(key, value);
+        }
+        setSearchParams(newSearchParams);
+
+    
+    };
 
     return (
         <>
@@ -156,6 +192,7 @@ export default function Allworks() {
                         ))}
                     </ul>
                 </div>
+
                 <div className="h-full flex-1 p-7">
                     <div className="flex justify-end">
                         {/* <h1 className="text-2xl font-medium text-gray-300 ">Home</h1> */}
@@ -186,15 +223,14 @@ export default function Allworks() {
                             </div>
                         </div>
                     </div>
-
                     <div className="">
                         <div className="w-full h-full ">
                             <div className="mt-28">
                                 {/* Search Bar */}
                                 <div className="w-[200px] sm:w-[300px] md:w-[500px] lg:w-[650px] border-2 rounded-full border-gray-300 h-12 flex items-center">
-                                    <div className="flex items-center p-6">
+                                    <div className="flex items-center p-6 w-full">
                                         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="1.5em" width="1.5em" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.442 10.442a1 1 0 011.415 0l3.85 3.85a1 1 0 01-1.414 1.415l-3.85-3.85a1 1 0 010-1.415z" clip-rule="evenodd"></path><path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 100-11 5.5 5.5 0 000 11zM13 6.5a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z" clip-rule="evenodd"></path></svg>
-                                        <input type="text" className="w-full px-4 py-2 outline-none" placeholder="Search..." />
+                                        <input type="text" className="w-full px-4 py-2 outline-none bg-background" placeholder="Search..." />
                                     </div>
                                 </div>
                                 <div className="flex justify-end mr-32 outline-none ">
@@ -224,19 +260,34 @@ export default function Allworks() {
                                             {experienceToggle && (
                                                 <div className="flex flex-col ">
                                                     <div className="flex items-center pl-2 mt-2">
-                                                        <Checkbox className="w-5 h-5 checked :bg-green-500 " />
+                                                        <input
+                                                            type="checkbox"
+                                                            onChange={(event) => handleCheckBoxClick(event, 'experience')}
+                                                            value="Beginner"
+                                                            className="checkbox checkbox-warning border-black"
+                                                        />
                                                         <label className="p-2 text-sm font-medium  leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                                                             Beginner
                                                         </label>
                                                     </div>
                                                     <div className="flex items-center pl-2 mt-2">
-                                                        <Checkbox className="w-5 h-5 checked :bg-green-500 " />
+                                                        <input
+                                                            type="checkbox"
+                                                            onChange={(event) => handleCheckBoxClick(event, 'experience')}
+                                                            value="Intermediator"
+                                                            className="checkbox checkbox-warning border-black"
+                                                        />
                                                         <label className="p-2 text-sm font-medium  leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                                            Intermidate
+                                                            Intermediator
                                                         </label>
                                                     </div>
                                                     <div className="flex items-center pl-2 mt-2">
-                                                        <Checkbox className="w-5 h-5 checked :bg-green-500 " />
+                                                        <input
+                                                            type="checkbox"
+                                                            onChange={(event) => handleCheckBoxClick(event, 'experience')}
+                                                            value="Expert"
+                                                            className="checkbox checkbox-warning border-black"
+                                                        />
                                                         <label className="p-2 text-sm font-medium  leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                                                             Expert
                                                         </label>
@@ -255,33 +306,52 @@ export default function Allworks() {
                                                     <div className="mt-4">
                                                         <div>
                                                             <div className="flex items-center pl-2 mt-2">
-                                                                <Checkbox checked={hourlyType} onCheckedChange={() => setHourlyType(!hourlyType)} className="w-5 h-5" />
+                                                                <input
+                                                                    type="checkbox"
+                                                                    onChange={(event) => { setHourlyType(!hourlyType); handleCheckBoxClick(event, 'jobType'); }}
+                                                                    value="Hourly"
+                                                                    checked={hourlyType}
+                                                                    className="checkbox checkbox-warning border-black"
+                                                                />
                                                                 <label className="p-2 text-sm font-medium  leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                                                                     Hourly
                                                                 </label>
                                                             </div>
                                                             <div className="flex items-center pl-6 mt-4 gap-2">
-                                                                <Checkbox checked={hourlyType} onCheckedChange={() => setHourlyType(!hourlyType)} className="w-5 h-5" />
-                                                                <div className=" flex items-center gap-1">
-                                                                    <InputNumber className=" w-[70px] h-7 border-2 border-gray-400 rounded-md overflow-hidden" placeholder=" $ Min" /> /hr
-                                                                    <InputNumber className=" w-[70px] h-7 border-2 border-gray-400 rounded-md overflow-hidden" placeholder=" $ Max" /> /hr
-
-                                                                </div>
+                                                                <input
+                                                                    type="checkbox"
+                                                                    onChange={(event) => { setHourlyType(!hourlyType); handleCheckBoxClick(event, 'jobType'); }}
+                                                                    value="Hourly"
+                                                                    checked={hourlyType}
+                                                                    className="checkbox checkbox-sm checkbox-warning border-black"
+                                                                />
+                                                                <input type="number" className=" w-[72px] h-7 bg-background border-2 pl-2 border-gray-400 rounded-md overflow-hidden" placeholder="$Min" /> -
+                                                                <input type="number" className=" w-[72px] h-7 bg-background border-2 pl-2 border-gray-400 rounded-md overflow-hidden" placeholder="$Max" />
                                                             </div>
                                                         </div>
                                                         <div className="mt-4">
                                                             <div className="flex items-center pl-2 mt-2">
-                                                                <Checkbox checked={fixedType} onCheckedChange={() => setFixedType(!fixedType)} className="w-5 h-5" />
+                                                                <input
+                                                                    type="checkbox"
+                                                                    onChange={(event) => { setFixedType(!fixedType); handleCheckBoxClick(event, 'jobType'); }}
+                                                                    value="Fixed"
+                                                                    checked={fixedType}
+                                                                    className="checkbox checkbox-warning border-black"
+                                                                />
                                                                 <label className="p-2 text-sm font-medium  leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                                                    Fixed Prize
+                                                                    Fixed
                                                                 </label>
                                                             </div>
                                                             <div className="flex items-center pl-6 mt-4 gap-2">
-                                                                <Checkbox checked={fixedType} onCheckedChange={() => setFixedType(!fixedType)} className="w-5 h-5" />
-                                                                <div className=" flex items-center gap-1">
-                                                                    <InputNumber className=" w-[70px] h-7 border-2 border-gray-400 rounded-md overflow-hidden" placeholder=" $ Min" /> /hr
-                                                                    <InputNumber className=" w-[70px] h-7 border-2 border-gray-400 rounded-md overflow-hidden" placeholder=" $ Max" /> /hr
-                                                                </div>
+                                                                <input
+                                                                    type="checkbox"
+                                                                    onChange={(event) => { setFixedType(!fixedType); }}
+                                                                    value="Hourly"
+                                                                    checked={fixedType}
+                                                                    className="checkbox checkbox-sm checkbox-warning border-black"
+                                                                />
+                                                                <input type="number" className=" w-[72px] h-7 bg-background border-2 pl-2 border-gray-400 rounded-md overflow-hidden" placeholder="$Min" /> -
+                                                                <input type="number" className=" w-[72px] h-7 bg-background border-2 pl-2 border-gray-400 rounded-md overflow-hidden" placeholder="$Max" />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -298,7 +368,6 @@ export default function Allworks() {
                                                     <SelectGroup>
                                                         {cities.map((citie) => (
                                                             <SelectItem value={citie.name}>{citie.name}</SelectItem>
-
                                                         ))}
                                                     </SelectGroup>
                                                 </SelectContent>
@@ -312,27 +381,44 @@ export default function Allworks() {
                                             {projectDurationToggle && (
                                                 <div className="flex flex-col ">
                                                     <div className="flex items-center pl-2 mt-2">
-                                                        <Checkbox className="w-5 h-5 checked :bg-green-500 " />
-                                                        <label className="p-2 text-sm font-medium  leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                                        <input
+                                                            type="checkbox"
+                                                            onChange={(event) => { handleCheckBoxClick(event, 'projectDuration'); }}
+                                                            value="less than one month"
+
+                                                            className="checkbox checkbox-warning border-black"
+                                                        />                                                        <label className="p-2 text-sm font-medium  leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                                                             Less than one month
                                                         </label>
                                                     </div>
                                                     <div className="flex items-center pl-2 mt-2">
-                                                        <Checkbox className="w-5 h-5 checked :bg-green-500 " />
+                                                        <input
+                                                            type="checkbox"
+                                                            onChange={(event) => { handleCheckBoxClick(event, 'projectDuration'); }}
+                                                            value="1 to 3 months" className="checkbox checkbox-warning border-black"
+                                                        />
                                                         <label className="p-2 text-sm font-medium  leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                                                             1 to 3 months
                                                         </label>
                                                     </div>
                                                     <div className="flex items-center pl-2 mt-2">
-                                                        <Checkbox className="w-5 h-5 checked :bg-green-500 " />
+                                                        <input
+                                                            type="checkbox"
+                                                            onChange={(event) => { handleCheckBoxClick(event, 'projectDuration'); }}
+                                                            value="3 to 6 months" className="checkbox checkbox-warning border-black"
+                                                        />
                                                         <label className="p-2 text-sm font-medium  leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                                                             3 to 6 months
                                                         </label>
                                                     </div>
                                                     <div className="flex items-center pl-2 mt-2">
-                                                        <Checkbox className="w-5 h-5 checked :bg-green-500 " />
+                                                        <input
+                                                            type="checkbox"
+                                                            onChange={(event) => { handleCheckBoxClick(event, 'projectDuration'); }}
+                                                            value="more than 6 month" className="checkbox checkbox-warning border-black"
+                                                        />
                                                         <label className="p-2 text-sm font-medium  leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                                            more than 6 months
+                                                            more than 6 month
                                                         </label>
                                                     </div>
                                                 </div>
@@ -357,37 +443,34 @@ export default function Allworks() {
                                     </div>
                                     {/* listing options */}
                                     <div className="sm:w-[80%] overflow-y-auto max-h-screen no-scrollbar">
-                                        {Array(5).fill(null).map((_, index) => (
-
-                                            <div className="w-full flex mt-3">
+                                        {projects?.map((project: Project) => (
+                                            <div className="flex justify-start mt-14">
                                                 <Dialog>
                                                     <DialogTrigger asChild >
-                                                        <div className="relative w-full h-[350px]  bg-slate-100  active:bg-slate-200 cursor-pointer border-2 rounded-md">
+                                                        <div className="relative w-[80%] h-[350px]  bg-slate-100  active:bg-slate-200 cursor-pointer border-2 rounded-md">
                                                             <h1 className="m-5 font-semibold text-sm text-gray-400 flex justify-start ">Posted Yesterday</h1>
-                                                            <h1 className=" freelancerFont  ml-8 text-xl flex justify-start ">Java or Spring Boot Developer {index + 1}</h1>
+                                                            <h1 className=" freelancerFont  ml-8 text-xl flex justify-start ">{project.projectTitle}</h1>
                                                             <div className="flex gap-5">
-                                                                <h1 className=" top-full left-3 mt-2 ml-8 font-semibold text-sm text-gray-400">Fixed Prize</h1>
-                                                                <h1 className=" top-full left-28 mt-2 ml-8 font-semibold text-sm text-gray-400">Entry Level</h1>
-                                                                <h1 className=" top-full left-56 mt-2 ml-8 font-semibold text-sm text-gray-400">Est. Budget - $25</h1>
+                                                                <h1 className=" top-full left-3 mt-2 ml-8 font-semibold text-sm text-gray-400">{project.budgetType}</h1>
+                                                                <h1 className=" top-full left-28 mt-2 ml-8 font-semibold text-sm text-gray-400">{project.experienceLevel}</h1>
+                                                                <h1 className=" top-full left-56 mt-2 ml-8 font-semibold text-sm text-gray-400">Est. Budget - ${project.prize}</h1>
                                                             </div>
-                                                            <p className="freelancerFont ml-8 mt-5 text-gray-900 max-w-[95%] text-start  " >Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
-                                                                when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-                                                                It has survived not only five centuries, but also the leap into electronic</p>
-                                                            <div className="ml-8 mt-8 flex gap-5">
-                                                                <TechBox value={"java"} />
-                                                                <TechBox value={"php"} />
-                                                                <TechBox value={"javascript"} />
-                                                                <TechBox value={"aws"} />
-                                                                <TechBox value={"database"} />
+                                                            <p className="freelancerFont ml-8 mt-5 text-gray-900 max-w-\[95%\] text-start">
+                                                                {project.jobDescription.slice(0, 250)}
+                                                                {project.jobDescription.length > 250 && '...'}
+                                                            </p>                  <div className="ml-8 mt-8 flex gap-5">
+                                                                {project.skills.map((skill) => (
+                                                                    <TechBox value={skill} />
+                                                                ))}
                                                             </div>
                                                             <div className="flex gap-10 ml-10 mt-8">
                                                                 <div className="flex items-center gap-3">
                                                                     <FaLocationDot size={20} />
-                                                                    <h1 className="font-semibold">India</h1>
+                                                                    <h1 className="font-semibold">{project.location}</h1>
                                                                 </div>
                                                                 <div className="flex gap-2 items-center">
                                                                     <IoIosMail color="black" size={25} />
-                                                                    <h1 className="freelancerFont text-black font-medium text-lg">Email : client00@gmail.com</h1>
+                                                                    <h1 className="freelancerFont text-black font-medium text-lg">Email : amrithesh0000@gmail.com</h1>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -399,52 +482,48 @@ export default function Allworks() {
                                                                 <div className="h-[700px]">
                                                                     <div>
                                                                         <div className="flex justify-between items-end">
-                                                                            <h1 className="pt-10 font-extrabold freelancerFont text-xl text-black">Java or Spring Boot Developer</h1>
+                                                                            <h1 className="pt-10 font-extrabold freelancerFont text-xl text-black">{project.projectTitle}</h1>
                                                                             <h1 className="m-5 font-semibold text-sm text-gray-400 flex justify-start">Posted Yesterday</h1>
                                                                         </div>
-                                                                        <p className="mt-5 freelancerFont overflow-y-scroll font-medium text-black h-[100px] max-w-[700px]">Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic printer took a galley of type and scrambled it to make a type specimen book. It has survived not only centuries, but also the leap into electronicprinter took a galley of type and scrambled it to make a type specimen book. It has survived not only centuries, but also the leap into electronic</p>
+                                                                        <p className="mt-5 freelancerFont overflow-y-scroll font-medium text-black h-[100px] max-w-[700px]">{project.jobDescription}</p>
                                                                     </div>
                                                                     <div className="mt-10 flex gap-5 min-h-[100px] max-w-[90%] flex-wrap">
-                                                                        <TechBox value={"java"} />
-                                                                        <TechBox value={"php"} />
-                                                                        <TechBox value={"javascript"} />
-                                                                        <TechBox value={"aws"} />
-                                                                        <TechBox value={"spring"} />
-                                                                        <TechBox value={"kubernetes"} />
-                                                                        <TechBox value={"database"} />
+                                                                        {project.skills.map(skill => (
+                                                                            <TechBox value={skill} />
+                                                                        ))}
                                                                     </div>
                                                                     <div>
                                                                         <div className="mt-10 flex gap-16">
                                                                             <div className="flex gap-2 items-center">
                                                                                 <svg stroke="currentColor" fill="black" stroke-width="0" viewBox="0 0 288 512" height="1.5em" width="1.5em" xmlns="http://www.w3.org/2000/svg"><path d="M209.2 233.4l-108-31.6C88.7 198.2 80 186.5 80 173.5c0-16.3 13.2-29.5 29.5-29.5h66.3c12.2 0 24.2 3.7 34.2 10.5 6.1 4.1 14.3 3.1 19.5-2l34.8-34c7.1-6.9 6.1-18.4-1.8-24.5C238 74.8 207.4 64.1 176 64V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48h-2.5C45.8 64-5.4 118.7.5 183.6c4.2 46.1 39.4 83.6 83.8 96.6l102.5 30c12.5 3.7 21.2 15.3 21.2 28.3 0 16.3-13.2 29.5-29.5 29.5h-66.3C100 368 88 364.3 78 357.5c-6.1-4.1-14.3-3.1-19.5 2l-34.8 34c-7.1 6.9-6.1 18.4 1.8 24.5 24.5 19.2 55.1 29.9 86.5 30v48c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-48.2c46.6-.9 90.3-28.6 105.7-72.7 21.5-61.6-14.6-124.8-72.5-141.7z"></path></svg>
-                                                                                <h1 className="freelancerFont text-black font-medium text-lg">Cost : 25,000</h1>
+                                                                                <h1 className="freelancerFont text-black font-medium text-lg">Cost : {project.prize}</h1>
                                                                             </div>
                                                                             <div className="flex gap-2 items-center">
                                                                                 <SiLevelsdotfyi color="black" />
-                                                                                <h1 className="freelancerFont text-black font-medium text-lg">Experience : Intermediate</h1>
+                                                                                <h1 className="freelancerFont text-black font-medium text-lg">Experience : {project.experienceLevel}</h1>
                                                                             </div>
                                                                         </div>
                                                                         <div className="mt-8 flex gap-12">
                                                                             <div className="flex gap-2 items-center">
                                                                                 <svg stroke="currentColor" fill="black" stroke-width="0" viewBox="0 0 24 24" height="1.5em" width="1.5em" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="4"></circle><path d="M13,4.069V2h-2v2.069C7.389,4.522,4.523,7.389,4.069,11H2v2h2.069c0.454,3.611,3.319,6.478,6.931,6.931V22h2v-2.069 c3.611-0.453,6.478-3.319,6.931-6.931H22v-2h-2.069C19.478,7.389,16.611,4.522,13,4.069z M12,18c-3.309,0-6-2.691-6-6s2.691-6,6-6 s6,2.691,6,6S15.309,18,12,18z"></path></svg>
-                                                                                <h1 className="freelancerFont text-black font-medium text-lg">Location : India</h1>
+                                                                                <h1 className="freelancerFont text-black font-medium text-lg">Location : {project.location}</h1>
                                                                             </div>
                                                                             <div className="flex gap-2 items-center">
                                                                                 <IoIosMail color="black" size={25} />
-                                                                                <h1 className="freelancerFont text-black font-medium text-lg">Email : client00@gmail.com</h1>
+                                                                                <h1 className="freelancerFont text-black font-medium text-lg">Email : amrithesh0000@gmail.com</h1>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                     <div className="flex gap-8 mt-14 items-center">
                                                                         <Dialog>
                                                                             <DialogTrigger>
-                                                                                <div className="w-20 h-20 p-10 rounded-full bg-cover bg-[url('https://images.rawpixel.com/image_png_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTAxL3JtNjA5LXNvbGlkaWNvbi13LTAwMi1wLnBuZw.png')]"></div>
+                                                                                <div className="w-20 h-20 p-10 rounded-full bg-cover " style={{ backgroundImage: `url('${userInfo ? userInfo.profileImgUrl : './src/assets/freelancer/profileImage.png'}')` }}></div>
                                                                             </DialogTrigger>
                                                                             <DialogContent className="min-w-[15%] min-h-[15%] bg-transparent border-none">
                                                                                 <DialogHeader>
                                                                                     <DialogDescription>
                                                                                         <div className="flex justify-center">
-                                                                                            <div className="w-36 h-24 p-36 rounded-full bg-cover bg-[url('https://images.rawpixel.com/image_png_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTAxL3JtNjA5LXNvbGlkaWNvbi13LTAwMi1wLnBuZw.png')]">
+                                                                                            <div className="w-36 h-24 p-36 rounded-full bg-cover" style={{ backgroundImage: `url('${userInfo ? userInfo.profileImgUrl : './src/assets/freelancer/profileImage.png'}')` }}>
                                                                                             </div>
                                                                                         </div>
                                                                                     </DialogDescription>
@@ -471,11 +550,10 @@ export default function Allworks() {
                             </div>
                         </div>
                     </div>
-
                     <div className="flex justify-center mt-24">
                         <Pagination count={10} onChange={(_, page) => setCurrentPage(page)} />
                     </div>
-                    <div className="mt-20 mb-0">
+                    <div className="mt-32 mb-0">
                         <FreelanoFooter />
                     </div>
                 </div>

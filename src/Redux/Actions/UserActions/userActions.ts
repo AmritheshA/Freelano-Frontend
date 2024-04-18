@@ -24,7 +24,7 @@ export const userLoginAction = createAsyncThunk(
       console.log(data);
 
       const decodedJwt = jwtDecode<JwtPayload>(data.accessToken);
-      console.log("calling func2");
+  
       console.log("Authenticated Successfully");
 
       return {
