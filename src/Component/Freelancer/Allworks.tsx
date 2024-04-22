@@ -37,7 +37,7 @@ import { SiLevelsdotfyi } from "react-icons/si";
 import FreelanoFooter from "../FreelanoFooter";
 import axiosInstance from "@/Config/AxiosConfig/axiosConfig";
 import { toast } from "react-toastify";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { GET_PROJECTS } from "@/Graphql/query";
 import Project from "@/Interfaces/projectInterface";
 
@@ -442,12 +442,12 @@ export default function Allworks() {
                                         </div>
                                     </div>
                                     {/* listing options */}
-                                    <div className="sm:w-[80%] overflow-y-auto max-h-screen no-scrollbar">
+                                    <div className="sm:w-[75%] overflow-y-auto max-h-screen no-scrollbar">
                                         {projects?.map((project: Project) => (
                                             <div className="flex justify-start mt-14">
                                                 <Dialog>
                                                     <DialogTrigger asChild >
-                                                        <div className="relative w-[80%] h-[350px]  bg-slate-100  active:bg-slate-200 cursor-pointer border-2 rounded-md">
+                                                        <div className="relative w-[100%] h-[350px]  bg-slate-100  active:bg-slate-200 cursor-pointer border-2 rounded-md">
                                                             <h1 className="m-5 font-semibold text-sm text-gray-400 flex justify-start ">Posted Yesterday</h1>
                                                             <h1 className=" freelancerFont  ml-8 text-xl flex justify-start ">{project.projectTitle}</h1>
                                                             <div className="flex gap-5">
@@ -467,10 +467,6 @@ export default function Allworks() {
                                                                 <div className="flex items-center gap-3">
                                                                     <FaLocationDot size={20} />
                                                                     <h1 className="font-semibold">{project.location}</h1>
-                                                                </div>
-                                                                <div className="flex gap-2 items-center">
-                                                                    <IoIosMail color="black" size={25} />
-                                                                    <h1 className="freelancerFont text-black font-medium text-lg">Email : amrithesh0000@gmail.com</h1>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -507,10 +503,6 @@ export default function Allworks() {
                                                                             <div className="flex gap-2 items-center">
                                                                                 <svg stroke="currentColor" fill="black" stroke-width="0" viewBox="0 0 24 24" height="1.5em" width="1.5em" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="4"></circle><path d="M13,4.069V2h-2v2.069C7.389,4.522,4.523,7.389,4.069,11H2v2h2.069c0.454,3.611,3.319,6.478,6.931,6.931V22h2v-2.069 c3.611-0.453,6.478-3.319,6.931-6.931H22v-2h-2.069C19.478,7.389,16.611,4.522,13,4.069z M12,18c-3.309,0-6-2.691-6-6s2.691-6,6-6 s6,2.691,6,6S15.309,18,12,18z"></path></svg>
                                                                                 <h1 className="freelancerFont text-black font-medium text-lg">Location : {project.location}</h1>
-                                                                            </div>
-                                                                            <div className="flex gap-2 items-center">
-                                                                                <IoIosMail color="black" size={25} />
-                                                                                <h1 className="freelancerFont text-black font-medium text-lg">Email : amrithesh0000@gmail.com</h1>
                                                                             </div>
                                                                         </div>
                                                                     </div>

@@ -26,10 +26,6 @@ import Modal2 from "./JobPostingModal/modal2";
 import Modal3 from "./JobPostingModal/modal3";
 
 
-
-
-
-
 export default function ClientHome() {
 
     const [open, setOpen] = useState(true);
@@ -79,7 +75,7 @@ export default function ClientHome() {
 
 
     return (
-        <div className="flex bg-white h-full ">
+        <div className="flex bg-white h-screen ">
             <div
                 className={` ${open ? "w-72" : "w-20 "
                     } bg-dark-purple h-full p-5  pt-8 sticky left-0 top-0 duration-300`}
