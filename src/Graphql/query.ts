@@ -43,3 +43,30 @@ export const GET_RECOMMANDED_PROJECTS = gql`
     }
   }
 `;
+
+export const GET_FILTERED_PROJECTS = gql`
+query GetFilteredProjects($experience: [String], $jobType: [String], $category: [String], $projectLength: [String], $clientLocation: [String]) {
+  filteredProjects(
+    experience: $experience,
+    jobType: $jobType,
+    category: $category,
+    projectLength: $projectLength,
+    clientLocation: $clientLocation){
+    projectId
+    projectTitle
+    projectPostedDate
+    category
+    skills
+    jobDescription
+    projectDuration
+    experienceLevel
+    location
+    budgetType
+    prize
+    applicantRequired
+    enrolledApplicant
+    clientId
+    freelancerId
+  }
+}
+`

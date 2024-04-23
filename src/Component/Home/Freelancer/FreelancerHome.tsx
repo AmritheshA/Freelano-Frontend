@@ -176,7 +176,7 @@ export default function FreelancerHome() {
   }, [user]);
 
   return (
-    <div className="flex bg-white h-full">
+    <div className="flex bg-white min-h-screen">
       <div
         className={` ${
           open ? "w-72" : "w-20 "
