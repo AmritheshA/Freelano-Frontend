@@ -45,13 +45,15 @@ export const GET_RECOMMANDED_PROJECTS = gql`
 `;
 
 export const GET_FILTERED_PROJECTS = gql`
-query GetFilteredProjects($experience: [String], $jobType: [String], $category: [String], $projectLength: [String], $clientLocation: [String]) {
+query GetFilteredProjects($experience: [String], $jobType: [String], $category: [String], $projectLength: [String], $clientLocation: [String],$page:Int) {
   filteredProjects(
     experience: $experience,
     jobType: $jobType,
     category: $category,
     projectLength: $projectLength,
-    clientLocation: $clientLocation){
+    clientLocation: $clientLocation,
+    page:$page
+  ){
     projectId
     projectTitle
     projectPostedDate
