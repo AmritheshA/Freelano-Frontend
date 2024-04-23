@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Pagination from "@mui/material/Pagination";
 import { Link, useSearchParams } from "react-router-dom";
 import {
@@ -30,7 +30,7 @@ import { RootState, TypeDispatch } from "@/Redux/Store";
 import userFullDetails from "@/Interfaces/userInterface";
 import { TechBox } from "../Custom/TechBox";
 import { FaLocationDot } from "react-icons/fa6";
-import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowDown, IoMdTimer } from "react-icons/io";
 import { SiLevelsdotfyi } from "react-icons/si";
 import FreelanoFooter from "../FreelanoFooter";
 import axiosInstance from "@/Config/AxiosConfig/axiosConfig";
@@ -39,11 +39,11 @@ import { useQuery } from "@apollo/client";
 import { GET_FILTERED_PROJECTS } from "@/Graphql/query";
 import Project from "@/Interfaces/projectInterface";
 import { TableSortLabel } from "@mui/material";
-
 interface City {
   name: string;
   code: string;
 }
+
 interface FilterVariables {
   experience: string[];
   jobType: string[];
@@ -73,7 +73,6 @@ export default function Allworks() {
   const [fixedType, setFixedType] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
-
   const Menus = [
     {
       title: "Home",
@@ -185,17 +184,18 @@ export default function Allworks() {
     loading: filterLoading,
     error: filterError,
     data: filterData,
-  } = useQuery(GET_FILTERED_PROJECTS, { variables: {filterVariables,page:currentPage} });
+  } = useQuery(GET_FILTERED_PROJECTS, {
+    variables: { ...filterVariables, page: currentPage },
+  });
+  const handleLogout = () => {
+    dispatch(userLogoutAction());
+  };
 
   useEffect(() => {
     if (filterData && filterData.filteredProjects) {
       setProjects(filterData.filteredProjects);
     }
   }, [filterData]);
-
-  const handleLogout = () => {
-    dispatch(userLogoutAction());
-  };
 
   useEffect(() => {
     const experience = searchParams.getAll("experience");
@@ -268,6 +268,59 @@ export default function Allworks() {
     setFilterVariables(updatedFilterVariables);
     setSearchParams(newSearchParams);
   };
+
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const modalRef = useRef<HTMLDialogElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadedFileUrl, setUploadedFileUrl] = useState("");
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const selectedFile = event.target.files[0];
+      setFile(selectedFile);
+      setPreview(URL.createObjectURL(selectedFile));
+    }
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "ml_default");
+      try {
+        const response = await fetch(import.meta.env.VITE_CLOUDINARY_URL, {
+          method: "POST",
+          body: formData,
+        });
+        const data = await response.json();
+        setUploadedFileUrl(data.secure_url);
+        toast.success("Successfuly project applied")
+      } catch (error) {
+        console.error("Error uploading file to Cloudinary:", error);
+      }
+      modalRef.current?.close();
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const droppedFiles = e.dataTransfer.files;
+    if (droppedFiles.length > 0) {
+      const droppedFile = droppedFiles[0];
+      setFile(droppedFile);
+      setPreview(URL.createObjectURL(droppedFile));
+    }
+  };
+
+  const openModal = () => {
+    if (modalRef.current) {
+      modalRef.current.showModal();
+    }
+  };
+
+  const isDocumentFile = file?.type.startsWith("application/") ?? false;
 
   return (
     <>
@@ -438,7 +491,9 @@ export default function Allworks() {
                               onChange={(event) =>
                                 handleCheckBoxClick(event, "experience")
                               }
-                              checked={searchParams.get('experience')?.includes('Entry')}
+                              checked={searchParams
+                                .get("experience")
+                                ?.includes("Entry")}
                               value="Entry"
                               className="checkbox checkbox-warning border-black"
                             />
@@ -452,7 +507,9 @@ export default function Allworks() {
                               onChange={(event) =>
                                 handleCheckBoxClick(event, "experience")
                               }
-                              checked={searchParams.get('experience')?.includes('Intermediate')}
+                              checked={searchParams
+                                .get("experience")
+                                ?.includes("Intermediate")}
                               value="Intermediate"
                               className="checkbox checkbox-warning border-black"
                             />
@@ -466,7 +523,9 @@ export default function Allworks() {
                               onChange={(event) =>
                                 handleCheckBoxClick(event, "experience")
                               }
-                              checked={searchParams.get('experience')?.includes('Expert')}
+                              checked={searchParams
+                                .get("experience")
+                                ?.includes("Expert")}
                               value="Expert"
                               className="checkbox checkbox-warning border-black"
                             />
@@ -552,7 +611,7 @@ export default function Allworks() {
                               <div className="flex items-center pl-6 mt-4 gap-2">
                                 <input
                                   type="checkbox"
-                                  onChange={(event) => {
+                                  onChange={() => {
                                     setFixedType(!fixedType);
                                   }}
                                   value="Hourly"
@@ -618,7 +677,9 @@ export default function Allworks() {
                               onChange={(event) => {
                                 handleCheckBoxClick(event, "projectLength");
                               }}
-                              checked={searchParams.get('projectLength')?.includes('less than one month')}
+                              checked={searchParams
+                                .get("projectLength")
+                                ?.includes("less than one month")}
                               value="less than one month"
                               className="checkbox checkbox-warning border-black"
                             />{" "}
@@ -632,7 +693,9 @@ export default function Allworks() {
                               onChange={(event) => {
                                 handleCheckBoxClick(event, "projectLength");
                               }}
-                              checked={searchParams.get('projectLength')?.includes('1 to 3 months')}
+                              checked={searchParams
+                                .get("projectLength")
+                                ?.includes("1 to 3 months")}
                               value="1 to 3 months"
                               className="checkbox checkbox-warning border-black"
                             />
@@ -646,7 +709,9 @@ export default function Allworks() {
                               onChange={(event) => {
                                 handleCheckBoxClick(event, "projectLength");
                               }}
-                              checked={searchParams.get('projectLength')?.includes('3 to 6 months')}
+                              checked={searchParams
+                                .get("projectLength")
+                                ?.includes("3 to 6 months")}
                               value="3 to 6 months"
                               className="checkbox checkbox-warning border-black"
                             />
@@ -660,7 +725,9 @@ export default function Allworks() {
                               onChange={(event) => {
                                 handleCheckBoxClick(event, "projectLength");
                               }}
-                              checked={searchParams.get('projectLength')?.includes('more than 6 month')}
+                              checked={searchParams
+                                .get("projectLength")
+                                ?.includes("more than 6 month")}
                               value="more than 6 month"
                               className="checkbox checkbox-warning border-black"
                             />
@@ -701,7 +768,6 @@ export default function Allworks() {
                         alt="Product Not Found"
                         className="max-w-xs mb-8"
                       />
-                   
                     </div>
                   ) : filterLoading ? (
                     <div className="flex justify-center w-2/3 items-center h-[500px]">
@@ -747,6 +813,12 @@ export default function Allworks() {
                                     <FaLocationDot size={20} />
                                     <h1 className="font-semibold">
                                       {project.location}
+                                    </h1>
+                                  </div>
+                                  <div className="flex items-center gap-3">
+                                    <IoMdTimer size={20} />
+                                    <h1 className="font-semibold">
+                                      {project.projectDuration}
                                     </h1>
                                   </div>
                                 </div>
@@ -825,6 +897,23 @@ export default function Allworks() {
                                             Location : {project.location}
                                           </h1>
                                         </div>
+                                        <div className="flex gap-2 items-center">
+                                          <svg
+                                            stroke="currentColor"
+                                            fill="black"
+                                            stroke-width="0"
+                                            viewBox="0 0 24 24"
+                                            height="1.5em"
+                                            width="1.5em"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                          >
+                                            <path d="M12,2C6.486,2,2,6.486,2,12s4.486,10,10,10c5.514,0,10-4.486,10-10S17.514,2,12,2z M12,20c-4.411,0-8-3.589-8-8 s3.589-8,8-8s8,3.589,8,8S16.411,20,12,20z"></path>
+                                            <path d="M13 7L11 7 11 13 17 13 17 11 13 11z"></path>
+                                          </svg>
+                                          <h1 className="freelancerFont text-black font-medium text-lg">
+                                            Legnth : {project.projectDuration}
+                                          </h1>
+                                        </div>
                                       </div>
                                     </div>
                                     <div className="flex gap-8 mt-14 items-center">
@@ -869,13 +958,102 @@ export default function Allworks() {
                                         </p>
                                       </div>
                                     </div>
-                                    <div className="flex justify-end mt-14 gap-5 mr-10">
-                                      <button className="bg-orange-600 text-white py-2 px-4 rounded-md focus:outline-none hover:bg-orange-800">
+                                    <div className="flex justify-end mt-14 gap-5 mr-4">
+                                      <button className="btn btn-outline btn-primary">
                                         Save Work
                                       </button>
-                                      <button className="bg-blue-700 text-white py-2 px-4 rounded-md focus:outline-none hover:bg-blue-900">
-                                        Apply Now
+                                      <button
+                                        onClick={openModal}
+                                        className="btn btn-outline btn-primary"
+                                      >
+                                        Apply Work
                                       </button>
+                                      <dialog
+                                        ref={modalRef}
+                                        id="my_modal_2"
+                                        className="modal"
+                                      >
+                                        <div className="modal-box">
+                                          <form onSubmit={handleSubmit}>
+                                            <div className="mb-4">
+                                              <label
+                                                htmlFor="file-upload"
+                                                className="block mb-2 text-sm font-medium text-gray-700"
+                                              >
+                                                Upload Your Resume
+                                              </label>
+                                              <div
+                                                className="border-2 border-dashed border-gray-300 rounded-md h-64 flex justify-center items-center"
+                                                onClick={() =>
+                                                  fileInputRef.current?.click()
+                                                }
+                                                onDragOver={(e) =>
+                                                  e.preventDefault()
+                                                }
+                                                onDrop={handleDrop}
+                                              >
+                                                <div className="text-center">
+                                                  {preview ? (
+                                                    <div>
+                                                      {isDocumentFile ? (
+                                                        <iframe
+                                                          src={preview}
+                                                          className="w-full h-52"
+                                                          title="Document Preview"
+                                                        />
+                                                      ) : preview.startsWith(
+                                                          "data:image/"
+                                                        ) ? (
+                                                        <img
+                                                          src={preview}
+                                                          alt="Preview"
+                                                          className="max-h-48 mx-auto"
+                                                        />
+                                                      ) : (
+                                                        <video
+                                                          src={preview}
+                                                          controls
+                                                          className="max-h-48 mx-auto"
+                                                        ></video>
+                                                      )}
+                                                    </div>
+                                                  ) : (
+                                                    <p className="text-gray-500 mb-2">
+                                                      Click or drag and drop
+                                                      your file here
+                                                    </p>
+                                                  )}
+                                                </div>
+                                              </div>
+                                              <input
+                                                id="file-upload"
+                                                type="file"
+                                                accept=".pdf,.doc,.docx,image/*,video/*"
+                                                onChange={handleFileChange}
+                                                className="hidden"
+                                                ref={fileInputRef}
+                                              />
+                                            </div>
+                                            <button
+                                              type="submit"
+                                              disabled={!file}
+                                              className={`px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                                                !file
+                                                  ? "opacity-50 cursor-not-allowed"
+                                                  : ""
+                                              }`}
+                                            >
+                                              Upload
+                                            </button>
+                                          </form>
+                                        </div>
+                                        <form
+                                          method="dialog"
+                                          className="modal-backdrop"
+                                        >
+                                          <button>Close</button>
+                                        </form>
+                                      </dialog>
                                     </div>
                                   </div>
                                 </DialogDescription>

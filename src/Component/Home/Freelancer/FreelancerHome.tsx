@@ -135,18 +135,15 @@ export default function FreelancerHome() {
 
   const [projects, setProjects] = useState<Project[]>([]);
   const { data, loading, error } = useQuery(GET_RECOMMANDED_PROJECTS, {
-   variables: { freelancerId: user.userId },
- });
+    variables: { freelancerId: user.userId },
+  });
 
- console.log(data);
- console.log(error);
- console.log(loading);
- 
+  console.log(data);
+  console.log(error);
+  console.log(loading);
 
   useEffect(() => {
     if (data && data.recommendedProject) {
-      
-
       setProjects(data.recommendedProject);
     }
   }, [data]);
@@ -311,7 +308,23 @@ export default function FreelancerHome() {
                       <FaLocationDot size={20} />
                       <h1 className="font-semibold">{project.location}</h1>
                     </div>
-                    
+                    <div className="flex gap-2 items-center">
+                      <svg
+                        stroke="currentColor"
+                        fill="black"
+                        stroke-width="0"
+                        viewBox="0 0 24 24"
+                        height="1.5em"
+                        width="1.5em"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M12,2C6.486,2,2,6.486,2,12s4.486,10,10,10c5.514,0,10-4.486,10-10S17.514,2,12,2z M12,20c-4.411,0-8-3.589-8-8 s3.589-8,8-8s8,3.589,8,8S16.411,20,12,20z"></path>
+                        <path d="M13 7L11 7 11 13 17 13 17 11 13 11z"></path>
+                      </svg>
+                      <h1 className="freelancerFont text-black font-medium text-lg">
+                        Legnth : {project.projectDuration}
+                      </h1>
+                    </div>
                   </div>
                 </div>
               </DialogTrigger>
@@ -381,6 +394,23 @@ export default function FreelancerHome() {
                             </svg>
                             <h1 className="freelancerFont text-black font-medium text-lg">
                               Location : {project.location}
+                            </h1>
+                          </div>
+                          <div className="flex gap-2 items-center">
+                            <svg
+                              stroke="currentColor"
+                              fill="black"
+                              stroke-width="0"
+                              viewBox="0 0 24 24"
+                              height="1.5em"
+                              width="1.5em"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path d="M12,2C6.486,2,2,6.486,2,12s4.486,10,10,10c5.514,0,10-4.486,10-10S17.514,2,12,2z M12,20c-4.411,0-8-3.589-8-8 s3.589-8,8-8s8,3.589,8,8S16.411,20,12,20z"></path>
+                              <path d="M13 7L11 7 11 13 17 13 17 11 13 11z"></path>
+                            </svg>
+                            <h1 className="freelancerFont text-black font-medium text-lg">
+                              Legnth : {project.projectDuration}
                             </h1>
                           </div>
                         </div>
