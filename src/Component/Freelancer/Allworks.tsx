@@ -35,10 +35,11 @@ import { SiLevelsdotfyi } from "react-icons/si";
 import FreelanoFooter from "../FreelanoFooter";
 import axiosInstance from "@/Config/AxiosConfig/axiosConfig";
 import { toast } from "react-toastify";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { GET_FILTERED_PROJECTS } from "@/Graphql/query";
 import Project from "@/Interfaces/projectInterface";
 import { TableSortLabel } from "@mui/material";
+import { APPLY_JOB } from "@/Graphql/mutation";
 interface City {
   name: string;
   code: string;
@@ -73,6 +74,26 @@ export default function Allworks() {
   const [fixedType, setFixedType] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const modalRef = useRef<HTMLDialogElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadedFileUrl, setUploadedFileUrl] = useState("");
+  const [projects, setProjects] = useState<Project[]>([]);
+
+  const [filterVariables, setFilterVariables] = useState<FilterVariables>({
+    experience: [], jobType: [], category: [], projectLength: [], clientLocation: []
+  });
+  const { loading: filterLoading, error: filterError, data: filterData, } = useQuery(GET_FILTERED_PROJECTS, { variables: { ...filterVariables, page: currentPage }, });
+
+  const [commitProject, { loading: applyJobLoading, error: applyJobError, data: applyJobData }] = useMutation(APPLY_JOB);
+
+  console.log(applyJobLoading);
+  console.log(applyJobError);
+  console.log(applyJobData);
+
+
   const Menus = [
     {
       title: "Home",
@@ -170,23 +191,6 @@ export default function Allworks() {
     },
   ];
 
-  const [projects, setProjects] = useState<Project[]>([]);
-
-  const [filterVariables, setFilterVariables] = useState<FilterVariables>({
-    experience: [],
-    jobType: [],
-    category: [],
-    projectLength: [],
-    clientLocation: [],
-  });
-
-  const {
-    loading: filterLoading,
-    error: filterError,
-    data: filterData,
-  } = useQuery(GET_FILTERED_PROJECTS, {
-    variables: { ...filterVariables, page: currentPage },
-  });
   const handleLogout = () => {
     dispatch(userLogoutAction());
   };
@@ -269,12 +273,6 @@ export default function Allworks() {
     setSearchParams(newSearchParams);
   };
 
-  const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
-  const modalRef = useRef<HTMLDialogElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [uploadedFileUrl, setUploadedFileUrl] = useState("");
-
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       const selectedFile = event.target.files[0];
@@ -283,7 +281,7 @@ export default function Allworks() {
     }
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (projectId: string, event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (file) {
       const formData = new FormData();
@@ -294,9 +292,20 @@ export default function Allworks() {
           method: "POST",
           body: formData,
         });
-        const data = await response.json();
-        setUploadedFileUrl(data.secure_url);
-        toast.success("Successfuly project applied")
+        const responseData = await response.json();
+
+        const freelancerId = user.userId;
+        
+        await commitProject({
+          variables: {
+            commitedProjectId: projectId,
+            commitedFreelancerId: freelancerId,
+            resume:responseData.secure_url
+          },
+        });
+        
+        toast.success(applyJobData.applyJob);
+
       } catch (error) {
         console.error("Error uploading file to Cloudinary:", error);
       }
@@ -326,9 +335,8 @@ export default function Allworks() {
     <>
       <div className="flex bg-white h-full ">
         <div
-          className={` ${
-            open ? "w-72" : "w-20 "
-          } bg-dark-purple h-full p-5  pt-8 sticky left-0 top-0 duration-300`}
+          className={` ${open ? "w-72" : "w-20 "
+            } bg-dark-purple h-full p-5  pt-8 sticky left-0 top-0 duration-300`}
         >
           <img
             src="./src/assets/freelancer/image.png"
@@ -339,9 +347,8 @@ export default function Allworks() {
           <div className="flex gap-x-4 items-center ">
             <img
               src="./src/assets/ogLogo.png"
-              className={`cursor-pointer sm:w-40 sm:h-30 duration-500 ${
-                open && "rotate-[360deg]"
-              }`}
+              className={`cursor-pointer sm:w-40 sm:h-30 duration-500 ${open && "rotate-[360deg]"
+                }`}
             />
           </div>
           <ul className="pt-6">
@@ -354,9 +361,8 @@ export default function Allworks() {
                 >
                   {Menu.src}
                   <span
-                    className={`${
-                      !open && "hidden"
-                    } freelancerFont text-lg text-black origin-left duration-200`}
+                    className={`${!open && "hidden"
+                      } freelancerFont text-lg text-black origin-left duration-200`}
                   >
                     {Menu.title}
                   </span>
@@ -388,11 +394,10 @@ export default function Allworks() {
                   <div
                     className={`w-10 h-10 rounded-full bg-cover bg-center bg-no-repeat`}
                     style={{
-                      backgroundImage: `url('${
-                        userInfo
-                          ? userInfo.profileImgUrl
-                          : "./src/assets/freelancer/profileImage.png"
-                      }')`,
+                      backgroundImage: `url('${userInfo
+                        ? userInfo.profileImgUrl
+                        : "./src/assets/freelancer/profileImage.png"
+                        }')`,
                     }}
                   ></div>
                 </DropdownMenuTrigger>
@@ -476,9 +481,8 @@ export default function Allworks() {
                           Experience level
                         </h1>
                         <IoIosArrowDown
-                          className={`cursor-pointer ${
-                            experienceToggle && "rotate-180"
-                          }`}
+                          className={`cursor-pointer ${experienceToggle && "rotate-180"
+                            }`}
                           size={20}
                           onClick={() => setExperienceToggle(!experienceToggle)}
                         />
@@ -542,9 +546,8 @@ export default function Allworks() {
                           Job type
                         </h1>
                         <IoIosArrowDown
-                          className={`cursor-pointer ${
-                            jobTypeToggle && "rotate-180"
-                          }`}
+                          className={`cursor-pointer ${jobTypeToggle && "rotate-180"
+                            }`}
                           size={20}
                           onClick={() => setJobTypeToggle(!jobTypeToggle)}
                         />
@@ -660,9 +663,8 @@ export default function Allworks() {
                           Project length
                         </h1>
                         <IoIosArrowDown
-                          className={`cursor-pointer ${
-                            projectDurationToggle && "rotate-180"
-                          }`}
+                          className={`cursor-pointer ${projectDurationToggle && "rotate-180"
+                            }`}
                           size={20}
                           onClick={() =>
                             setProjectDurationToggle(!projectDurationToggle)
@@ -922,11 +924,10 @@ export default function Allworks() {
                                           <div
                                             className="w-20 h-20 p-10 rounded-full bg-cover "
                                             style={{
-                                              backgroundImage: `url('${
-                                                userInfo
-                                                  ? userInfo.profileImgUrl
-                                                  : "./src/assets/freelancer/profileImage.png"
-                                              }')`,
+                                              backgroundImage: `url('${userInfo
+                                                ? userInfo.profileImgUrl
+                                                : "./src/assets/freelancer/profileImage.png"
+                                                }')`,
                                             }}
                                           ></div>
                                         </DialogTrigger>
@@ -937,11 +938,10 @@ export default function Allworks() {
                                                 <div
                                                   className="w-36 h-24 p-36 rounded-full bg-cover"
                                                   style={{
-                                                    backgroundImage: `url('${
-                                                      userInfo
-                                                        ? userInfo.profileImgUrl
-                                                        : "./src/assets/freelancer/profileImage.png"
-                                                    }')`,
+                                                    backgroundImage: `url('${userInfo
+                                                      ? userInfo.profileImgUrl
+                                                      : "./src/assets/freelancer/profileImage.png"
+                                                      }')`,
                                                   }}
                                                 ></div>
                                               </div>
@@ -974,7 +974,7 @@ export default function Allworks() {
                                         className="modal"
                                       >
                                         <div className="modal-box">
-                                          <form onSubmit={handleSubmit}>
+                                          <form onSubmit={(eve) => { handleSubmit(project.projectId, eve) }}>
                                             <div className="mb-4">
                                               <label
                                                 htmlFor="file-upload"
@@ -1002,8 +1002,8 @@ export default function Allworks() {
                                                           title="Document Preview"
                                                         />
                                                       ) : preview.startsWith(
-                                                          "data:image/"
-                                                        ) ? (
+                                                        "data:image/"
+                                                      ) ? (
                                                         <img
                                                           src={preview}
                                                           alt="Preview"
@@ -1037,11 +1037,10 @@ export default function Allworks() {
                                             <button
                                               type="submit"
                                               disabled={!file}
-                                              className={`px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                                                !file
-                                                  ? "opacity-50 cursor-not-allowed"
-                                                  : ""
-                                              }`}
+                                              className={`px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${!file
+                                                ? "opacity-50 cursor-not-allowed"
+                                                : ""
+                                                }`}
                                             >
                                               Upload
                                             </button>

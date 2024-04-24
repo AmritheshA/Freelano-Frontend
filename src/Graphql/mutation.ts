@@ -19,3 +19,8 @@ export const CREATE_PROJECT = gql`
     }
   }
 `;
+export const APPLY_JOB = gql`
+  mutation ApplyJob($commitedProjectId: String!, $commitedFreelancerId: String!,$resume:String!) {
+    applyJob(commitedProjectId: $commitedProjectId, commitedFreelancerId: $commitedFreelancerId,resume:$resume)
+  }
+`;
