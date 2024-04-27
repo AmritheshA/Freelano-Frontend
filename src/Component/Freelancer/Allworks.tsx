@@ -40,6 +40,7 @@ import { GET_FILTERED_PROJECTS } from "@/Graphql/query";
 import Project from "@/Interfaces/projectInterface";
 import { TableSortLabel } from "@mui/material";
 import { APPLY_JOB } from "@/Graphql/mutation";
+
 interface City {
   name: string;
   code: string;
@@ -79,19 +80,14 @@ export default function Allworks() {
   const [preview, setPreview] = useState<string | null>(null);
   const modalRef = useRef<HTMLDialogElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [uploadedFileUrl, setUploadedFileUrl] = useState("");
   const [projects, setProjects] = useState<Project[]>([]);
-
   const [filterVariables, setFilterVariables] = useState<FilterVariables>({
     experience: [], jobType: [], category: [], projectLength: [], clientLocation: []
   });
   const { loading: filterLoading, error: filterError, data: filterData, } = useQuery(GET_FILTERED_PROJECTS, { variables: { ...filterVariables, page: currentPage }, });
 
-  const [commitProject, { loading: applyJobLoading, error: applyJobError, data: applyJobData }] = useMutation(APPLY_JOB);
+  const [commitProject, { _: applyJobLoading, error: applyJobError, data: applyJobData }] = useMutation(APPLY_JOB);
 
-  console.log(applyJobLoading);
-  console.log(applyJobError);
-  console.log(applyJobData);
 
 
   const Menus = [
@@ -149,7 +145,7 @@ export default function Allworks() {
           ></path>
         </svg>
       ),
-      to: "/home",
+      to: "/projects",
     },
     {
       title: "Message ",
@@ -295,16 +291,15 @@ export default function Allworks() {
         const responseData = await response.json();
 
         const freelancerId = user.userId;
-        
+
         await commitProject({
           variables: {
             commitedProjectId: projectId,
             commitedFreelancerId: freelancerId,
-            resume:responseData.secure_url
+            resume: responseData.secure_url
           },
         });
-        
-        toast.success(applyJobData.applyJob);
+        toast.success(applyJobData?.applyJob);
 
       } catch (error) {
         console.error("Error uploading file to Cloudinary:", error);

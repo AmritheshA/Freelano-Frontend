@@ -22,6 +22,8 @@ export const GET_RECOMMANDED_PROJECTS = gql`
   }
 `;
 
+
+
 export const GET_FILTERED_PROJECTS = gql`
 query GetFilteredProjects($experience: [String], $jobType: [String], $category: [String], $projectLength: [String], $clientLocation: [String],$page:Int) {
   filteredProjects(
@@ -50,3 +52,28 @@ query GetFilteredProjects($experience: [String], $jobType: [String], $category: 
   }
 }
 `
+
+export const GET_COMMITED_PROJECT = gql`
+  query GetCommitedProject($freelancerId: String!) {
+    getCommitedProject(freelancerId: $freelancerId) {
+      commitedProjectsId
+      commitedFreelancerId
+      freelancerResume
+      commitedProjectIds
+      commitedProjectName
+      progression
+      status
+      clientName
+      startDate
+      endDate
+      tasks {
+        id
+        taskTitle
+        startDate
+        endDate
+        description
+      }
+    }
+  }
+`;
+

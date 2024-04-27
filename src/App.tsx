@@ -14,6 +14,9 @@ import { toast } from "react-toastify";
 import axiosInstance from "./Config/AxiosConfig/axiosConfig";
 import Allworks from "./Component/Freelancer/Allworks";
 import NotFoundPage from "./Pages/NotFoundPage";
+import Project from "./Component/Freelancer/Project";
+import AddTasks from "./Component/Freelancer/AddTasks";
+
 
 function App() {
 
@@ -56,6 +59,8 @@ function App() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/registration" element={isProfileComplete || user?.role == "CLIENT" ? <Navigate to={"/home"} /> : <Registration activeComponent={activeComponent} handleActiveComponent={handleActiveComponent} />} />
       <Route path="/jobs" element={user ? <Allworks /> : <Navigate to={"/home"} />} />
+      <Route path="/projects" element={<Project />} />
+      <Route path="/projects/addTasks/:commitedProject" element={<AddTasks />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );

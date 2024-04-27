@@ -21,7 +21,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { IoIosMail } from "react-icons/io";
 import { useSelector } from "react-redux";
 import { RootState, TypeDispatch } from "@/Redux/Store";
 import axiosInstance from "@/Config/AxiosConfig/axiosConfig";
@@ -33,6 +32,7 @@ import Project from "@/Interfaces/projectInterface";
 
 export default function FreelancerHome() {
   const [open, setOpen] = useState(true);
+  
   const Menus = [
     {
       title: "Home",
@@ -88,7 +88,7 @@ export default function FreelancerHome() {
           ></path>
         </svg>
       ),
-      to: "/home",
+      to: "/projects",
     },
     {
       title: "Message ",

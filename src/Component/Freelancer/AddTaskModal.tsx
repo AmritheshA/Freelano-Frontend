@@ -10,21 +10,13 @@ import {
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { SelectOption } from '@/Component/Custom/Selects';
-import { useMutation } from '@apollo/client';
-import { toast } from 'react-toastify';
-import { CREATE_PROJECT } from '@/Graphql/mutation';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/Redux/Store';
- 
 
 interface propsType {
     setActive: (modalName: string) => void;
     
 }
 
-const Modal3: React.FC<propsType> = ({ setActive }) => {
-
-
+const AddTaskModal: React.FC<propsType> = () => {
     const countries: SelectOption[] = [
         { label: "India", value: "India" },
         { label: "United States", value: "United States" },
@@ -37,48 +29,13 @@ const Modal3: React.FC<propsType> = ({ setActive }) => {
         { label: "Brazil", value: "Brazil" },
         { label: "China", value: "China" },
     ];
-    const user = useSelector((state: RootState) => state.userDetails.user);
     const [duration, setDuration] = useState("");
     const [experience, setExperience] = useState("");
     const [country, setCountry] = useState("");
     const [budgetType, setBudgetType] = useState("");
     const [price, setPrice] = useState("");
-    const [createJobListing, { data, loading, error }] = useMutation(CREATE_PROJECT);
+    
 
-    console.log(data);
-    console.log(loading);
-    console.log(error);
-
-    const handleSubmit = async () => {
-        const projectTitle = localStorage.getItem("jobTitle");
-        const category = localStorage.getItem("selectedJobCategory");
-        const skills = JSON.parse(localStorage.getItem("jobSkills") ?? "");
-        const jobDescription = localStorage.getItem("jobDescription");
-
-        try {
-            await createJobListing({
-                variables: {
-                    projectTitle,
-                    category,
-                    skills,
-                    jobDescription,
-                    projectDuration: duration,
-                    experienceLevel: experience,
-                    location: country,
-                    budgetType: budgetType,
-                    prize: price,
-                    email:'Client@gamil.com',
-                    clientId:user.userId,
-
-                },
-            });
-            toast.success("Job created Successfully");
-            localStorage.clear();
-            setActive("modal1");
-        } catch (error) {
-            console.error('Error creating job listing:', error);
-        }
-    };
 
     return (
         <div className="h-[380px]">
@@ -161,11 +118,10 @@ const Modal3: React.FC<propsType> = ({ setActive }) => {
                 </div>
             </div>
             <div className="flex justify-end mt-16 gap-5 mr-10">
-                <button className="border-2 border-black text-black py-2 px-4 rounded-md focus:outline-none" onClick={() => setActive("modal2")}>Back</button>
-                <button className="bg-blue-700 text-white py-2 px-4 rounded-md focus:outline-none hover:bg-blue-900" onClick={handleSubmit}>Post</button>
+                <button className="bg-blue-700 text-white py-2 px-4 rounded-md focus:outline-none hover:bg-blue-900">Post</button>
             </div>
         </div>
     )
 }
 
-export default Modal3
+export default AddTaskModal
