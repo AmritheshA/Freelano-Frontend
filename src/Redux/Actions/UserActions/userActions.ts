@@ -19,12 +19,7 @@ export const userLoginAction = createAsyncThunk(
 
       const response = await axiosInstance.post('/api/v1/auth/login', userCredentail, config);
       const data = response.data;
-
-      console.log(response.status);
-      console.log(data);
-
-      const decodedJwt = jwtDecode<JwtPayload>(data.accessToken);
-  
+      const decodedJwt = jwtDecode<JwtPayload>(data.accessToken);  
       console.log("Authenticated Successfully");
 
       return {

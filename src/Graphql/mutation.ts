@@ -68,7 +68,8 @@ export const CREATE_PROJECT_TASK = gql`
     ) {
       id
       taskTitle
-      startDate
+      priority
+      startDate 
       endDate
       status
       description
@@ -104,8 +105,38 @@ export const REMOVE_COMMITED_PROJECT_TASK = gql`
   }
 `;
 
-export const STATUS_CHANGE =  gql`
+export const STATUS_CHANGE = gql`
 mutation statusChange($commitedProductId: String!,$taskId:String!, $value: String!) {
   statusChange(commitedProductId: $commitedProductId, taskId: $taskId,value: $value)
 }
 `
+
+export const EDIT_TASK = gql`
+  mutation editTask(
+    $projectsId: String!
+    $taskId: String!
+    $title: String
+    $priority: String
+    $startDate: String
+    $endDate: String
+    $description: String
+  ) {
+    editTask(
+      projectsId: $projectsId
+      taskId: $taskId
+      title: $title
+      priority: $priority
+      startDate: $startDate
+      endDate: $endDate
+      description: $description
+    ) {
+      id
+      taskTitle
+      priority
+      status
+      startDate
+      endDate
+      description
+    }
+  }
+`;

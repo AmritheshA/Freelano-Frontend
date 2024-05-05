@@ -23,8 +23,6 @@ if (accessToken) {
   const role = token.role;
   const userId = token.userId;
   
-  console.log("jwt Token" + decodedToken);
-
   if (token.exp * 1000 < Date.now()) {
     console.log("Unauthorized request!");
     removeCookie("AccessToken");

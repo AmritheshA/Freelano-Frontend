@@ -58,20 +58,20 @@ export const GET_COMMITED_PROJECT = gql`
     getCommitedProject(freelancerId: $freelancerId) {
       commitedProjectsId
       commitedFreelancerId
-      freelancerResume
       commitedProjectIds
       commitedProjectName
       progression
       status
-      clientName
       startDate
       endDate
       tasks {
         id
-        taskTitle
-        startDate
-        endDate
-        description
+      taskTitle
+      priority
+      startDate 
+      endDate
+      status
+      description
       }
     }
   }

@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Link, useParams, } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { Link, useLocation, useParams, } from 'react-router-dom';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import { IoMdAdd } from 'react-icons/io';
@@ -50,18 +50,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { useMutation } from '@apollo/client';
 import { format } from 'date-fns';
 import { CREATE_PROJECT_TASK, REMOVE_COMMITED_PROJECT_TASK, STATUS_CHANGE } from '@/Graphql/mutation';
-import { GET_COMMITED_PROJECT_TASK } from '@/Graphql/mutation';
-
-// Interface for project data
-interface CommitedProject {
-    id: string
-    taskTitle: string
-    startDate: string
-    endDate: string
-    status: string
-    description: string
-    priority: string
-}
+import CommitedProject, { ProjectContext, Task } from '@/Context/ProjectContext/ProjectProvider ';
+import EditTaskModal from '../Custom/Modal/editTaskModal';
 
 
 
@@ -74,15 +64,26 @@ const AddTasks = () => {
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [description, setDescription] = useState("");
-    const [status, setStatus] = useState("");
-    const [commitedProjectId, setCommitedProjectId] = useState<string | null>();
-    const [commitedProjects, setCommitedProjects] = useState<CommitedProject[]>([]);
-    const [createTasks, { data: createTask }] = useMutation(CREATE_PROJECT_TASK);
-    const [allCommited, { data: allTasks, loading: loadingCommitedProject }] = useMutation(GET_COMMITED_PROJECT_TASK);
-    const [removeTaskMethod, { data: removeTask }] = useMutation(REMOVE_COMMITED_PROJECT_TASK);
-    const [changeProgression] = useMutation(STATUS_CHANGE);
-    const { commitedProject } = useParams()
 
+    const [commitedProject, setCommitedProject] = useState<CommitedProject>();
+    const [createTask, { data: createdTask }] = useMutation(CREATE_PROJECT_TASK);
+    const [removeTaskMethod, { data: removeTask }] = useMutation(REMOVE_COMMITED_PROJECT_TASK);
+    const [changeProgression, { data: changedStatus }] = useMutation(STATUS_CHANGE);
+    const { commitedProjectId } = useParams()
+
+
+    const { projects, setProjects } = useContext(ProjectContext);
+
+    useEffect(() => {
+        if (projects.length > 0) {
+            projects.map((project: CommitedProject) => {
+                if (project.commitedProjectsId == commitedProjectId) {
+                    setCommitedProject(project);
+                }
+            })
+        }
+
+    }, [projects]);
 
     const Menus = [
         {
@@ -182,39 +183,72 @@ const AddTasks = () => {
     ];
 
     useEffect(() => {
+        if (createdTask) {
 
-        if (commitedProject) {
-            setCommitedProjectId(commitedProject);
+            const projectIndex = projects.findIndex(
+                (project: CommitedProject) => project.commitedProjectsId === commitedProjectId
+            );
+
+            if (projectIndex !== -1) {
+                const updatedProject = {
+                    ...projects[projectIndex],
+                    tasks: [...projects[projectIndex].tasks, createdTask.createProjectTask],
+                };
+
+                const updatedProjects = [
+                    ...projects.slice(0, projectIndex),
+                    updatedProject,
+                    ...projects.slice(projectIndex + 1),
+                ];
+                setProjects(updatedProjects);
+            }
         }
 
-        if (commitedProject) {
-            const variables = {
-                commitedProjectsId: commitedProject,
-            };
-
-            allCommited({ variables }).then(() => {
-            })
-        } else {
-            console.error("commitedProject is null");
-        }
-    }, [commitedProject]);
+    }, [createdTask]);
 
     useEffect(() => {
-        if (allTasks) {
-            setCommitedProjects(allTasks.getCommitedProjectTask);
+        if (changedStatus) {
+            const projectIndex = projects.findIndex(
+                (project: CommitedProject) => project.commitedProjectsId === commitedProjectId
+            );
+
+            if (projectIndex !== -1) {
+                const updatedProject = {
+                    ...projects[projectIndex],
+                    tasks: projects[projectIndex].tasks.map((task) =>
+                        task.id === changedStatus.taskId
+                            ? { ...task, status: changedStatus.statusChange }
+                            : task
+                    ),
+                };
+
+                const updatedProjects = [
+                    ...projects.slice(0, projectIndex),
+                    updatedProject,
+                    ...projects.slice(projectIndex + 1),
+                ];
+
+                setProjects(updatedProjects);
+            }
         }
-        if (createTask) {
-            setCommitedProjects(createTask.createProjectTask);
-        }
-    }, [allTasks, createTask]);
+    }, [changedStatus]);
+
+
+    function formatDate(date: Date): string {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    }
 
     const handleDateChange = (date: DateRange | undefined) => {
         if (date) {
             if (date.from) {
-                setStartDate(format(date.from, "yyy-mm-dd"));
+                setStartDate(formatDate(date.from));
             }
             if (date.to) {
-                setEndDate(format(date.to, "yyy-mm-dd"));
+                setEndDate(formatDate(date.to));
             }
         }
     };
@@ -229,51 +263,37 @@ const AddTasks = () => {
             endDate,
             description
         }
-        createTasks({ variables })
-        setCommitedProjects(createTask.createProjectTask);
+        createTask({ variables })
+
+        setTitle("");
+        setPriority("");
+        setStartDate("");
+        setEndDate("")
+        setDescription("");
 
     };
 
     const handleRemoveTask = (commitedId: string) => {
         const variables = {
             commitedId: commitedId,
-            commitedProjectId
+            commitedProjectId: commitedProject?.commitedProjectsId
 
         }
         removeTaskMethod({ variables })
-        if (removeTask) {
-            setCommitedProjects(removeTask.removeCommitedProjectTask);
-        }
+        // if (removeTask) {
+        //     setCommitedProjects(removeTask.removeCommitedProjectTask);
+        // }
     }
 
-
     const handleStatusChange = (value: string, taskId: string) => {
-        setStatus(value);
 
         const variables = {
-            commitedProductId: commitedProjectId,
+            commitedProductId: commitedProject?.commitedProjectsId,
             taskId,
             value
         }
 
         changeProgression({ variables })
-
-        setCommitedProjects((prevProjects) => {
-            const updatedProjects = prevProjects.map((project) => {
-
-                if (project.id == taskId) {
-
-                    console.log(true);
-
-                    return { ...project, status: value };
-                }
-                return project;
-            });
-            console.log(value);
-
-            console.log('Updated projects:', updatedProjects);
-            return updatedProjects;
-        });
 
     }
 
@@ -314,7 +334,7 @@ const AddTasks = () => {
                     ))}
                 </ul>
             </div>
-            <div className="card p-6 h-screen w-full">
+            <div className="card p-6 min-h-screen w-full">
                 <h1 className="text-2xl font-bold mb-8">Tasks</h1>
                 <div className='p-20'>
                     <div className='flex justify-end mb-4'>
@@ -371,60 +391,7 @@ const AddTasks = () => {
                             </DialogContent>
                         </Dialog>
                     </div>
-                    {loadingCommitedProject ? (
-                        <div className='p-20'>
-                            <table className="w-full border-collapse border border-gray-300 rounded-lg overflow-hidden shadow-md">
-                                <thead className="bg-gray-100">
-                                    <tr>
-                                        <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">
-                                            <div className="h-4 bg-gray-300 rounded-full w-32 animate-pulse"></div>
-                                        </th>
-                                        <th className="px-6 py-3"></th>
-                                        <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">
-                                            <div className="h-4 bg-gray-300 rounded-full w-24 animate-pulse"></div>
-                                        </th>
-                                        <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">
-                                            <div className="h-4 bg-gray-300 rounded-full w-24 animate-pulse"></div>
-                                        </th>
-                                        <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">
-                                            <div className="h-4 bg-gray-300 rounded-full w-20 animate-pulse"></div>
-                                        </th>
-                                        <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">
-                                            <div className="h-4 bg-gray-300 rounded-full w-16 animate-pulse"></div>
-                                        </th>
-                                        <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">
-                                            <div className="h-4 bg-gray-300 rounded-full w-16 animate-pulse"></div>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
-                                    {Array.from({ length: 5 }, (_, index) => (
-                                        <tr key={index}>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="h-12 bg-gray-300 rounded-full w-full animate-pulse"></div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap"></td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="h-4 bg-gray-300 rounded-full w-24 animate-pulse"></div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="h-4 bg-gray-300 rounded-full w-24 animate-pulse"></div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="h-3 bg-gray-300 rounded-full w-full animate-pulse"></div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="h-6 bg-gray-300 rounded-full w-16 animate-pulse"></div>
-                                            </td>
-                                            <td className="px-4 py-4 whitespace-nowrap">
-                                                <div className="h-8 bg-gray-300 rounded-full w-24 animate-pulse"></div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    ) : commitedProjects.length === 0 ?
+                    {commitedProject?.tasks?.length === 0 ?
                         <div className="flex flex-col items-center justify-center bg-background rounded-lg p-8">
                             <img
                                 src="https://static.vecteezy.com/system/resources/previews/014/814/192/original/creatively-designed-flat-conceptual-icon-of-no-task-vector.jpg"
@@ -458,8 +425,8 @@ const AddTasks = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
-                                    {commitedProjects.map((project: CommitedProject, index: number) => (
-                                        <tr key={index} className={`${project.status ==='Completed' ? "bg-slate-100": "bg-background"}`}>
+                                    {commitedProject?.tasks?.map((project: Task, index: number) => (
+                                        <tr key={index} className={`${project.status === 'Completed' ? "bg-slate-100" : "bg-background"}`}>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <Tooltip className='font-bold ' title={`${project.description}`} followCursor>
                                                     <div>
@@ -501,9 +468,9 @@ const AddTasks = () => {
                                             </td>
                                             <td className="px-4 py-4 whitespace-nowrap">
                                                 <div className="flex space-x-2">
-                                                    <button className="px-3 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:bg-blue-700 transition duration-150 ease-in-out">
-                                                        Edit
-                                                    </button>
+
+                                                    <EditTaskModal task={project} projectId={commitedProjectId} />
+
                                                     <AlertDialog>
                                                         <AlertDialogTrigger asChild>
                                                             <Button variant="outline" className='border-2 border-black'>Remove</Button>
@@ -540,5 +507,4 @@ const AddTasks = () => {
         </div >
     )
 }
-
 export default AddTasks;

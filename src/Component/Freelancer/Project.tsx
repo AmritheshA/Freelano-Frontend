@@ -1,44 +1,15 @@
 import { Progress } from '@/components/ui/progress';
-import { useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import FreelanoFooter from "../FreelanoFooter"
-import { RootState } from '@/Redux/Store';
-import { useSelector } from 'react-redux';
-import { useQuery } from '@apollo/client';
-import { GET_COMMITED_PROJECT } from '@/Graphql/query';
 import ogLogo from '@/assets/ogLogo.png';
+import CommitedProject, { ProjectContext } from '@/Context/ProjectContext/ProjectProvider ';
 
-
-
-// Interface for project data
-interface CommitedProject {
-    commitedProjectsId: String
-    commitedFreelancerId: String
-    freelancerResume: String
-    commitedProjectIds: String
-    commitedProjectName: String
-    progression: number
-    status: String
-    clientName: String
-    startDate: String
-    endDate: null | string;
-    tasks: null | Task[] | undefined;
-}
-
-interface Task {
-
-    taskId: string;
-    taskTitle: string;
-    taskDescription: string;
-    status: string;
-
-}
 
 
 const Project = () => {
-
 
     const Menus = [
         {
@@ -112,7 +83,7 @@ const Project = () => {
                     <path d="M464 512a48 48 0 1 0 96 0 48 48 0 1 0-96 0zm200 0a48 48 0 1 0 96 0 48 48 0 1 0-96 0zm-400 0a48 48 0 1 0 96 0 48 48 0 1 0-96 0zm661.2-173.6c-22.6-53.7-55-101.9-96.3-143.3a444.35 444.35 0 0 0-143.3-96.3C630.6 75.7 572.2 64 512 64h-2c-60.6.3-119.3 12.3-174.5 35.9a445.35 445.35 0 0 0-142 96.5c-40.9 41.3-73 89.3-95.2 142.8-23 55.4-34.6 114.3-34.3 174.9A449.4 449.4 0 0 0 112 714v152a46 46 0 0 0 46 46h152.1A449.4 449.4 0 0 0 510 960h2.1c59.9 0 118-11.6 172.7-34.3a444.48 444.48 0 0 0 142.8-95.2c41.3-40.9 73.8-88.7 96.5-142 23.6-55.2 35.6-113.9 35.9-174.5.3-60.9-11.5-120-34.8-175.6zm-151.1 438C704 845.8 611 884 512 884h-1.7c-60.3-.3-120.2-15.3-173.1-43.5l-8.4-4.5H188V695.2l-4.5-8.4C155.3 633.9 140.3 574 140 513.7c-.4-99.7 37.7-193.3 107.6-263.8 69.8-70.5 163.1-109.5 262.8-109.9h1.7c50 0 98.5 9.7 144.2 28.9 44.6 18.7 84.6 45.6 119 80 34.3 34.3 61.3 74.4 80 119 19.4 46.2 29.1 95.2 28.9 145.8-.6 99.6-39.7 192.9-110.1 262.7z"></path>
                 </svg>
             ),
-            to: "/projects",
+            to: "/message",
         },
         {
             title: "Meeting",
@@ -137,22 +108,10 @@ const Project = () => {
         },
     ];
 
-    const user = useSelector((state: RootState) => state.userDetails.user);
-    const { data, loading } = useQuery(GET_COMMITED_PROJECT, { variables: { freelancerId: user?.userId } });
-    const [commitedProjects, setCommitedProjects] = useState<CommitedProject[]>([]);
-
-
-    useEffect(() => {
-
-        if (data) {
-            setCommitedProjects(data.getCommitedProject);
-        }
-        console.log(data?.getCommitedProject);
-
-    }, [data]);
-
-
+    const { projects, loading } = useContext(ProjectContext);
     const [open, setOpen] = useState(true);
+
+
     return (
         <div className="flex bg-white h-full ">
             <div
@@ -245,89 +204,104 @@ const Project = () => {
                             </tbody>
                         </table>
                     </div>
-                    : <div className='p-20'>
-                        <table className="w-full border-collapse border border-gray-300 rounded-lg overflow-hidden shadow-md">
-                            <thead className="bg-gray-100">
-                                <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">
-                                        Project
-                                    </th>
-                                    <th className="px-6 py-3"></th>
-                                    <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">
-                                        Start Date
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">
-                                        End Date
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">
-                                        Progression
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">
-                                        Status
-                                    </th>
-                                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">
-                                        Actions
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
-                                {commitedProjects.map((project: CommitedProject, index: number) => (
-                                    <tr key={index}>
-                                        <td className="px-6 py-4 whitespace-nowrap flex items-center">
-                                            <div className="w-10 h-10 rounded-full bg-gray-300 flex-shrink-0 mr-3">
-                                                <img
-                                                    src="https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745"
-                                                    alt=""
-                                                />
-                                            </div>
-                                            <div>
-                                                <div className="text-lg font-semibold text-gray-800">
-                                                    {project.commitedProjectName}
-                                                </div>
-                                                <div className="text-sm font-medium text-gray-600">
-                                                    {project.clientName}
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap"></td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-600">
-                                            {project.startDate}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-600">
-                                            {project.endDate != null ? project.endDate : "Present"}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <Progress value={
-                                                project?.tasks
-                                                    ? (project.progression / project.tasks.length) * 100
-                                                    : 0
-                                            } className="w-full h-3 rounded-full bg-gray-200" />
-
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <span className="px-2 inline-flex text-md  font-semibold rounded-full bg-green-100 text-green-800">
-                                                {project.status}
-                                            </span>
-                                        </td>
-                                        <td className="px-4 py-4 whitespace-nowrap">
-                                            <button className="px-3 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:bg-blue-700 transition duration-150 ease-in-out">
-                                                <Link to={`/projects/addTasks/${project.commitedProjectsId}`}>
-                                                    View Tasks
-                                                </Link>
-
-                                            </button>
-                                        </td>
+                    : projects.length != 0 ?
+                        <div className='p-20 min-h-[50%]'>
+                            <table className="w-full border-collapse border border-gray-300 rounded-lg overflow-hidden shadow-md">
+                                <thead className="bg-gray-100">
+                                    <tr>
+                                        <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">
+                                            Project
+                                        </th>
+                                        <th className="px-6 py-3"></th>
+                                        <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">
+                                            Start Date
+                                        </th>
+                                        <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">
+                                            End Date
+                                        </th>
+                                        <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">
+                                            Progression
+                                        </th>
+                                        <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">
+                                            Status
+                                        </th>
+                                        <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">
+                                            Actions
+                                        </th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody className="bg-white divide-y divide-gray-200">
+                                    {projects.map((project: CommitedProject, index: number) => (
+                                        <tr key={index}>
+                                            <td className="px-6 py-4 whitespace-nowrap flex items-center">
+                                                <div className="w-10 h-10 rounded-full bg-gray-300 flex-shrink-0 mr-3">
+                                                    <img
+                                                        src="https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745"
+                                                        alt=""
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <div className="text-lg font-semibold text-gray-800">
+                                                        {project.commitedProjectName}
+                                                    </div>
+                                                    <div className="text-sm font-medium text-gray-600">
+                                                        {project.clientName}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap"></td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-600">
+                                                {project.startDate}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-600">
+                                                {project.endDate != null ? project.endDate : "Present"}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <Progress value={
+                                                    project?.tasks || project?.tasks?.length != 0
+                                                        ? Math.abs((project.progression / project.tasks?.length) * 100)
+                                                        : 0
+                                                } className="w-full h-3 rounded-full bg-gray-200" />
 
-                        <div className='flex justify-end items-center mt-5'>
-                            <Stack spacing={2}>
-                                <Pagination count={10} color="primary" />
-                            </Stack>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <span className="px-2 inline-flex text-md  font-semibold rounded-full bg-green-100 text-green-800">
+                                                    {project.status}
+                                                </span>
+                                            </td>
+                                            <td className="px-4 py-4 whitespace-nowrap">
+                                                <button className="px-3 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:bg-blue-700 transition duration-150 ease-in-out">
+                                                    <Link
+                                                        to={`/projects/addTasks/${project.commitedProjectsId}`}
+                                                        state={project}
+                                                    >
+                                                        View Tasks
+                                                    </Link>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                            <div className='flex justify-end items-center mt-5'>
+                                <Stack spacing={2}>
+                                    <Pagination count={10} color="primary" />
+                                </Stack>
+                            </div>
                         </div>
-                    </div>}
+                        :
+                        <div className="flex flex-col items-center justify-center bg-background rounded-lg p-8">
+                            <img
+                                src="https://static.vecteezy.com/system/resources/previews/014/814/192/original/creatively-designed-flat-conceptual-icon-of-no-task-vector.jpg"
+                                alt="No Tasks Found"
+                                className="mb-4 h-[400px]"
+                            />
+                            <h2 className="text-2xl font-bold text-gray-800 mb-2">No Tasks Found</h2>
+                            <p className="text-gray-600 text-center">
+                                There are no project to display at the moment.
+                            </p>
+                        </div>
+                }
                 <div className="mt-32 mb-0">
                     <FreelanoFooter />
                 </div>

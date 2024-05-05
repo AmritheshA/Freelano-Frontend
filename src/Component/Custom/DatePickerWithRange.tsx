@@ -1,5 +1,5 @@
 import * as React from "react"
-import { addDays, format } from "date-fns"
+import { addDays, format, parse } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
 import { DateRange } from "react-day-picker"
 
@@ -12,22 +12,29 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 
+
+interface DatePickerWithRangeProps extends React.HTMLAttributes<HTMLDivElement> {
+    startDate?: string;
+    endDate?: string;
+    onDateChange: (dateRange: DateRange | undefined) => void;
+}
+
+
 export function DatePickerWithRange({
     className,
+    startDate,
+    endDate,
     onDateChange,
-}: React.HTMLAttributes<HTMLDivElement> & { onDateChange: (date: DateRange | undefined) => void }) {
+}: DatePickerWithRangeProps) {
+
     const [date, setDate] = React.useState<DateRange | undefined>({
-        from: new Date(2024, 0, 20),
-        to: addDays(new Date(2024, 0, 20), 20),
+        from: startDate ? parse(startDate, 'yyyy-MM-dd', new Date()) : new Date(),
+        to: endDate ? parse(endDate, 'yyyy-MM-dd', new Date()) : addDays(new Date(2024, 0, 20), 20),
     });
 
     React.useEffect(() => {
         onDateChange(date);
     }, [date, onDateChange]);
-
-    console.log(date);
-    
-    
 
     return (
         <div className={cn("grid gap-2", className)}>

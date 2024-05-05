@@ -81,3 +81,6 @@
   -ms-overflow-style: none;
   /* For Internet Explorer, Edge */
 }
+.no-scrollbar::-webkit-scrollbar{
+  display: none;
+}
