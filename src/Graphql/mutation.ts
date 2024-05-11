@@ -44,8 +44,8 @@ export const GET_PROJECTS = gql`
 `;
 
 export const APPLY_JOB = gql`
-  mutation ApplyJob($commitedProjectId: String!, $commitedFreelancerId: String!,$resume:String!) {
-    applyJob(commitedProjectId: $commitedProjectId, commitedFreelancerId: $commitedFreelancerId,resume:$resume)
+  mutation ApplyJob($commitedProjectId: String!, $commitedFreelancerId: String!,$resume:String!,$clientId:String!) {
+    applyJob(commitedProjectId: $commitedProjectId, commitedFreelancerId: $commitedFreelancerId,resume:$resume,clientId:$clientId)
   }
 `;
 

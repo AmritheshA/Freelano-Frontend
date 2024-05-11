@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { FaLocationDot } from "react-icons/fa6";
 import { useDispatch } from "react-redux";
 import { SiLevelsdotfyi } from "react-icons/si";
-import { Link } from "react-router-dom";
 import { TechBox } from "../../Custom/TechBox";
 import userFullDetails from "@/Interfaces/userInterface";
 import {
@@ -13,13 +12,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 import { useSelector } from "react-redux";
 import { RootState, TypeDispatch } from "@/Redux/Store";
@@ -29,10 +21,19 @@ import { userLogoutAction } from "@/Redux/Actions/UserActions/userActions";
 import { useQuery } from "@apollo/client";
 import { GET_RECOMMANDED_PROJECTS } from "@/Graphql/query";
 import Project from "@/Interfaces/projectInterface";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Link } from "react-router-dom";
+import { FaWallet } from "react-icons/fa";
 
 export default function FreelancerHome() {
   const [open, setOpen] = useState(true);
-  
+
   const Menus = [
     {
       title: "Home",
@@ -132,12 +133,12 @@ export default function FreelancerHome() {
   const [userInfo, setUserInfo] = useState<userFullDetails>();
   const user = useSelector((state: RootState) => state.userDetails.user);
   const dispatch = useDispatch<TypeDispatch>();
-  
+
   const [projects, setProjects] = useState<Project[]>([]);
-  const { data} = useQuery(GET_RECOMMANDED_PROJECTS, {
+  const { data } = useQuery(GET_RECOMMANDED_PROJECTS, {
     variables: { freelancerId: user.userId },
   });
-  
+
   useEffect(() => {
     if (data && data.recommendedProject) {
       setProjects(data.recommendedProject);
@@ -171,9 +172,8 @@ export default function FreelancerHome() {
   return (
     <div className="flex bg-white min-h-screen">
       <div
-        className={` ${
-          open ? "w-72" : "w-20 "
-        } bg-dark-purple h-full p-5  pt-8 sticky left-0 top-0 duration-300`}
+        className={` ${open ? "w-72" : "w-20 "
+          } bg-dark-purple h-full p-5  pt-8 sticky left-0 top-0 duration-300`}
       >
         <img
           src="./src/assets/freelancer/image.png"
@@ -184,9 +184,8 @@ export default function FreelancerHome() {
         <div className="flex gap-x-4 items-center ">
           <img
             src="./src/assets/ogLogo.png"
-            className={`cursor-pointer sm:w-40 sm:h-30 duration-500 ${
-              open && "rotate-[360deg]"
-            }`}
+            className={`cursor-pointer sm:w-40 sm:h-30 duration-500 ${open && "rotate-[360deg]"
+              }`}
           />
         </div>
         <ul className="pt-6">
@@ -199,9 +198,8 @@ export default function FreelancerHome() {
               >
                 {Menu.src}
                 <span
-                  className={`${
-                    !open && "hidden"
-                  } freelancerFont text-lg text-black origin-left duration-200`}
+                  className={`${!open && "hidden"
+                    } freelancerFont text-lg text-black origin-left duration-200`}
                 >
                   {Menu.title}
                 </span>
@@ -226,40 +224,60 @@ export default function FreelancerHome() {
                 Search
               </button>
             </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <div
-                  className={`w-10 h-10 rounded-full bg-cover ${
-                    userInfo
-                      ? "bg-center bg-no-repeat"
-                      : "bg-center bg-no-repeat"
-                  }`}
-                  style={{
-                    backgroundImage: `url('${
-                      userInfo
-                        ? userInfo.profileImgUrl
-                        : "./src/assets/freelancer/profileImage.png"
-                    }')`,
-                  }}
-                ></div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuLabel className="cursor-pointer">
-                  Settings
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuLabel
-                  onClick={handleLogout}
-                  className="cursor-pointer"
-                >
-                  Log Out
-                </DropdownMenuLabel>
-              </DropdownMenuContent>
-            </DropdownMenu>
 
             <div
-              className={`w-10 h-10 rounded-full bg-cover bg-[url('https://cdn-icons-png.flaticon.com/512/3119/3119338.png')]`}
-            ></div>
+              className={`w-10 h-10 rounded-full bg-cover bg-[url('https://cdn-icons-png.flaticon.com/512/3119/3119338.png')]`}            >
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="">
+                <img
+                  src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+                  alt="Profile"
+                  className="w-10 h-10 rounded-full"
+                />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-white shadow-lg rounded-md p-2">
+
+                <DropdownMenuItem>
+                  <div className="flex items-center justify-center gap-3">
+                    <img
+                      src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+                      alt="Profile"
+                      className="w-10 h-10 rounded-full"
+                    />
+                    <h1 className="text-lg poetsen-one-regular">Joseph John</h1>
+                  </div>
+                </DropdownMenuItem>
+                
+                <DropdownMenuItem className="px-3 py-2 mt-2 rounded-md hover:bg-gray-100 transition-colors cursor-pointer flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                  </svg>
+                  <Link to={`/settings/1/${user.userId}`} >Your profile</Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem className="px-3 py-2 rounded-md hover:bg-gray-100 transition-colors cursor-pointer flex items-center gap-2">
+                  <FaWallet color="gray" className="ml-1" />
+                  <Link to={`/settings/2/${user.userId}`}>Payments</Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem className="px-3 py-2 rounded-md hover:bg-gray-100 transition-colors cursor-pointer flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z" />
+                    <path fillRule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h3a1 1 0 100-2H9z" clipRule="evenodd" />
+                  </svg>
+                  <Link to={`/settings/3/${user?.userId}`}>Membership plan</Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuSeparator className="my-2 bg-gray-200 h-px" />
+                <DropdownMenuItem className="px-3 py-2 rounded-md hover:bg-gray-100 transition-colors cursor-pointer flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clipRule="evenodd" />
+                  </svg>
+                  <span onClick={handleLogout}>Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
         <div className="flex justify-center w-[75%] mt-20">
@@ -269,7 +287,7 @@ export default function FreelancerHome() {
         </div>
 
         {projects?.map((project: Project) => (
-          <div key={project.projectId}  className="flex justify-start mt-14">
+          <div key={project.projectId} className="flex justify-start mt-14">
             <Dialog>
               <DialogTrigger asChild>
                 <div className="relative w-[80%] h-[350px]  bg-slate-100  active:bg-slate-200 cursor-pointer border-2 rounded-md">
@@ -417,11 +435,10 @@ export default function FreelancerHome() {
                             <div
                               className="w-20 h-20 p-10 rounded-full bg-cover "
                               style={{
-                                backgroundImage: `url('${
-                                  userInfo
-                                    ? userInfo.profileImgUrl
-                                    : "./src/assets/freelancer/profileImage.png"
-                                }')`,
+                                backgroundImage: `url('${userInfo
+                                  ? userInfo.profileImgUrl
+                                  : "./src/assets/freelancer/profileImage.png"
+                                  }')`,
                               }}
                             ></div>
                           </DialogTrigger>
@@ -432,11 +449,10 @@ export default function FreelancerHome() {
                                   <div
                                     className="w-36 h-24 p-36 rounded-full bg-cover"
                                     style={{
-                                      backgroundImage: `url('${
-                                        userInfo
-                                          ? userInfo.profileImgUrl
-                                          : "./src/assets/freelancer/profileImage.png"
-                                      }')`,
+                                      backgroundImage: `url('${userInfo
+                                        ? userInfo.profileImgUrl
+                                        : "./src/assets/freelancer/profileImage.png"
+                                        }')`,
                                     }}
                                   ></div>
                                 </div>
@@ -468,6 +484,6 @@ export default function FreelancerHome() {
           </div>
         ))}
       </div>
-    </div>
+    </div >
   );
 }

@@ -1,17 +1,12 @@
-import { useState } from "react";
-import { Link } from "react-router-dom"
-import { FiMessageCircle } from "react-icons/fi";
-import ChatListing from "../Freelancer/Chat/ChatListing";
-import Messages from "../Freelancer/Chat/Messages";
+import { Link } from 'react-router-dom';
+import FreelanoFooter from "../FreelanoFooter"
+import ogLogo from '@/assets/ogLogo.png';
+import VideoCallComponent from '../Common/VideoCallComponent';
+import { useState } from 'react';
 
 
 
-
-function ClientChat() {
-
-    const [open, setOpen] = useState(true);
-
-
+const FreelancerVideoCall = () => {
 
     const Menus = [
         {
@@ -30,6 +25,23 @@ function ClientChat() {
                 </svg>
             ),
             to: "/home",
+        },
+        {
+            title: "All Jobs",
+            src: (
+                <svg
+                    stroke="currentColor"
+                    fill="black"
+                    stroke-width="0"
+                    viewBox="0 0 1024 1024"
+                    height="1.5em"
+                    width="1.5em"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path d="M280 752h80c4.4 0 8-3.6 8-8V280c0-4.4-3.6-8-8-8h-80c-4.4 0-8 3.6-8 8v464c0 4.4 3.6 8 8 8zm192-280h80c4.4 0 8-3.6 8-8V280c0-4.4-3.6-8-8-8h-80c-4.4 0-8 3.6-8 8v184c0 4.4 3.6 8 8 8zm192 72h80c4.4 0 8-3.6 8-8V280c0-4.4-3.6-8-8-8h-80c-4.4 0-8 3.6-8 8v256c0 4.4 3.6 8 8 8zm216-432H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zm-40 728H184V184h656v656z"></path>
+                </svg>
+            ),
+            to: "/jobs",
         },
         {
             title: "Projects",
@@ -68,7 +80,7 @@ function ClientChat() {
                     <path d="M464 512a48 48 0 1 0 96 0 48 48 0 1 0-96 0zm200 0a48 48 0 1 0 96 0 48 48 0 1 0-96 0zm-400 0a48 48 0 1 0 96 0 48 48 0 1 0-96 0zm661.2-173.6c-22.6-53.7-55-101.9-96.3-143.3a444.35 444.35 0 0 0-143.3-96.3C630.6 75.7 572.2 64 512 64h-2c-60.6.3-119.3 12.3-174.5 35.9a445.35 445.35 0 0 0-142 96.5c-40.9 41.3-73 89.3-95.2 142.8-23 55.4-34.6 114.3-34.3 174.9A449.4 449.4 0 0 0 112 714v152a46 46 0 0 0 46 46h152.1A449.4 449.4 0 0 0 510 960h2.1c59.9 0 118-11.6 172.7-34.3a444.48 444.48 0 0 0 142.8-95.2c41.3-40.9 73.8-88.7 96.5-142 23.6-55.2 35.6-113.9 35.9-174.5.3-60.9-11.5-120-34.8-175.6zm-151.1 438C704 845.8 611 884 512 884h-1.7c-60.3-.3-120.2-15.3-173.1-43.5l-8.4-4.5H188V695.2l-4.5-8.4C155.3 633.9 140.3 574 140 513.7c-.4-99.7 37.7-193.3 107.6-263.8 69.8-70.5 163.1-109.5 262.8-109.9h1.7c50 0 98.5 9.7 144.2 28.9 44.6 18.7 84.6 45.6 119 80 34.3 34.3 61.3 74.4 80 119 19.4 46.2 29.1 95.2 28.9 145.8-.6 99.6-39.7 192.9-110.1 262.7z"></path>
                 </svg>
             ),
-            to: "/clientMessage",
+            to: "/freelancerMessage",
         },
         {
             title: "Meeting",
@@ -89,9 +101,11 @@ function ClientChat() {
                     <path d="M320 360c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8H208c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h112z"></path>
                 </svg>
             ),
-            to: "/meeting",
+            to: "/videoCall",
         },
     ];
+
+    const [open, setOpen] = useState(true);
 
 
     return (
@@ -103,29 +117,27 @@ function ClientChat() {
                 <img
                     src="./src/assets/freelancer/image.png"
                     className={`absolute cursor-pointer -right-3  top-9 w-7 border-dark-purple
-   border-2 rounded-full  ${!open && "rotate-180"}`}
+     border-2 rounded-full  ${!open && "rotate-180"}`}
                     onClick={() => setOpen(!open)}
                 />
                 <div className="flex gap-x-4 items-center ">
                     <img
-                        src="./src/assets/ogLogo.png"
+                        src={ogLogo}
                         className={`cursor-pointer sm:w-40 sm:h-30 duration-500 ${open && "rotate-[360deg]"
                             }`}
                     />
                 </div>
                 <ul className="pt-6">
                     {Menus.map((Menu, index) => (
-                        <Link to={Menu.to}>
+                        <Link to={Menu.to}  >
                             <li
                                 key={index}
                                 className={`flex rounded-md p-2 cursor-pointer  hover:bg-gray-200 text-gray-300 mt-5 text-sm items-center gap-x-4 
-      "mt-2" ${index === 0 && "bg-light-white"} `}
+        "mt-2" ${index === 0 && "bg-light-white"
+                                    } `}
                             >
                                 {Menu.src}
-                                <span
-                                    className={`${!open && "hidden"
-                                        } freelancerFont text-lg text-black origin-left duration-200`}
-                                >
+                                <span className={`${!open && "hidden"} freelancerFont text-lg text-black origin-left duration-200`}>
                                     {Menu.title}
                                 </span>
                             </li>
@@ -133,30 +145,14 @@ function ClientChat() {
                     ))}
                 </ul>
             </div>
+            <div className="card p-6 min-h-screen w-full">
 
-            <div className="  flex w-full h-screen bg-gray-100 overflow-hidden pb-3">
-                <div className="w-1/4 bg-white shadow-md border-r border-gray-200 ">
-                    <div className="p-4 flex items-center gap-2">
-                        <FiMessageCircle size={30} />
-                        <h1 className="text-2xl font-bold">Message</h1>
-                    </div>
-                    <div className="p-4">
-                        <input
-                            type="text"
-                            placeholder="Search Messages"
-                            className="w-full px-3 py-2 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    </div>
-                    <ChatListing />
-                </div>
-                <div className="flex-1 flex flex-col">
-
-                    <Messages />
-
+                <VideoCallComponent />
+                <div className="mt-32 mb-0">
+                    <FreelanoFooter />
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
-
-export default ClientChat;
+export default FreelancerVideoCall;
