@@ -183,7 +183,7 @@ export const columns: ColumnDef<Freelancer>[] = [
                     <AlertDialogTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
                             <span className="sr-only">Action</span>
-                            {freelancer.status === "active" ? "Block" : "Un-Block"}
+                            {freelancer.status === "active" ? "Block" : "Un Block"}
                         </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
@@ -197,7 +197,7 @@ export const columns: ColumnDef<Freelancer>[] = [
                         <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
                             <AlertDialogAction className="bg-slate-900" onClick={handleBlock}>
-                                {freelancer.status === "active" ? "Block" : "Un-Block"}
+                                {freelancer.status === "active" ? "Block" : "Un Block"}
                             </AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
