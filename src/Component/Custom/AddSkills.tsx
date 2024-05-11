@@ -14,7 +14,7 @@ export default function AddSkills({ onSkillChange, flag }: any) {
 
     const handleClickOutside = (event: MouseEvent) => {
         if (divRef.current && !divRef.current.contains(event.target as Node)) {
-            setResults([]); 
+            setResults([]);
         }
     };
     useEffect(() => {
@@ -45,7 +45,7 @@ export default function AddSkills({ onSkillChange, flag }: any) {
         const value = event.target.value;
         setInputValue(value);
         await fetchSkills(value);
-        
+
     };
 
     const itemTemplate = (item: string, options: VirtualScrollerTemplateOptions) => {

@@ -21,12 +21,17 @@ import Chat from "./Component/Freelancer/Chat/FreelancerChat";
 import Sample from "./Component/Freelancer/Chat/sample";
 import { MessageProvider } from "./Context/MessageContext/MessageProvider";
 import ClientChat from "./Component/Client/ClientChat";
-import VideoCall from "./Component/Freelancer/Video Call/videoCall";
+import VideoCallPage from "./Pages/VideoCallPage";
+import ClientProject from "./Component/Client/ClientProject";
+import Settings from "./Component/Freelancer/Settings/Settings";
+import { FreelancerManagement } from "./Component/Admin/FreelancerManagement";
+import { ClientManagement } from "./Component/Admin/ClientManagement";
 
 
 function App() {
 
   const user = useSelector((state: RootState) => state.userDetails.user);
+
   user ? console.log("user is authenticated") : console.log("user is not authenticated");
   const [activeComponent, setActiveComponent] = useState("component1");
   const [isProfileComplete, setIsProfileComplete] = useState<boolean>();
@@ -72,8 +77,12 @@ function App() {
           <Route path="*" element={<NotFoundPage />} />
           <Route path="/freelancerMessage" element={<Chat />} />
           <Route path="/clientMessage" element={<ClientChat />} />
-          <Route path="/videoCall" element={<VideoCall />} />
+          <Route path="/videoCall" element={<VideoCallPage />} />
           <Route path="/sample" element={<Sample />} />
+          <Route path="/clientProject" element={<ClientProject />} />
+          <Route path="/settings/:state/:freelancerId" element={<Settings />} />
+          <Route path="/freelancers" element={<FreelancerManagement />} />
+          <Route path="/clients" element={<ClientManagement />} />
         </Routes>
       </MessageProvider>
     </ProjectProvider>

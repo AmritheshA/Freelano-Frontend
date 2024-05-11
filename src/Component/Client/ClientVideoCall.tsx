@@ -1,17 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom"
-import { FiMessageCircle } from "react-icons/fi";
-import ChatListing from "../Freelancer/Chat/ChatListing";
-import Messages from "../Freelancer/Chat/Messages";
+import VideoCallComponent from "../Common/VideoCallComponent";
 
 
 
 
-function ClientChat() {
+function ClientVideoCall() {
 
     const [open, setOpen] = useState(true);
-
-
 
     const Menus = [
         {
@@ -89,7 +85,7 @@ function ClientChat() {
                     <path d="M320 360c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8H208c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h112z"></path>
                 </svg>
             ),
-            to: "/meeting",
+            to: "/videoCall",
         },
     ];
 
@@ -135,28 +131,10 @@ function ClientChat() {
             </div>
 
             <div className="  flex w-full h-screen bg-gray-100 overflow-hidden pb-3">
-                <div className="w-1/4 bg-white shadow-md border-r border-gray-200 ">
-                    <div className="p-4 flex items-center gap-2">
-                        <FiMessageCircle size={30} />
-                        <h1 className="text-2xl font-bold">Message</h1>
-                    </div>
-                    <div className="p-4">
-                        <input
-                            type="text"
-                            placeholder="Search Messages"
-                            className="w-full px-3 py-2 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    </div>
-                    <ChatListing />
-                </div>
-                <div className="flex-1 flex flex-col">
-
-                    <Messages />
-
-                </div>
+                <VideoCallComponent />
             </div>
         </div>
     )
 }
 
-export default ClientChat;
+export default ClientVideoCall;
