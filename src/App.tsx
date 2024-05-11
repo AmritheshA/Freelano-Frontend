@@ -22,6 +22,8 @@ import Sample from "./Component/Freelancer/Chat/sample";
 import { MessageProvider } from "./Context/MessageContext/MessageProvider";
 import ClientChat from "./Component/Client/ClientChat";
 import VideoCall from "./Component/Freelancer/Video Call/videoCall";
+import { ClientManagement } from "./Component/Admin/ClientManagement";
+import { FreelancerManagement } from "./Component/Admin/FreelancerManagement";
 
 
 function App() {
