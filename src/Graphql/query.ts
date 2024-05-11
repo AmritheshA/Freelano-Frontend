@@ -53,27 +53,51 @@ query GetFilteredProjects($experience: [String], $jobType: [String], $category: 
 }
 `
 
+
+
+export const GET_CLIENTSIDE_PROJECTS = gql`
+  query getPendingProject($clientId: String!,$status:String!){
+    getPendingProject(clientId: $clientId,status: $status){
+      projectId
+      projectTitle
+      projectPostedDate
+      category
+      skills
+      jobDescription
+      projectDuration
+      experienceLevel
+      location
+      budgetType
+      prize
+      applicantRequired
+      enrolledApplicant
+      clientId
+      freelancerId
+    }
+  }
+`
+
 export const GET_COMMITED_PROJECT = gql`
   query GetCommitedProject($freelancerId: String!) {
-    getCommitedProject(freelancerId: $freelancerId) {
-      commitedProjectsId
-      commitedFreelancerId
-      commitedProjectIds
-      commitedProjectName
-      progression
-      status
-      startDate
-      endDate
+  getCommitedProject(freelancerId: $freelancerId) {
+    commitedProjectsId
+    commitedFreelancerId
+    commitedProjectIds
+    commitedProjectName
+    progression
+    status
+    startDate
+    endDate
       tasks {
-        id
+      id
       taskTitle
       priority
-      startDate 
+      startDate
       endDate
       status
       description
-      }
     }
   }
+}
 `;
 

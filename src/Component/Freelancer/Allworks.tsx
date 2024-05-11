@@ -183,7 +183,7 @@ export default function Allworks() {
           <path d="M320 360c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8H208c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h112z"></path>
         </svg>
       ),
-      to: "/home",
+      to: "/videoCall",
     },
   ];
 
@@ -277,7 +277,7 @@ export default function Allworks() {
     }
   };
 
-  const handleSubmit = async (projectId: string, event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (projectId: string, clientId: string, event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (file) {
       const formData = new FormData();
@@ -288,15 +288,22 @@ export default function Allworks() {
           method: "POST",
           body: formData,
         });
+
         const responseData = await response.json();
+        console.log(responseData);
+
+        const publicUrl = `https://res.cloudinary.com/${responseData.cloud_name}/image/upload/${responseData.public_id}.pdf`;
+
+
+        console.log(publicUrl);
 
         const freelancerId = user.userId;
-
         await commitProject({
           variables: {
             commitedProjectId: projectId,
             commitedFreelancerId: freelancerId,
-            resume: responseData.secure_url
+            resume: responseData.secure_url,
+            clientId
           },
         });
         toast.success(applyJobData?.applyJob);
@@ -366,10 +373,8 @@ export default function Allworks() {
             ))}
           </ul>
         </div>
-
         <div className="h-full flex-1 p-7">
           <div className="flex justify-end">
-            {/* <h1 className="text-2xl font-medium text-gray-300 ">Home</h1> */}
             <div className="flex items-center sm:mr-48 gap-10">
               <div className="relative">
                 <input
@@ -969,7 +974,7 @@ export default function Allworks() {
                                         className="modal"
                                       >
                                         <div className="modal-box">
-                                          <form onSubmit={(eve) => { handleSubmit(project.projectId, eve) }}>
+                                          <form onSubmit={(eve) => { handleSubmit(project.projectId, project.clientId, eve) }}>
                                             <div className="mb-4">
                                               <label
                                                 htmlFor="file-upload"

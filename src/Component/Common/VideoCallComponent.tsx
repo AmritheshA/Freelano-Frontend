@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt';
 
 function randomID(len: number): string {
@@ -18,22 +17,13 @@ export function getUrlParams(url = window.location.href): URLSearchParams {
     return new URLSearchParams(urlStr);
 }
 
-interface AppProps { }
-
-const VideoCall: React.FC<AppProps> = () => {
+export default function VideoCallComponent(): JSX.Element {
     const roomID = getUrlParams().get('roomID') || randomID(5);
-
-    const myMeeting = async (element: HTMLDivElement | null) => {
+    const myMeeting = async (element: HTMLDivElement | null): Promise<void> => {
         // generate Kit Token
-        const appID = 2008883758;
-        const serverSecret = '096ed466d199c916e6c7ed44df687d85';
-        const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
-            appID,
-            serverSecret,
-            roomID,
-            randomID(5),
-            randomID(5)
-        );
+        const appID = 856049246;
+        const serverSecret = '1e5d739db000dbc2d023a43eec1411c3';
+        const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, randomID(5), randomID(5));
 
         // Create instance object from Kit Token.
         const zp = ZegoUIKitPrebuilt.create(kitToken);
@@ -43,25 +33,25 @@ const VideoCall: React.FC<AppProps> = () => {
             container: element,
             sharedLinks: [
                 {
-                    name: 'Copy The link',
+                    name: 'Personal link',
                     url: `${window.location.protocol}//${window.location.host}${window.location.pathname}?roomID=${roomID}`,
                 },
             ],
-            showTextChat:true,
-            maxUsers:2,
-            layout:"Auto",
-            turnOnCameraWhenJoining:true,
-            scenario: { mode: ZegoUIKitPrebuilt.OneONoneCall }, // To implement 1-on-1 calls, modify the parameter here to [ZegoUIKitPrebuilt.OneONoneCall].
+            scenario: {
+                mode: ZegoUIKitPrebuilt.GroupCall, 
+            },
         });
     };
 
     return (
         <div
             className="myCallContainer"
-            ref={myMeeting}
-            style={{ width: '100vw', height: '100vh' }}
+            ref={(element) => {
+                if (element !== null) {
+                    myMeeting(element);
+                }
+            }}
+            style={{ width: '100%', height: '100vh' }}
         ></div>
     );
-};
-
-export default VideoCall;
+}
