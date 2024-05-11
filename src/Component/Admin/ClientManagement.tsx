@@ -177,7 +177,6 @@ export const columns: ColumnDef<Freelancer>[] = [
             const handleBlock = () => {
                 console.log("Block freelancer with ID:", freelancer.id);
             };
-
             return (
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
