@@ -1,4 +1,5 @@
 import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt';
+import { useEffect, useRef } from 'react';
 
 function randomID(len: number): string {
     let result = '';
@@ -19,39 +20,43 @@ export function getUrlParams(url = window.location.href): URLSearchParams {
 
 export default function VideoCallComponent(): JSX.Element {
     const roomID = getUrlParams().get('roomID') || randomID(5);
-    const myMeeting = async (element: HTMLDivElement | null): Promise<void> => {
-        // generate Kit Token
-        const appID = 856049246;
-        const serverSecret = '1e5d739db000dbc2d023a43eec1411c3';
-        const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, randomID(5), randomID(5));
+    const containerRef = useRef<HTMLDivElement>(null);
 
-        // Create instance object from Kit Token.
-        const zp = ZegoUIKitPrebuilt.create(kitToken);
+    useEffect(() => {
+        const myMeeting = async (element: HTMLDivElement | null): Promise<void> => {
+            // generate Kit Token
+            const appID = 856049246;
+            const serverSecret = '1e5d739db000dbc2d023a43eec1411c3';
+            const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, randomID(5), randomID(5));
 
-        // start the call
-        zp.joinRoom({
-            container: element,
-            sharedLinks: [
-                {
-                    name: 'Personal link',
-                    url: `${window.location.protocol}//${window.location.host}${window.location.pathname}?roomID=${roomID}`,
+            // Create instance object from Kit Token.
+            const zp = ZegoUIKitPrebuilt.create(kitToken);
+
+            // start the call
+            zp.joinRoom({
+                container: element,
+                sharedLinks: [
+                    {
+                        name: 'Personal link',
+                        url: `${window.location.protocol}//${window.location.host}${window.location.pathname}?roomID=${roomID}`,
+                    },
+                ],
+                scenario: {
+                    mode: ZegoUIKitPrebuilt.GroupCall,
                 },
-            ],
-            scenario: {
-                mode: ZegoUIKitPrebuilt.GroupCall, 
-            },
-        });
-    };
+            });
+        };
+
+        if (containerRef.current) {
+            myMeeting(containerRef.current);
+        }
+    }, []);
 
     return (
         <div
             className="myCallContainer"
-            ref={(element) => {
-                if (element !== null) {
-                    myMeeting(element);
-                }
-            }}
-            style={{ width: '100%', height: '100vh' }}
-        ></div>
+            ref={containerRef}
+            style={{ width: '100%', height: '80vh' }}>
+        </div>
     );
 }

@@ -1,3 +1,4 @@
+import "./App.css"
 import { Navigate, Route, Routes } from "react-router-dom";
 import SignupPage from "./Pages/AuthPages/SignupPage";
 import LoginPage from "./Pages/AuthPages/LoginPage";
@@ -7,7 +8,6 @@ import VerifyEmail from "./Component/Authentication/VerifyEmail";
 import { RootState } from "./Redux/Store";
 import { useSelector } from "react-redux";
 import LandingPage from "./Component/Home/LandingPage";
-import "./App.css"
 import { useEffect, useState } from "react";
 import HomePages from "./Pages/HomePages/HomePages";
 import { toast } from "react-toastify";
@@ -26,13 +26,13 @@ import ClientProject from "./Component/Client/ClientProject";
 import Settings from "./Component/Freelancer/Settings/Settings";
 import { FreelancerManagement } from "./Component/Admin/FreelancerManagement";
 import { ClientManagement } from "./Component/Admin/ClientManagement";
+import AdminSubscription from "./Component/Admin/Subscription";
 
 
 function App() {
 
   const user = useSelector((state: RootState) => state.userDetails.user);
 
-  user ? console.log("user is authenticated") : console.log("user is not authenticated");
   const [activeComponent, setActiveComponent] = useState("component1");
   const [isProfileComplete, setIsProfileComplete] = useState<boolean>();
 
@@ -72,17 +72,16 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/registration" element={isProfileComplete || user?.role == "CLIENT" ? <Navigate to={"/home"} /> : <Registration activeComponent={activeComponent} handleActiveComponent={handleActiveComponent} />} />
           <Route path="/jobs" element={user ? <Allworks /> : <Navigate to={"/home"} />} />
-          <Route path="/projects" element={<Project />} />
-          <Route path="/projects/addTasks/:commitedProjectId" element={<AddTasks />} />
+          <Route path="/projects" element={user ? user?.role == "FREELANCER" ? <Project /> : <ClientProject /> : <Navigate to={"/login"} />} />
+          <Route path="/projects/addTasks/:commitedProjectId" element={user ? <AddTasks /> : <Navigate to={"/login"} />} />
           <Route path="*" element={<NotFoundPage />} />
-          <Route path="/freelancerMessage" element={<Chat />} />
-          <Route path="/clientMessage" element={<ClientChat />} />
-          <Route path="/videoCall" element={<VideoCallPage />} />
-          <Route path="/sample" element={<Sample />} />
-          <Route path="/clientProject" element={<ClientProject />} />
-          <Route path="/settings/:state/:freelancerId" element={<Settings />} />
-          <Route path="/freelancers" element={<FreelancerManagement />} />
-          <Route path="/clients" element={<ClientManagement />} />
+          <Route path="/message" element={user ? user?.role == "CLIENT" ? <ClientChat /> : <Chat /> : <Navigate to={"/login"} />} />
+          <Route path="/meeting" element={user ? <VideoCallPage /> : <Navigate to={"/login"} />} />
+          <Route path="/sample" element={user ? <Sample /> : <Navigate to={"/login"} />} />
+          <Route path="/settings/:state/:freelancerId" element={user ? <Settings /> : <Navigate to={"/login"} />} />
+          <Route path="/freelancers" element={user ? <FreelancerManagement /> : <Navigate to={"/login"} />} />
+          <Route path="/clients" element={user ? <ClientManagement /> : <Navigate to={"/login"} />} />
+          <Route path="/subscription" element={user ? <AdminSubscription /> : <Navigate to={"/login"} />} />
         </Routes>
       </MessageProvider>
     </ProjectProvider>

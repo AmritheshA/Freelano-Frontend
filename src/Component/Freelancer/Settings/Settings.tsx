@@ -9,7 +9,7 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import Profile from "./Profile";
 import Payment from "./Payment";
-import Pricing from "./Subscription";
+import Pricing from "./Pricing";
 
 
 function Settings() {

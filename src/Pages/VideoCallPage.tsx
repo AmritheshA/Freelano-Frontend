@@ -6,11 +6,7 @@ import { useSelector } from 'react-redux'
 function VideoCallPage() {
 
     const user = useSelector((state: RootState) => state.userDetails.user);
-    console.log("🚀 ~ VideoCallPage ~ user:", user)
-
     
-    
-
     return (
         <div>
             {user.role == "FREELANCER" ? <FreelancerVideoCall/> : <ClientVideoCall />}

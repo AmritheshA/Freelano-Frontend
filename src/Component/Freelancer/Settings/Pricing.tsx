@@ -1,6 +1,6 @@
 import { Button } from '@mui/material';
 
-const Subscription = () => {
+const Pricing = () => {
     return (
         <>
             <div className="bg-background py-16">
@@ -110,4 +110,4 @@ const Subscription = () => {
     );
 };
 
-export default Subscription;
+export default Pricing;
