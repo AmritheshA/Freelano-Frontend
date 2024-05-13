@@ -14,8 +14,11 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Yup from 'yup';
+import axiosInstance from "@/Config/AxiosConfig/axiosConfig";
+import { useSelector } from "react-redux";
+import { RootState } from "@/Redux/Store";
 
 interface FormData {
     username: string;
@@ -27,6 +30,13 @@ function Profile() {
 
     const [coverImage, setCoverImage] = useState<string | null>("https://images.pexels.com/photos/585752/pexels-photo-585752.jpeg?cs=srgb&dl=pexels-ifreestock-585752.jpg&fm=jpg");
     const [profilePic, setProfilePic] = useState<string | null>("https://i.pinimg.com/736x/34/f8/e9/34f8e9e519bbe75d0ded14748469c30d.jpg");
+
+    const user = useSelector((state: RootState) => state.userDetails.user);
+
+
+    useEffect(() => {
+
+    })
 
     const handleCoverImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -59,10 +69,30 @@ function Profile() {
         role: Yup.string().required('Role is required')
     });
 
-    const handleSubmit = (values: FormData) => {
-        // Handle form submission, e.g., send data to backend
-        console.log(values);
+    const handleSubmit = async (values: FormData) => {
+        try {
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            };
+
+            const { username, role, ...payloadWithoutRole } = values;
+            const payload = {
+                userId: user.userId,
+                professionalRole: role,
+                userName: username,
+                ...payloadWithoutRole
+            };
+            console.log(payload);
+            const response = await axiosInstance.put("api/v1/user/editFreelancerProfile", payload, config);
+            console.log(response.data);
+
+        } catch (error) {
+            console.log(error);
+        }
     };
+
     return (
         <div className="flex  gap-3">
             {/* first part */}

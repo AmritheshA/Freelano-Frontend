@@ -216,7 +216,7 @@ function FreelancerSideBar({ children, setUserInfoToChild }: FreelancerSideBarPr
                                             alt="Profile"
                                             className="w-10 h-10 rounded-full"
                                         />
-                                        <h1 className="text-lg poetsen-one-regular">Joseph John</h1>
+                                        <h1 className="text-lg w-[150px] poetsen-one-regular">{userInfo?.userName}</h1>
                                     </div>
                                 </DropdownMenuItem>
 
