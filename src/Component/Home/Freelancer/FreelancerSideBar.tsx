@@ -1,28 +1,23 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
 import { userLogoutAction } from "@/Redux/Actions/UserActions/userActions";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, TypeDispatch } from '@/Redux/Store';
-import axiosInstance from '@/Config/AxiosConfig/axiosConfig';
-import toast from 'react-hot-toast';
-import userFullDetails from "@/Interfaces/userInterface";
 import { DropdownMenuItem } from '@radix-ui/react-dropdown-menu';
 import { FaWallet } from 'react-icons/fa';
+import { FreelancerContext, FreelancerProvider } from '@/Context/UserContext/FreelancerProvider';
 
 
 interface FreelancerSideBarProps {
     children: ReactNode;
-    setUserInfoToChild?: (userInfo: userFullDetails) => void
 }
 
-function FreelancerSideBar({ children, setUserInfoToChild }: FreelancerSideBarProps) {
+function FreelancerSideBar({ children }: FreelancerSideBarProps) {
 
     const [open, setOpen] = useState(true);
-    const user = useSelector((state: RootState) => state.userDetails.user);
     const dispatch = useDispatch<TypeDispatch>();
-    const [userInfo, setUserInfo] = useState<userFullDetails>();
-
+    const { freelancerDetails } = useContext(FreelancerContext);
 
     const Menus = [
         {
@@ -121,28 +116,6 @@ function FreelancerSideBar({ children, setUserInfoToChild }: FreelancerSideBarPr
         },
     ];
 
-    useEffect(() => {
-        if (user) {
-            axiosInstance
-                .get(`/api/v1/user/getAllInfo?userId=${user.userId}&role=${user.role}`)
-                .then((response) => {
-                    if (response.status === 200) {
-                        setUserInfo(response.data);
-                        if (setUserInfoToChild) {
-                            setUserInfoToChild(response.data);
-                        }
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error:", error);
-                    if (error.response && error.response.data) {
-                        toast(error.response.data);
-                    } else {
-                        toast("Something went wrong");
-                    }
-                });
-        }
-    }, [user]);
 
     return (
         <div className="flex bg-white min-h-screen">
@@ -202,7 +175,7 @@ function FreelancerSideBar({ children, setUserInfoToChild }: FreelancerSideBarPr
                         <DropdownMenu>
                             <DropdownMenuTrigger className="">
                                 <img
-                                    src={`${userInfo?.profileImgUrl}`}
+                                    src={`${freelancerDetails?.profileImgUrl}`}
                                     alt="Profile"
                                     className="w-10 h-10 rounded-full"
                                 />
@@ -212,11 +185,11 @@ function FreelancerSideBar({ children, setUserInfoToChild }: FreelancerSideBarPr
                                 <DropdownMenuItem>
                                     <div className="flex items-center justify-center gap-3">
                                         <img
-                                            src={`${userInfo?.profileImgUrl}`}
+                                            src={`${freelancerDetails?.profileImgUrl}`}
                                             alt="Profile"
                                             className="w-10 h-10 rounded-full"
                                         />
-                                        <h1 className="text-lg w-[150px] poetsen-one-regular">{userInfo?.userName}</h1>
+                                        <h1 className="text-lg w-[150px] poetsen-one-regular">{freelancerDetails?.userName}</h1>
                                     </div>
                                 </DropdownMenuItem>
 

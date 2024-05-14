@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Pagination from "@mui/material/Pagination";
-import {useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/select";
 import { useSelector } from "react-redux";
 import { RootState } from "@/Redux/Store";
-import userFullDetails from "@/Interfaces/userInterface";
 import { TechBox } from "../Custom/TechBox";
 import { FaLocationDot } from "react-icons/fa6";
 import { IoIosArrowDown, IoMdTimer } from "react-icons/io";
@@ -32,6 +31,7 @@ import Project from "@/Interfaces/projectInterface";
 import { TableSortLabel } from "@mui/material";
 import { APPLY_JOB } from "@/Graphql/mutation";
 import FreelancerSideBar from "../Home/Freelancer/FreelancerSideBar";
+import { FreelancerContext } from "@/Context/UserContext/FreelancerProvider";
 
 interface City {
   name: string;
@@ -56,7 +56,7 @@ export default function Allworks() {
   ];
 
   const user = useSelector((state: RootState) => state.userDetails.user);
-  const [userInfo, setUserInfo] = useState<userFullDetails>();
+  const { freelancerDetails} = useContext(FreelancerContext);
 
   const [experienceToggle, setExperienceToggle] = useState(false);
   const [projectDurationToggle, setProjectDurationToggle] = useState(false);
@@ -158,12 +158,7 @@ export default function Allworks() {
         });
 
         const responseData = await response.json();
-        console.log(responseData);
-
-        const publicUrl = `https://res.cloudinary.com/${responseData.cloud_name}/image/upload/${responseData.public_id}.pdf`;
-
-
-        console.log(publicUrl);
+        // const publicUrl = `https://res.cloudinary.com/${responseData.cloud_name}/image/upload/${responseData.public_id}.pdf`;
 
         const freelancerId = user.userId;
         await commitProject({
@@ -174,6 +169,7 @@ export default function Allworks() {
             clientId
           },
         });
+        
         toast.success(applyJobData?.applyJob);
 
       } catch (error) {
@@ -201,12 +197,10 @@ export default function Allworks() {
 
   const isDocumentFile = file?.type.startsWith("application/") ?? false;
 
-  const handlePassValue = (data: userFullDetails) => {
-    setUserInfo(data)
-  }
+
 
   return (
-    <FreelancerSideBar setUserInfoToChild={handlePassValue}>
+    <FreelancerSideBar >
 
       <div className="">
         <div className="w-full h-full ">
@@ -712,8 +706,8 @@ export default function Allworks() {
                                       <div
                                         className="w-20 h-20 p-10 rounded-full bg-cover "
                                         style={{
-                                          backgroundImage: `url('${userInfo
-                                            ? userInfo.profileImgUrl
+                                          backgroundImage: `url('${freelancerDetails
+                                            ? freelancerDetails?.profileImgUrl
                                             : "./src/assets/freelancer/profileImage.png"
                                             }')`,
                                         }}
@@ -726,8 +720,8 @@ export default function Allworks() {
                                             <div
                                               className="w-36 h-24 p-36 rounded-full bg-cover"
                                               style={{
-                                                backgroundImage: `url('${userInfo
-                                                  ? userInfo.profileImgUrl
+                                                backgroundImage: `url('${freelancerDetails
+                                                  ? freelancerDetails?.profileImgUrl
                                                   : "./src/assets/freelancer/profileImage.png"
                                                   }')`,
                                               }}

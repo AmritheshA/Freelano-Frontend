@@ -1,13 +1,13 @@
 export default interface userDetails {
   password: string;
-  email: string;
+  email: string | any;
   userName: string;
   role: string;
   token: string;
 }
 
 export default interface DecodedToken {
-  email: string;
+  email: string | any;
   userId: string;
   role: string;
   sub: string;
@@ -16,8 +16,8 @@ export default interface DecodedToken {
 
 export default interface jwtPayload {
   userName: string;
-  email: string;
-  role: string;
+  email: string | any;
+   role: string;
   userId: string;
 }
 

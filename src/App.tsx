@@ -27,6 +27,7 @@ import Settings from "./Component/Freelancer/Settings/Settings";
 import { FreelancerManagement } from "./Component/Admin/FreelancerManagement";
 import { ClientManagement } from "./Component/Admin/ClientManagement";
 import AdminSubscription from "./Component/Admin/Subscription";
+import { FreelancerProvider } from "./Context/UserContext/FreelancerProvider";
 
 
 function App() {
@@ -63,26 +64,28 @@ function App() {
   return (
     <ProjectProvider>
       <MessageProvider>
-        <Routes>
-          <Route path="/login" element={user ? <Navigate to={"/home"} /> : <LoginPage />} />
-          <Route path="/signup" element={user ? <Navigate to={"/home"} /> : <SignupPage />} />
-          <Route path="/home" element={user ? <HomePages user={user} /> : <Navigate to={"/login"} />} />
-          <Route path="/selection" element={<FreelancerReg />} />
-          <Route path="/verifyEmail" element={user ? <Navigate to={"/registration"} /> : <VerifyEmail />} />
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/registration" element={isProfileComplete || user?.role == "CLIENT" ? <Navigate to={"/home"} /> : <Registration activeComponent={activeComponent} handleActiveComponent={handleActiveComponent} />} />
-          <Route path="/jobs" element={user ? <Allworks /> : <Navigate to={"/home"} />} />
-          <Route path="/projects" element={user ? user?.role == "FREELANCER" ? <Project /> : <ClientProject /> : <Navigate to={"/login"} />} />
-          <Route path="/projects/addTasks/:commitedProjectId" element={user ? <AddTasks /> : <Navigate to={"/login"} />} />
-          <Route path="*" element={<NotFoundPage />} />
-          <Route path="/message" element={user ? user?.role == "CLIENT" ? <ClientChat /> : <Chat /> : <Navigate to={"/login"} />} />
-          <Route path="/meeting" element={user ? <VideoCallPage /> : <Navigate to={"/login"} />} />
-          <Route path="/sample" element={user ? <Sample /> : <Navigate to={"/login"} />} />
-          <Route path="/settings/:state/:freelancerId" element={user ? <Settings /> : <Navigate to={"/login"} />} />
-          <Route path="/freelancers" element={user ? <FreelancerManagement /> : <Navigate to={"/login"} />} />
-          <Route path="/clients" element={user ? <ClientManagement /> : <Navigate to={"/login"} />} />
-          <Route path="/subscription" element={user ? <AdminSubscription /> : <Navigate to={"/login"} />} />
-        </Routes>
+        <FreelancerProvider>
+          <Routes>
+            <Route path="/login" element={user ? <Navigate to={"/home"} /> : <LoginPage />} />
+            <Route path="/signup" element={user ? <Navigate to={"/home"} /> : <SignupPage />} />
+            <Route path="/home" element={user ? <HomePages user={user} /> : <Navigate to={"/login"} />} />
+            <Route path="/selection" element={<FreelancerReg />} />
+            <Route path="/verifyEmail" element={user ? <Navigate to={"/registration"} /> : <VerifyEmail />} />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/registration" element={isProfileComplete || user?.role == "CLIENT" ? <Navigate to={"/home"} /> : <Registration activeComponent={activeComponent} handleActiveComponent={handleActiveComponent} />} />
+            <Route path="/jobs" element={user ? <Allworks /> : <Navigate to={"/home"} />} />
+            <Route path="/projects" element={user ? user?.role == "FREELANCER" ? <Project /> : <ClientProject /> : <Navigate to={"/login"} />} />
+            <Route path="/projects/addTasks/:commitedProjectId" element={user ? <AddTasks /> : <Navigate to={"/login"} />} />
+            <Route path="*" element={<NotFoundPage />} />
+            <Route path="/message" element={user ? user?.role == "CLIENT" ? <ClientChat /> : <Chat /> : <Navigate to={"/login"} />} />
+            <Route path="/meeting" element={user ? <VideoCallPage /> : <Navigate to={"/login"} />} />
+            <Route path="/sample" element={user ? <Sample /> : <Navigate to={"/login"} />} />
+            <Route path="/settings/:state/:freelancerId" element={user ? <Settings /> : <Navigate to={"/login"} />} />
+            <Route path="/freelancers" element={user ? <FreelancerManagement /> : <Navigate to={"/login"} />} />
+            <Route path="/clients" element={user ? <ClientManagement /> : <Navigate to={"/login"} />} />
+            <Route path="/subscription" element={user ? <AdminSubscription /> : <Navigate to={"/login"} />} />
+          </Routes>
+        </FreelancerProvider>
       </MessageProvider>
     </ProjectProvider>
   );

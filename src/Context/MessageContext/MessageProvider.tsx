@@ -85,7 +85,7 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children }) =>
         subscription?.unsubscribe();
       };
     }
-  });
+  },[user,stompClient]);
 
 
   const sendMessage = (message: string) => {

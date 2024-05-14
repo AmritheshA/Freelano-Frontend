@@ -14,11 +14,14 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Textarea } from "@/components/ui/textarea";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import * as Yup from 'yup';
 import axiosInstance from "@/Config/AxiosConfig/axiosConfig";
 import { useSelector } from "react-redux";
 import { RootState } from "@/Redux/Store";
+import { FreelancerContext } from "@/Context/UserContext/FreelancerProvider";
+import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 interface FormData {
     username: string;
@@ -27,40 +30,107 @@ interface FormData {
 }
 
 function Profile() {
+    const { freelancerDetails, setFreelancerDetails } = useContext(FreelancerContext);
 
-    const [coverImage, setCoverImage] = useState<string | null>("https://images.pexels.com/photos/585752/pexels-photo-585752.jpeg?cs=srgb&dl=pexels-ifreestock-585752.jpg&fm=jpg");
-    const [profilePic, setProfilePic] = useState<string | null>("https://i.pinimg.com/736x/34/f8/e9/34f8e9e519bbe75d0ded14748469c30d.jpg");
+    const [coverImage, setCoverImage] = useState('');
+    const [profilePic, setProfilePic] = useState('');
+    const [about, setAbout] = useState('');
 
     const user = useSelector((state: RootState) => state.userDetails.user);
 
-
     useEffect(() => {
+        if (freelancerDetails) {
+            setCoverImage(freelancerDetails.coverImage);
+            setProfilePic(freelancerDetails.profileImgUrl);
+            setAbout(freelancerDetails?.description);
+        }
+    }, [freelancerDetails]);
 
-    })
 
-    const handleCoverImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+    const handleCoverImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
+
         if (file) {
             setCoverImage(URL.createObjectURL(file));
+
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("upload_preset", "ml_default");
+            try {
+                const response = await fetch(import.meta.env.VITE_CLOUDINARY_URL, {
+                    method: "POST",
+                    body: formData,
+                });
+
+                const responseData = await response.json();
+
+                const config = {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                };
+
+
+                const responseFromBackend = await axiosInstance.
+                    put(`/api/v1/user/updateProfileImage?freelancerId=${freelancerDetails.freelancersAuthId}&image=${responseData.secure_url}&coverImage=${true}`, config)
+
+                toast.success(responseFromBackend.data);
+
+                setFreelancerDetails((prevFreelancerDetails) => ({
+                    ...prevFreelancerDetails,
+                    coverImage: responseData?.secure_url
+                }));
+
+            } catch (error) {
+                console.error("Error uploading file to Cloudinary:", error);
+            }
+
         }
     };
 
-    const handleProfilePicChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleProfilePicChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
             setProfilePic(URL.createObjectURL(file));
-        }
-    };
 
-    const submitImageChange = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        console.log("hello");
-    };
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("upload_preset", "ml_default");
 
+            try {
+                const cloudinaryResponse = await fetch(import.meta.env.VITE_CLOUDINARY_URL, {
+                    method: "POST",
+                    body: formData,
+                });
+
+                const cloudinaryData = await cloudinaryResponse.json();
+
+                const config = {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                };
+
+                const responseFromBackend = await axiosInstance.put(`/api/v1/user/updateProfileImage?freelancerId=${freelancerDetails?.freelancersAuthId}&image=${cloudinaryData.secure_url}&coverImage=${false}`, config);
+
+                setFreelancerDetails((prevFreelancerDetails) => ({
+                    ...prevFreelancerDetails,
+                    profileImgUrl: cloudinaryData.secure_url,
+                }));
+
+                toast.success(responseFromBackend.data);
+            } catch (error) {
+                console.error("Error uploading file to Cloudinary | updating image:", error);
+            }
+
+
+        };
+    }
     const initialValues: FormData = {
-        username: '',
-        location: 'India',
-        role: 'Java Full Stack Dev'
+        username: freelancerDetails?.userName,
+        location: freelancerDetails?.country,
+        role: freelancerDetails?.professionalRole
     };
 
     const validationSchema = Yup.object().shape({
@@ -81,17 +151,44 @@ function Profile() {
             const payload = {
                 userId: user.userId,
                 professionalRole: role,
+                country: location,
                 userName: username,
                 ...payloadWithoutRole
             };
-            console.log(payload);
-            const response = await axiosInstance.put("api/v1/user/editFreelancerProfile", payload, config);
-            console.log(response.data);
 
+            await axiosInstance.put("api/v1/user/editFreelancerProfile", payload, config);
+
+            toast.success("Updated Successfully")
+
+            setFreelancerDetails((prevFreelancerDetails) => ({
+                ...prevFreelancerDetails,
+                professionalRole: role,
+                userName: values.username,
+            }));
         } catch (error) {
             console.log(error);
         }
     };
+
+    const onAboutUpdate = async () => {
+        try {
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            };
+            const response = await axiosInstance.put(`/api/v1/user/updateAbout?freelancerId=${freelancerDetails.freelancersAuthId}`, { about }, config);
+
+            toast.success(response.data);
+
+            setFreelancerDetails((prevFreelancerDetails) => ({
+                ...prevFreelancerDetails,
+                description: about
+            }));
+        } catch (error) {
+
+        }
+    }
 
     return (
         <div className="flex  gap-3">
@@ -102,13 +199,13 @@ function Profile() {
                     <div className="bg-cover bg-no-repeat h-[55%] w-full relative">
                         <div
                             style={{
-                                backgroundImage: `url(https://www.gagandevelopers.com/wp-content/uploads/2023/01/contact-us-gagan-developers-1.png)`,
+                                backgroundImage: `url(${freelancerDetails?.coverImage})`,
                             }}
                             className="h-full w-full bg-cover"
                         >
                             <div className="bg-white absolute -bottom-16 left-8 rounded-full p-2 shadow-2xl">
                                 <img
-                                    src="https://media.licdn.com/dms/image/C4E03AQFXQDabVRTEfQ/profile-displayphoto-shrink_800_800/0/1655121851261?e=2147483647&v=beta&t=tpj_avQmD2NTSYF3VuiqaM8DGOQ-6BvJiudN3ZCyj0s"
+                                    src={`${freelancerDetails?.profileImgUrl}`}
                                     alt="Profile"
                                     className="w-44 h-44 rounded-full"
                                 />
@@ -119,17 +216,20 @@ function Profile() {
                         <div className="flex justify-end w-full h-full p-2 gap-2">
 
                             <div className="w-[50%] h-full items-start">
-                                <h1 className="poetsen-one-regular font-bold text-5xl mt-4">Amrithesh A</h1>
-                                <h1 className="mt-3 text-lg text-slate-500">Full Stack Java Developer</h1>
+                                <h1 className="poetsen-one-regular font-bold text-5xl mt-4">{freelancerDetails?.userName}</h1>
+                                <h1 className="mt-3 text-lg text-slate-500">{freelancerDetails?.professionalRole}</h1>
                                 <div className="flex items-center gap-2 mt-1">
                                     <h1 className="text-lg text-slate-500">
-                                        India, Kerala
+                                        {freelancerDetails?.country}, {freelancerDetails?.district}
                                     </h1>
                                 </div>
                                 <div className="mt-2">
-                                    <Button variant="outlined" color="warning">
-                                        Browse Projects
-                                    </Button>
+                                    <Link to={"/jobs"}>
+                                        <Button variant="outlined" color="warning">
+                                            Browse Projects
+                                        </Button>
+                                    </Link>
+
                                 </div>
                             </div>
                             <div className=" w-[25%] h-full ">
@@ -144,24 +244,18 @@ function Profile() {
                                             <AlertDialogHeader>
                                                 <AlertDialogTitle>Edit Details</AlertDialogTitle>
                                                 <AlertDialogDescription className="min-h-[500px]">
-                                                    <form className="w-full space-y-2" onSubmit={submitImageChange}>
+                                                    <form className="w-full space-y-2">
                                                         <label htmlFor="cover" className="flex w-full h-32 relative rounded-md border items-center cursor-grabbing overflow-hidden">
 
                                                             <input type="file" className="hidden" id="cover" onChange={handleCoverImageChange} />
 
-                                                            {coverImage && <img src={coverImage} alt="Cover" className="h-full w-full object-cover absolute left-0" />}
+                                                            <img src={coverImage} alt="Cover" className="h-full w-full object-cover absolute left-0" />
 
                                                             <label htmlFor="icon" className="size-28 rounded-full absolute left-4 cursor-pointer z-10 overflow-hidden p-1 bg-white">
                                                                 <input type="file" className="hidden" id="icon" onChange={handleProfilePicChange} />
-                                                                {profilePic && <img src={profilePic} alt="Icon" className="size-full rounded-full object-cover" />}
+                                                                <img src={profilePic} alt="Icon" className="size-full rounded-full object-cover" />
                                                             </label>
-
                                                         </label>
-                                                        <div className="flex justify-end">
-                                                            <button type="submit" className="w-[100px] flex items-center justify-center h-10 bg-primary rounded-md font-semibold text-white text-[14px] false undefined">
-                                                                Update
-                                                            </button>
-                                                        </div>
                                                     </form>
 
                                                     <div className="p-4 mt-4 bg-gray-100 rounded-md">
@@ -238,7 +332,8 @@ function Profile() {
                                     <AlertDialogDescription>
                                         <div className="">
                                             <Textarea
-                                                value="  I am a self-taught Full Stack Java Spring Boot developer. Eager to navigate the complexities of developingscalable distributed systems, and passionate about effective problem-solving and committed to craftingcode that is not only functional but also prioritizes speed, security, and high readability"
+                                                value={about}
+                                                onChange={(even) => setAbout(even.target.value)}
                                                 className="min-h-[150px]"
                                                 placeholder="Type your message here."
                                             />
@@ -250,6 +345,7 @@ function Profile() {
                                     <button
                                         type="button"
                                         className="rounded-md bg-indigo-500 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+                                        onClick={onAboutUpdate}
                                     >
                                         Update
                                     </button>
@@ -259,9 +355,7 @@ function Profile() {
                     </div>
                     <div>
                         <p className="text-black font-medium poetsen-one-regular py-2 m-h-[100px] max-h-[200px] ml-5">
-                            I am a self-taught Full Stack Java Spring Boot developer. Eager to navigate the complexities of developing
-                            scalable distributed systems, and passionate about effective problem-solving and committed to crafting
-                            code that is not only functional but also prioritizes speed, security, and high readability
+                            {freelancerDetails?.description}
                         </p>
                     </div>
                 </div>

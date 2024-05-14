@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FaLocationDot } from "react-icons/fa6";
 import { SiLevelsdotfyi } from "react-icons/si";
 import { TechBox } from "../../Custom/TechBox";
@@ -10,11 +10,13 @@ import { useQuery } from "@apollo/client";
 import { GET_RECOMMANDED_PROJECTS } from "@/Graphql/query";
 import Project from "@/Interfaces/projectInterface";
 import FreelancerSideBar from "./FreelancerSideBar";
+import { FreelancerContext } from "@/Context/UserContext/FreelancerProvider";
 
 export default function FreelancerHome() {
 
 
-  const [userInfo, setUserInfo] = useState<userFullDetails>();
+
+  const {freelancerDetails} = useContext(FreelancerContext);
   const user = useSelector((state: RootState) => state.userDetails.user);
 
   const [projects, setProjects] = useState<Project[]>([]);
@@ -26,14 +28,9 @@ export default function FreelancerHome() {
     }
   }, [data]);
 
-  const handlePassingValue = (data: userFullDetails) => {
-    setUserInfo(data);
-  }
-
-
-
+  
   return (
-    <FreelancerSideBar setUserInfoToChild={handlePassingValue} >
+    <FreelancerSideBar >
       <div className="flex justify-center w-[75%] mt-20">
         <div className="flex justify-between w-full items-center ">
           <h1 className="font-semibold text-2xl ">Recommended Jobs</h1>
@@ -188,8 +185,8 @@ export default function FreelancerHome() {
                           <div
                             className="w-20 h-20 p-10 rounded-full bg-cover "
                             style={{
-                              backgroundImage: `url('${userInfo
-                                ? userInfo.profileImgUrl
+                              backgroundImage: `url('${freelancerDetails
+                                ? freelancerDetails.profileImgUrl
                                 : "./src/assets/freelancer/profileImage.png"
                                 }')`,
                             }}
@@ -202,8 +199,8 @@ export default function FreelancerHome() {
                                 <div
                                   className="w-36 h-24 p-36 rounded-full bg-cover"
                                   style={{
-                                    backgroundImage: `url('${userInfo
-                                      ? userInfo.profileImgUrl
+                                    backgroundImage: `url('${freelancerDetails
+                                      ? freelancerDetails.profileImgUrl
                                       : "./src/assets/freelancer/profileImage.png"
                                       }')`,
                                   }}
