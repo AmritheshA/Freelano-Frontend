@@ -3,7 +3,7 @@ export default interface FreelancerInterface {
     freelancersAuthId: string;
     professionalRole: string;
     userName: string;
-    email: string | null;
+    email: string;
     description: string;
     service: string | null;
     profileImgUrl: string;
@@ -16,7 +16,7 @@ export default interface FreelancerInterface {
     district: string;
     city: string;
     zipCode: string | null;
-    mobileNumber: string | null;
+    mobileNumber: string;
     skills: string[];
     education: EducationData[];
     experience: ExperienceData[];

@@ -34,7 +34,13 @@ function Profile() {
 
     const [coverImage, setCoverImage] = useState('');
     const [profilePic, setProfilePic] = useState('');
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
+    const [dob, setDob] = useState('');
     const [about, setAbout] = useState('');
+    const [oldPassword, setOldPassword] = useState('');
+    const [newPassword, setNewpassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
 
     const user = useSelector((state: RootState) => state.userDetails.user);
 
@@ -43,10 +49,11 @@ function Profile() {
             setCoverImage(freelancerDetails.coverImage);
             setProfilePic(freelancerDetails.profileImgUrl);
             setAbout(freelancerDetails?.description);
+            setEmail(freelancerDetails?.email);
+            setPhone(freelancerDetails?.mobileNumber);
+            setDob(freelancerDetails?.dateOfBirth.substring(0, 10));
         }
     }, [freelancerDetails]);
-
-
 
     const handleCoverImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -189,6 +196,45 @@ function Profile() {
 
         }
     }
+
+    const handlePersonalDetails = async (event: React.ChangeEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        try {
+            const payload = {
+                phone,
+                dateOfBirth: dob,
+                userAuthId: freelancerDetails.freelancersAuthId
+            }
+            const response = await axiosInstance.put("/api/v1/user/editPersonalDetails", payload);
+
+            setFreelancerDetails((prevFreelancerDetails) => ({
+                ...prevFreelancerDetails,
+                dateOfBirth: dob,
+                mobileNumber: phone,
+            }));
+
+            toast.success(response.data);
+        } catch (error) {
+
+        }
+    }
+
+    const handleRestPassword = async (event: React.ChangeEvent<HTMLElement>) => {
+        event.preventDefault();
+
+        try {
+            if (oldPassword != '' || newPassword != '' && newPassword == confirmPassword) {
+                const response = await axiosInstance.put(`/api/v1/auth/restFreelancerPassword?freelancerId=${freelancerDetails?.freelancersAuthId}&oldPassword=${oldPassword}&newPassword=${newPassword}`);
+                toast.success(response.data);
+            } else {
+                toast.info("new password and confirm password not match ")
+            }
+        } catch (error: any) {
+            toast.error(error?.response?.data);
+        }
+    }
+
 
     return (
         <div className="flex  gap-3">
@@ -369,7 +415,7 @@ function Profile() {
                         </IconButton>
                     </div>
                     <div className="flex gap-2 p-3">
-                        {Array("java", "spring boot", "react", "node js").map((skill) => (
+                        {freelancerDetails?.skills.map((skill) => (
                             <TechBox value={skill} />
                         ))}
                     </div>
@@ -383,13 +429,13 @@ function Profile() {
                             <IoMdAddCircle size={32} />
                         </IconButton>
                     </div>
-                    {Array(2).fill(null).map((_, index) => (
+                    {freelancerDetails?.experience.map((experience, index) => (
                         <div key={index} className="m-5 border-b-2">
                             <div className="flex justify-between items-center">
                                 <div>
-                                    <h1 className="text-lg font-bold px-4 text-black">Sinor Java Dev</h1>
+                                    <h1 className="text-lg font-bold px-4 text-black">{experience.workTitle}</h1>
                                     <h1 className="text-md font-semibold px-4">
-                                        Brototype <span className="text-sm text-black">2023 - 2024</span>
+                                        {experience.company} <span className="text-sm text-black">{experience.startDate} - {experience.endDate}</span>
                                     </h1>
                                 </div>
                                 <div className="flex items-center gap-3 mr-5">
@@ -398,7 +444,7 @@ function Profile() {
                                 </div>
                             </div>
                             <p className="mt-3 w-[92%] p-4">
-                                is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, whe n an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but
+                                {experience.description}
                             </p>
                         </div>
                     ))}
@@ -413,16 +459,16 @@ function Profile() {
                             <IoMdAddCircle size={32} />
                         </IconButton>
                     </div>
-                    {Array(4).fill(null).map((_, index) => (
+                    {freelancerDetails?.education.map((education, index) => (
                         <div key={index} className="m-5 border-b-2">
                             <div className="flex justify-between items-center">
                                 <div>
-                                    <h1 className="text-lg font-bold px-4 text-black">Higher Secondary</h1>
+                                    <h1 className="text-lg font-bold px-4 text-black">{education.school}</h1>
                                     <h1 className="text-md font-semibold px-4">
-                                        Computer Science
+                                        {education.fieldOfStudy}
                                     </h1>
                                     <h1 className="text-md font-semibold px-4">
-                                        Collage Of Eng <span className="text-sm ml-4 text-black">2023 - 2024</span>
+                                        {education.degree} <span className="text-sm ml-4 text-black">{education.duration}</span>
                                     </h1>
                                 </div>
                                 <div className="flex items-center gap-3 mr-5">
@@ -431,7 +477,7 @@ function Profile() {
                                 </div>
                             </div>
                             <p className="mt-3 w-[92%] p-4">
-                                is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, whe n an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but
+                                {education.description}
                             </p>
                         </div>
                     ))}
@@ -462,7 +508,8 @@ function Profile() {
                                                     <input
                                                         id="email"
                                                         type="email"
-                                                        defaultValue="amrithesh0000@gmail.com"
+                                                        defaultValue={email}
+                                                        disabled={true}
                                                         className="flex-grow rounded-md border bg-background border-gray-300 px-3 py-2"
                                                         placeholder="Email"
                                                     />
@@ -475,7 +522,8 @@ function Profile() {
                                                     <input
                                                         id="phone"
                                                         type="tel"
-                                                        defaultValue="9961811304"
+                                                        value={phone}
+                                                        onChange={(eve) => { setPhone(eve.target.value) }}
                                                         className="flex-grow rounded-md border bg-background border-gray-300 px-3 py-2"
                                                         placeholder="Phone"
                                                     />
@@ -488,27 +536,15 @@ function Profile() {
                                                     <input
                                                         id="dob"
                                                         type="date"
-                                                        defaultValue="2005-12-27"
+                                                        value={dob}
+                                                        onChange={(eve) => { console.log(eve.target.value) }}
                                                         className="flex-grow rounded-md border bg-background border-gray-300 px-3 py-2"
                                                         placeholder="Date of Birth"
                                                     />
                                                 </div>
-
-                                                <div className="flex items-center gap-4">
-                                                    <label htmlFor="address">
-                                                        <FaAddressBook color="gray" size={22} />
-                                                    </label>
-                                                    <input
-                                                        id="address"
-                                                        type="text"
-                                                        defaultValue="Divyalayam(HO), Wayanad, Kerala"
-                                                        className="flex-grow rounded-md border bg-background border-gray-300 px-3 py-2"
-                                                        placeholder="Address"
-                                                    />
-                                                </div>
                                             </div>
                                             <div className="flex justify-end mt-2">
-                                                <Button variant="outlined" >Update</Button>
+                                                <Button onClick={handlePersonalDetails} variant="outlined" >Update</Button>
                                             </div>
                                         </form>
                                         <form>
@@ -521,10 +557,11 @@ function Profile() {
                                                         <input
                                                             id="password"
                                                             type="password"
+                                                            value={oldPassword}
+                                                            onChange={(eve) => setOldPassword(eve.target.value)}
                                                             name="password"
-                                                            // onChange={formik.handleChange}
                                                             className="flex-grow rounded-md border bg-background border-gray-300 px-3 py-2"
-                                                            placeholder="Password"
+                                                            placeholder="Old password"
                                                         />
                                                     </div>
 
@@ -535,9 +572,11 @@ function Profile() {
                                                         <input
                                                             id="newPassword"
                                                             type="password"
+                                                            min={6}
+                                                            required
+                                                            value={newPassword}
+                                                            onChange={(eve) => setNewpassword(eve.target.value)}
                                                             name="newPassword"
-                                                            // value={formik.values.resetPassword}
-                                                            // onChange={formik.handleChange}
                                                             className="flex-grow rounded-md border bg-background border-gray-300 px-3 py-2"
                                                             placeholder="New Password"
                                                         />
@@ -550,18 +589,19 @@ function Profile() {
                                                         <input
                                                             id="confirmPassword"
                                                             type="password"
+                                                            value={confirmPassword}
+                                                            onChange={(eve) => setConfirmPassword(eve.target.value)}
                                                             name="confirmPassword"
-                                                            // value={formik.values.resetPassword}
-                                                            // onChange={formik.handleChange}
                                                             className="flex-grow rounded-md border bg-background border-gray-300 px-3 py-2"
                                                             placeholder="Confirm Password"
                                                         />
                                                     </div>
+                                                    {newPassword != confirmPassword && <p className="ml-10 text-red-800">Passwords do not match !!</p>}
                                                 </div>
                                             </div>
                                             <div className="flex justify-end mt-2 gap-2">
                                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                <Button variant="outlined">Update</Button>
+                                                <Button onClick={handleRestPassword} variant="outlined">Update</Button>
                                             </div>
                                         </form>
 
@@ -576,28 +616,28 @@ function Profile() {
                         <IoMdMail color="gray " size={22} />
                         <div>
                             <h1 className="poetsen-one-regular text-black  tracking-wider">Email</h1>
-                            <h1 className="poetsen-one-regular text-slate-500 mt-1 tracking-wider">amrithesh0000@gmail.com</h1>
+                            <h1 className="poetsen-one-regular text-slate-500 mt-1 tracking-wider">{freelancerDetails?.email}</h1>
                         </div>
                     </div>
                     <div className="flex items-start gap-4 p-3">
                         <IoMdCall color="gray " size={28} />
                         <div>
                             <h1 className="poetsen-one-regular text-slate-800 tracking-wider">Phone</h1>
-                            <h1 className="poetsen-one-regular text-slate-500 mt-1 tracking-widest">9961811304</h1>
+                            <h1 className="poetsen-one-regular text-slate-500 mt-1 tracking-widest">{freelancerDetails?.mobileNumber}</h1>
                         </div>
                     </div>
                     <div className="flex items-start gap-4 p-3">
                         <IoMdMail color="gray " size={22} />
                         <div>
                             <h1 className="poetsen-one-regular text-slate-800 tracking-wider">Date Of Brith</h1>
-                            <h1 className="poetsen-one-regular text-slate-500 mt-1 tracking-wider">27-12-2005</h1>
+                            <h1 className="poetsen-one-regular text-slate-500 mt-1 tracking-wider">{freelancerDetails?.dateOfBirth.substring(0, 10)}</h1>
                         </div>
                     </div>
                     <div className="flex items-start gap-4 p-3">
                         <FaAddressBook color="gray " size={22} />
                         <div>
                             <h1 className="poetsen-one-regular text-slate-800 tracking-wider">Address</h1>
-                            <h1 className="poetsen-one-regular text-slate-500 mt-1 tracking-wider">Divyalayam(HO), Wayanad, Kerala</h1>
+                            <h1 className="poetsen-one-regular text-slate-500 mt-1 tracking-wider">{freelancerDetails?.streetAddress}(HO), {freelancerDetails?.district}, {freelancerDetails?.country}</h1>
                         </div>
                     </div>
                 </div>
