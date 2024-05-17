@@ -28,6 +28,8 @@ import { FreelancerManagement } from "./Component/Admin/FreelancerManagement";
 import { ClientManagement } from "./Component/Admin/ClientManagement";
 import AdminSubscription from "./Component/Admin/Subscription";
 import { FreelancerProvider } from "./Context/UserContext/FreelancerProvider";
+import Payment from "./Component/Freelancer/Payment";
+import Complete from "./Component/Freelancer/Complete";
 
 
 function App() {
@@ -84,6 +86,8 @@ function App() {
             <Route path="/freelancers" element={user ? <FreelancerManagement /> : <Navigate to={"/login"} />} />
             <Route path="/clients" element={user ? <ClientManagement /> : <Navigate to={"/login"} />} />
             <Route path="/subscription" element={user ? <AdminSubscription /> : <Navigate to={"/login"} />} />
+            <Route path="/payment" element={<Payment />} />
+            <Route path="/complete" element={<Complete />} />
           </Routes>
         </FreelancerProvider>
       </MessageProvider>

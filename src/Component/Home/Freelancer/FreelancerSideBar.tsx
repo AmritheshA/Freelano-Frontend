@@ -1,12 +1,14 @@
-import { ReactNode, useContext, useEffect, useState } from 'react';
+import { ReactNode, useContext, useState } from 'react';
 import { Link } from 'react-router-dom'
 import { userLogoutAction } from "@/Redux/Actions/UserActions/userActions";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu";
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState, TypeDispatch } from '@/Redux/Store';
+import { useDispatch } from 'react-redux';
+import { TypeDispatch } from '@/Redux/Store';
 import { DropdownMenuItem } from '@radix-ui/react-dropdown-menu';
 import { FaWallet } from 'react-icons/fa';
-import { FreelancerContext, FreelancerProvider } from '@/Context/UserContext/FreelancerProvider';
+import { FreelancerContext } from '@/Context/UserContext/FreelancerProvider';
+import arrow from "@/assets/freelancer/image.png"
+import logo from "@/assets/ogLogo.png"
 
 
 interface FreelancerSideBarProps {
@@ -124,14 +126,14 @@ function FreelancerSideBar({ children }: FreelancerSideBarProps) {
                     } bg-dark-purple h-full p-5  pt-8 sticky left-0 top-0 duration-300`}
             >
                 <img
-                    src="./src/assets/freelancer/image.png"
+                    src={arrow}
                     className={`absolute cursor-pointer -right-3  top-9 w-7 border-dark-purple
        border-2 rounded-full  ${!open && "rotate-180"}`}
                     onClick={() => setOpen(!open)}
                 />
                 <div className="flex gap-x-4 items-center ">
                     <img
-                        src="./src/assets/ogLogo.png"
+                        src={logo}
                         className={`cursor-pointer sm:w-40 sm:h-30 duration-500 ${open && "rotate-[360deg]"
                             }`}
                     />

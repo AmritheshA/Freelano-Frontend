@@ -145,6 +145,16 @@ export default function Allworks() {
     }
   };
 
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const droppedFiles = e.dataTransfer.files;
+    if (droppedFiles.length > 0) {
+      const droppedFile = droppedFiles[0];
+      setFile(droppedFile);
+      setPreview(URL.createObjectURL(droppedFile));
+    }
+  };
+
   const handleSubmit = async (projectId: string, clientId: string, event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (file) {
@@ -176,16 +186,6 @@ export default function Allworks() {
         console.error("Error uploading file to Cloudinary:", error);
       }
       modalRef.current?.close();
-    }
-  };
-
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const droppedFiles = e.dataTransfer.files;
-    if (droppedFiles.length > 0) {
-      const droppedFile = droppedFiles[0];
-      setFile(droppedFile);
-      setPreview(URL.createObjectURL(droppedFile));
     }
   };
 

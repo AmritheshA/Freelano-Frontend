@@ -20,7 +20,7 @@ export interface messageType {
   senderId: string
   messageType: string;
   messageData: string;
-  role:string;
+  role: string;
   timestamp: Date;
 }
 
@@ -74,8 +74,6 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children }) =>
     if (stompClient && user) {
       const subscription = stompClient.subscribe(`/queue/message/${user.userId}`, (payload: any) => {
         const message = JSON.parse(payload.body);
-        console.log("🚀 ~ subscription ~ message:", message)
-
         if (message) {
           setReceivedMessages(prevMessages => [...prevMessages, message]);
         }
@@ -85,14 +83,13 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children }) =>
         subscription?.unsubscribe();
       };
     }
-  },[user,stompClient]);
+  }, [user, stompClient]);
 
 
   const sendMessage = (message: string) => {
 
-    const messageObj: messageType = { messageData: message, senderId: user.userId, role: user.role, contactId, messageType: typeof message, timestamp: new Date() };    
+    const messageObj: messageType = { messageData: message, senderId: user.userId, role: user.role, contactId, messageType: typeof message, timestamp: new Date() };
     setReceivedMessages(prevMessages => [...prevMessages, messageObj]);
-
 
     stompClient.send(
       `/app/client-message/${contactId}`,
