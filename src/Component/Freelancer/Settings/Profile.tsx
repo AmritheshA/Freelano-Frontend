@@ -42,9 +42,11 @@ function Profile() {
     const [newPassword, setNewpassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
+
     const user = useSelector((state: RootState) => state.userDetails.user);
 
     useEffect(() => {
+
         if (freelancerDetails) {
             setCoverImage(freelancerDetails.coverImage);
             setProfilePic(freelancerDetails.profileImgUrl);

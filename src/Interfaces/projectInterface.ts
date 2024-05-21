@@ -3,6 +3,7 @@ export default interface Project {
     projectTitle:string
     category:string
     skills:[string]
+    submittedVideoURL:string
     jobDescription:string
     projectDuration:string
     experienceLevel:string
@@ -14,3 +15,5 @@ export default interface Project {
     clientId:string
     freelancerId:string
   }
+
+  

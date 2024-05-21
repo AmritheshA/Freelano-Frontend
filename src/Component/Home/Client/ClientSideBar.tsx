@@ -6,14 +6,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState, TypeDispatch } from '@/Redux/Store';
 import axiosInstance from '@/Config/AxiosConfig/axiosConfig';
 import toast from 'react-hot-toast';
-import userFullDetails from "@/Interfaces/userInterface";
 import { DropdownMenuItem } from '@radix-ui/react-dropdown-menu';
 import { FaWallet } from 'react-icons/fa';
 
 
 interface FreelancerSideBarProps {
     children: ReactNode;
-    setUserInfoToChild?: (userInfo: userFullDetails) => void
+    setUserInfoToChild?: (userInfo: Client) => void
 }
 
 function ClientSideBar({ children, setUserInfoToChild }: FreelancerSideBarProps) {
@@ -21,8 +20,9 @@ function ClientSideBar({ children, setUserInfoToChild }: FreelancerSideBarProps)
     const [open, setOpen] = useState(true);
     const user = useSelector((state: RootState) => state.userDetails.user);
     const dispatch = useDispatch<TypeDispatch>();
-    const [userInfo, setUserInfo] = useState<userFullDetails>();
+    const [userInfo, setUserInfo] = useState<Client>();
 
+    console.log("🚀 ~ ClientSideBar ~ userInfo:", userInfo)
 
     const Menus = [
         {
@@ -104,6 +104,8 @@ function ClientSideBar({ children, setUserInfoToChild }: FreelancerSideBarProps)
         },
     ];
 
+
+
     useEffect(() => {
         if (user) {
             axiosInstance
@@ -126,7 +128,7 @@ function ClientSideBar({ children, setUserInfoToChild }: FreelancerSideBarProps)
                 });
         }
     }, [user]);
-    
+
 
     return (
         <div className="flex bg-white min-h-screen">
@@ -208,12 +210,12 @@ function ClientSideBar({ children, setUserInfoToChild }: FreelancerSideBarProps)
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
                                         <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                                     </svg>
-                                    <Link to={`/settings/1/skldjflsjdfjs`} >Your profile</Link>
+                                    <Link to={`/settings/1/${userInfo?.clientAuthId}`} >Your profile</Link>
                                 </DropdownMenuItem>
 
                                 <DropdownMenuItem className="px-3 py-2 rounded-md hover:bg-gray-100 transition-colors cursor-pointer flex items-center gap-2">
                                     <FaWallet color="gray" className="ml-1" />
-                                    <Link to={`/settings/2/sdjfsdjfsdflj`}>Payments</Link>
+                                    <Link to={`/settings/2/${userInfo?.clientAuthId}`}>Payments</Link>
                                 </DropdownMenuItem>
 
                                 {/* <DropdownMenuItem className="px-3 py-2 rounded-md hover:bg-gray-100 transition-colors cursor-pointer flex items-center gap-2">

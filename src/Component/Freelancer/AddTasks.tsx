@@ -45,14 +45,15 @@ import { DatePickerWithRange } from '../Custom/DatePickerWithRange';
 import { DateRange } from 'react-day-picker';
 import { Textarea } from '@/components/ui/textarea';
 import { useMutation } from '@apollo/client';
-import { CREATE_PROJECT_TASK, REMOVE_COMMITED_PROJECT_TASK, STATUS_CHANGE } from '@/Graphql/mutation';
+import { CREATE_PROJECT_TASK, MARK_AS_COMPLETE, REMOVE_COMMITED_PROJECT_TASK, STATUS_CHANGE } from '@/Graphql/mutation';
 import CommitedProject, { ProjectContext, Task } from '@/Context/ProjectContext/ProjectProvider ';
 import EditTaskModal from '../Custom/Modal/editTaskModal';
 import FreelancerSideBar from '../Home/Freelancer/FreelancerSideBar';
-import { toast } from 'react-toastify';
-import axiosInstance from '@/Config/AxiosConfig/axiosConfig';
 import axios from 'axios';
-import CircularProgressWithLabel from '@/components/ui/CircularProgressWithLabel';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/Redux/Store';
+import { Alert } from '@mui/material';
+import { CheckIcon } from 'lucide-react';
 
 
 const AddTasks = () => {
@@ -62,14 +63,18 @@ const AddTasks = () => {
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [description, setDescription] = useState("");
+    const user = useSelector((state: RootState) => state.userDetails.user);
+
+    const { projects, setProjects } = useContext(ProjectContext);
 
     const [commitedProject, setCommitedProject] = useState<CommitedProject>();
     const [createTask, { data: createdTask }] = useMutation(CREATE_PROJECT_TASK);
     const [removeTaskMethod] = useMutation(REMOVE_COMMITED_PROJECT_TASK);
+    const [markAsCompleted] = useMutation(MARK_AS_COMPLETE, { variables: { freelancerId: projects } });
     const [changeProgression, { data: changedStatus }] = useMutation(STATUS_CHANGE);
+    const [showAlert, setShowAlert] = useState<boolean>();
     const { commitedProjectId } = useParams()
 
-    const { projects, setProjects } = useContext(ProjectContext);
 
 
     const modalRef = useRef<HTMLDialogElement | null>(null);
@@ -86,31 +91,38 @@ const AddTasks = () => {
 
 
 
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (file) {
-            const formData = new FormData();
 
+            const formData = new FormData();
             formData.append("file", file);
             formData.append("upload_preset", "ml_default");
-            console.log(file);
 
             const headers = {
                 'X-Unique-Upload-Id': `${Date.now()}-${Math.random()}`,
             };
 
             try {
+                setShowAlert(true);
+
+                setInterval(() => {
+                    setShowAlert(false);
+                }, 5000);
+
+                modalRef.current?.close();
+
                 const response = await axios.post("https://api.cloudinary.com/v1_1/duktwv58k/video/upload", formData, {
                     headers,
                 });
-                
 
-                toast.success("Uploaded");
+                markAsCompleted({ variables: { freelancerId: user.userId, projectId: commitedProjectId, videoURL: response.data?.secure_url } })
+
 
             } catch (error) {
                 console.error("Error uploading file to Cloudinary:", error);
             }
-            modalRef.current?.close();
 
         }
     };
@@ -262,6 +274,14 @@ const AddTasks = () => {
     return (
         <FreelancerSideBar>
             <h1 className="text-2xl font-bold mb-8">Tasks</h1>
+            {showAlert && (
+                <Alert
+                    icon={<CheckIcon fontSize="inherit" />}
+                    severity="success"
+                >
+                    It takes time to complete this process and approval of client.
+                </Alert>
+            )}
             <div className='p-20'>
                 <div className='flex justify-end mb-4 gap-6'>
                     <AlertDialog>

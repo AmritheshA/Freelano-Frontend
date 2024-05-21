@@ -140,3 +140,10 @@ export const EDIT_TASK = gql`
     }
   }
 `;
+
+
+export const MARK_AS_COMPLETE = gql`
+mutation MarkAsCompleted($freelancerId:String!,$projectId:String!,$videoURL:String!){
+    markAsCompleted(freelancerId:$freelancerId,projectId:$projectId,videoURL:$videoURL)
+  }
+`

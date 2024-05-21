@@ -8,6 +8,9 @@ import TabPanel from '@mui/lab/TabPanel';
 import Profile from "./Profile";
 import Payment from "./Payment";
 import FreelancerSideBar from "@/Component/Home/Freelancer/FreelancerSideBar";
+import { useSelector } from "react-redux";
+import { RootState } from "@/Redux/Store";
+import ClientSideBar from "@/Component/Home/Client/ClientSideBar";
 
 
 function Settings() {
@@ -17,6 +20,8 @@ function Settings() {
     const { state, freelancerId } = useParams();
     const navigate = useNavigate();
 
+    const user = useSelector((state: RootState) => state.userDetails.user);
+
 
     useEffect(() => {
         if (state) {
@@ -25,28 +30,60 @@ function Settings() {
     }, [state])
 
 
+    const commonContent = (
+        <>
+
+        </>
+    );
+
     return (
-        <FreelancerSideBar>
-            <h1 className="text-2xl font-bold mb-8">Profile</h1>
-            <Box sx={{ width: '100%', typography: 'body1', position: "sticky", top: "0", left: "0", zIndex: "9" }}>
-                <TabContext value={value}>
-                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                        <TabList onChange={(_, newValue) => {
-                            setValue(newValue);
-                            navigate(`/settings/${newValue}/${freelancerId}`);
-                        }}
-                            aria-label="lab API tabs example">
-                            <Tab label="Profile" value="1" />
-                            <Tab label="Payments" value="2" />
-                            {/* <Tab label="Subscription" value="3" /> */}
-                        </TabList>
+        <>
+            {user?.role === "FREELANCER" ? (
+                <FreelancerSideBar>
+                    <h1 className="text-2xl font-bold mb-8">Profile</h1>
+                    <Box sx={{ width: '100%', typography: 'body1', position: "sticky", top: "0", left: "0", zIndex: "9" }}>
+                        <TabContext value={value}>
+                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                <TabList onChange={(_, newValue) => {
+                                    setValue(newValue);
+                                    navigate(`/settings/${newValue}/${freelancerId}`);
+                                }}
+                                    aria-label="lab API tabs example">
+                                    <Tab label="Profile" value="1" />
+                                    <Tab label="Payments" value="2" />
+                                    {/* <Tab label="Subscription" value="3" /> */}
+                                </TabList>
+                            </Box>
+                            <TabPanel value="1"><Profile /></TabPanel>
+                            <TabPanel value="2"><Payment /></TabPanel>
+                            {/* <TabPanel value="3"><Pricing /></TabPanel> */}
+                        </TabContext>
                     </Box>
-                    <TabPanel value="1"><Profile /></TabPanel>
-                    <TabPanel value="2"><Payment /></TabPanel>
-                    {/* <TabPanel value="3"><Pricing /></TabPanel> */}
-                </TabContext>
-            </Box>
-        </FreelancerSideBar>
+                </FreelancerSideBar>
+            ) : (
+                <ClientSideBar>
+                    <h1 className="text-2xl font-bold mb-8">Profile</h1>
+                    <Box sx={{ width: '100%', typography: 'body1', position: "sticky", top: "0", left: "0", zIndex: "9" }}>
+                        <TabContext value={value}>
+                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                <TabList onChange={(_, newValue) => {
+                                    setValue(newValue);
+                                    navigate(`/settings/${newValue}/${freelancerId}`);
+                                }}
+                                    aria-label="lab API tabs example">
+                                    <Tab label="Profile" value="1" />
+                                    <Tab label="Payments" value="2" />
+                                    {/* <Tab label="Subscription" value="3" /> */}
+                                </TabList>
+                            </Box>
+                            <TabPanel value="1"><Profile /></TabPanel>
+                            <TabPanel value="2"><Payment /></TabPanel>
+                            {/* <TabPanel value="3"><Pricing /></TabPanel> */}
+                        </TabContext>
+                    </Box>
+                </ClientSideBar>
+            )}
+        </>
     )
 }
 

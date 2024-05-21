@@ -10,8 +10,8 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { FaWallet } from 'react-icons/fa';
-import { TypeDispatch } from '@/Redux/Store';
-import { useDispatch } from 'react-redux';
+import { RootState, TypeDispatch } from '@/Redux/Store';
+import { useDispatch, useSelector } from 'react-redux';
 import { userLogoutAction } from '@/Redux/Actions/UserActions/userActions';
 
 interface AdminSideBarProps {
@@ -23,6 +23,7 @@ function AdminSideBar({ children }: AdminSideBarProps) {
     const [open, setOpen] = useState(true);
     const dispatch = useDispatch<TypeDispatch>();
 
+    const user = useSelector((state:RootState) => state.userDetails.user);
 
 
     const Menus = [
@@ -189,12 +190,12 @@ border-2 rounded-full  ${!open && "rotate-180"}`}
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
                                     <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                                 </svg>
-                                <Link to={`/settings/1/skldjflsjdfjs`} >Your profile</Link>
+                                <Link to={`/settings/1/${user ? user.userId : "2jk3hkk2372029301kjhu"}`} >Your profile</Link>
                             </DropdownMenuItem>
 
                             <DropdownMenuItem className="px-3 py-2 rounded-md hover:bg-gray-100 transition-colors cursor-pointer flex items-center gap-2">
                                 <FaWallet color="gray" className="ml-1" />
-                                <Link to={`/settings/2/sdjfsdjfsdflj`}>Payments</Link>
+                                <Link to={`/settings/2/${user ? user.userId : "2jk3hkk2372029301kjhu"}`}>Payments</Link>
                             </DropdownMenuItem>
 
                             <DropdownMenuItem className="px-3 py-2 rounded-md hover:bg-gray-100 transition-colors cursor-pointer flex items-center gap-2">

@@ -18,7 +18,6 @@ import Project from "./Component/Freelancer/Project";
 import AddTasks from "./Component/Freelancer/AddTasks";
 import { ProjectProvider } from "./Context/ProjectContext/ProjectProvider ";
 import Chat from "./Component/Freelancer/Chat/FreelancerChat";
-import Sample from "./Component/Freelancer/Chat/sample";
 import { MessageProvider } from "./Context/MessageContext/MessageProvider";
 import ClientChat from "./Component/Client/ClientChat";
 import VideoCallPage from "./Pages/VideoCallPage";
@@ -28,7 +27,6 @@ import { FreelancerManagement } from "./Component/Admin/FreelancerManagement";
 import { ClientManagement } from "./Component/Admin/ClientManagement";
 import AdminSubscription from "./Component/Admin/Subscription";
 import { FreelancerProvider } from "./Context/UserContext/FreelancerProvider";
-import Payment from "./Component/Freelancer/Payment";
 import Complete from "./Component/Freelancer/Complete";
 
 
@@ -81,12 +79,12 @@ function App() {
             <Route path="*" element={<NotFoundPage />} />
             <Route path="/message" element={user ? user?.role == "CLIENT" ? <ClientChat /> : <Chat /> : <Navigate to={"/login"} />} />
             <Route path="/meeting" element={user ? <VideoCallPage /> : <Navigate to={"/login"} />} />
-            <Route path="/sample" element={user ? <Sample /> : <Navigate to={"/login"} />} />
+            {/* <Route path="/sample" element={user ? <Sample /> : <Navigate to={"/login"} />} /> */}
             <Route path="/settings/:state/:freelancerId" element={user ? <Settings /> : <Navigate to={"/login"} />} />
             <Route path="/freelancers" element={user ? <FreelancerManagement /> : <Navigate to={"/login"} />} />
             <Route path="/clients" element={user ? <ClientManagement /> : <Navigate to={"/login"} />} />
             <Route path="/subscription" element={user ? <AdminSubscription /> : <Navigate to={"/login"} />} />
-            <Route path="/payment" element={<Payment />} />
+            {/* <Route path="/payment" element={<Payment />} /> */}
             <Route path="/complete" element={<Complete />} />
           </Routes>
         </FreelancerProvider>

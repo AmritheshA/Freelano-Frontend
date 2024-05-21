@@ -34,58 +34,59 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import AdminSideBar from "../Home/Admin/AdminSideBar"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import axiosInstance from "@/Config/AxiosConfig/axiosConfig"
 
-const data: Freelancer[] = [
-    {
-        id: "m5gr84i9",
-        name: "John Doe",
-        email: "john@example.com",
-        projectsCompleted: 12,
-        status: "active",
-        image: "https://cdn.pixabay.com/photo/2022/09/08/15/16/cute-7441224_640.jpg",
-    },
-    {
-        id: "3u1reuv4",
-        name: "Jane Smith",
-        email: "jane@example.com",
-        projectsCompleted: 8,
-        status: "active",
-        image: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-    },
-    {
-        id: "derv1ws0",
-        name: "Bob Johnson",
-        email: "bob@example.com",
-        projectsCompleted: 5,
-        status: "blocked",
-        image: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-    },
-    {
-        id: "5kma53ae",
-        name: "Sarah Lee",
-        email: "sarah@example.com",
-        projectsCompleted: 15,
-        status: "active",
-        image: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-    },
-    {
-        id: "bhqecj4p",
-        name: "Michael Chen",
-        email: "michael@example.com",
-        projectsCompleted: 10,
-        status: "blocked",
-        image: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-    },
-]
+// const data: Freelancer[] = [
+//     {
+//         id: "m5gr84i9",
+//         name: "John Doe",
+//         email: "john@example.com",
+//         projectsCompleted: 12,
+//         status: "active",
+//         image: "https://cdn.pixabay.com/photo/2022/09/08/15/16/cute-7441224_640.jpg",
+//     },
+//     {
+//         id: "3u1reuv4",
+//         name: "Jane Smith",
+//         email: "jane@example.com",
+//         projectsCompleted: 8,
+//         status: "active",
+//         image: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
+//     },
+//     {
+//         id: "derv1ws0",
+//         name: "Bob Johnson",
+//         email: "bob@example.com",
+//         projectsCompleted: 5,
+//         status: "blocked",
+//         image: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
+//     },
+//     {
+//         id: "5kma53ae",
+//         name: "Sarah Lee",
+//         email: "sarah@example.com",
+//         projectsCompleted: 15,
+//         status: "active",
+//         image: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
+//     },
+//     {
+//         id: "bhqecj4p",
+//         name: "Michael Chen",
+//         email: "michael@example.com",
+//         projectsCompleted: 10,
+//         status: "blocked",
+//         image: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
+//     },
+// ]
 
 export type Freelancer = {
-    id: string
-    name: string
+    freelancerId: string
+    userName: string
     email: string
     projectsCompleted: number
-    status: "active" | "blocked"
-    image: string
+    blocked: true | false
+    profileImgUrl: string
 }
 
 export const columns: ColumnDef<Freelancer>[] = [
@@ -113,8 +114,8 @@ export const columns: ColumnDef<Freelancer>[] = [
     },
     {
         accessorFn: (row) => {
-            const image = row.image;
-            const name = row.name;
+            const image = row.profileImgUrl;
+            const name = row.userName;
             return { image, name };
         },
         header: "Freelancer",
@@ -163,8 +164,9 @@ export const columns: ColumnDef<Freelancer>[] = [
         accessorKey: "status",
         header: "Status",
         cell: ({ row }) => (
-            <div className={`capitalize ${row.getValue("status") === "active" ? "text-green-500" : "text-red-500"} font-semibold`}>
-                {row.getValue("status")}
+            
+            <div className={`capitalize ${row.getValue("blocked") ? "text-green-500" : "text-red-500"} font-semibold`}>
+                {row.getValue("blocked") ? "Blocked" :" Unblocked"}
             </div>
         ),
     },
@@ -175,7 +177,7 @@ export const columns: ColumnDef<Freelancer>[] = [
             const freelancer = row.original;
 
             const handleBlock = () => {
-                console.log("Block freelancer with ID:", freelancer.id);
+                console.log("Block freelancer with ID:", freelancer.userName);
             };
 
             return (
@@ -183,7 +185,7 @@ export const columns: ColumnDef<Freelancer>[] = [
                     <AlertDialogTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
                             <span className="sr-only">Action</span>
-                            {freelancer.status === "active" ? "Block" : "Un-Block"}
+                            {freelancer.blocked ? "Block" : "Un-Block"}
                         </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
@@ -197,7 +199,7 @@ export const columns: ColumnDef<Freelancer>[] = [
                         <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
                             <AlertDialogAction className="bg-slate-900" onClick={handleBlock}>
-                                {freelancer.status === "active" ? "Block" : "Un-Block"}
+                                {freelancer.blocked ? "Block" : "Un-Block"}
                             </AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
@@ -210,9 +212,21 @@ export const columns: ColumnDef<Freelancer>[] = [
 export function FreelancerManagement() {
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-    const [columnVisibility, setColumnVisibility] =
-        useState<VisibilityState>({})
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = useState({})
+
+    const [data, setData] = useState<Freelancer[]>([]);
+
+    useEffect(() => {
+        const fetchAllFreelancer = async () => {
+
+            const responce = await axiosInstance.get("/api/v1/user/getAllFreelancer");
+            setData(responce.data);
+        }
+        fetchAllFreelancer();
+    }, []);
+
+    
 
     const table = useReactTable({
         data,

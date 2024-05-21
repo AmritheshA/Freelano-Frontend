@@ -1,37 +1,36 @@
-import { useEffect, useState } from "react";
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-import axiosInstance from "@/Config/AxiosConfig/axiosConfig";
+// import { useEffect, useState } from "react";
+// import { loadStripe } from "@stripe/stripe-js";
+// import axiosInstance from "@/Config/AxiosConfig/axiosConfig";
 
-function Payment() {
-
-
-    const stripePromise = loadStripe('pk_test_51PGyKmSC2aXbbdUbWyklSfxBm7obTu48k2PvOXYlfsyfDK1BZCj6k2MXlK9fd6V3Ei5jfUVHeOJL6uS2UZUjk6sp00NzAlAq2e');
+// function Payment() {
 
 
-    useEffect(() => {
-        const createPaymentIntent = async () => {
-            try {
-                const response = await axiosInstance.post('/api/v1/payment/create-intent', {
-                    amount: 1000000,
-                    currency: 'INR',
-                });
+//     const stripePromise = loadStripe('pk_test_51PGyKmSC2aXbbdUbWyklSfxBm7obTu48k2PvOXYlfsyfDK1BZCj6k2MXlK9fd6V3Ei5jfUVHeOJL6uS2UZUjk6sp00NzAlAq2e');
 
-                window.location.href = response.data;
 
-            } catch (error) {
-                console.error('Error creating payment intent:', error);
-            }
-        };
+//     useEffect(() => {
+//         const createPaymentIntent = async () => {
+//             try {
+//                 const response = await axiosInstance.post('/api/v1/payment/create-intent', {
+//                     amount: 1000000,
+//                     currency: 'INR',
+//                 });
 
-        createPaymentIntent();
-    }, []);
+//                 window.location.href = response.data;
 
-    return (
-        <>
-            <h1>React Stripe and the Payment Element</h1>
-        </>
-    );
-}
+//             } catch (error) {
+//                 console.error('Error creating payment intent:', error);
+//             }
+//         };
 
-export default Payment;
+//         createPaymentIntent();
+//     }, []);
+
+//     return (
+//         <>
+//             <h1>React Stripe and the Payment Element</h1>
+//         </>
+//     );
+// }
+
+// export default Payment;

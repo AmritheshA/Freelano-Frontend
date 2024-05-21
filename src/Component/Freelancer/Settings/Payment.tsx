@@ -2,6 +2,11 @@ import { Line } from "react-chartjs-2";
 import { Button } from "@mui/material";
 import { FaWallet } from "react-icons/fa";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import { useEffect, useState } from "react";
+import axiosInstance from "@/Config/AxiosConfig/axiosConfig";
+import { useSelector } from "react-redux";
+import { RootState } from "@/Redux/Store";
+import { format } from "date-fns";
 
 
 ChartJS.register(
@@ -14,13 +19,83 @@ ChartJS.register(
     Legend
 );
 
+type Month =
+    | 'January'
+    | 'February'
+    | 'March'
+    | 'April'
+    | 'May'
+    | 'June'
+    | 'July'
+    | 'August'
+    | 'September'
+    | 'October'
+    | 'November'
+    | 'December';
+
+const monthOrder: { [key in Month]: number } = {
+    'January': 1,
+    'February': 2,
+    'March': 3,
+    'April': 4,
+    'May': 5,
+    'June': 6,
+    'July': 7,
+    'August': 8,
+    'September': 9,
+    'October': 10,
+    'November': 11,
+    'December': 12
+};
+
+
 function Payment() {
+
+    const [amount, setAmount] = useState<number[]>([]);
+    const [months, setMonths] = useState<Month[]>([]);
+    const [transaction, setTransaction] = useState<Transaction[]>([]);
+    const [total, setTotal] = useState<number>(0);
+
+    const user = useSelector((state: RootState) => state.userDetails.user);
+
+    useEffect(() => {
+        const getMonthlyRevenue = async () => {
+            try {
+                const config = {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                };
+
+
+                const response = await axiosInstance.get(`/api/v1/payment/monthly-revenue?freelancerId=${user?.userId}&role=${user?.role}`, config);
+
+                const responseData = response.data;
+                setTransaction(responseData.transactions);
+
+                const monthsArray = Object.keys(responseData.monthlyRevenue) as Month[];
+                const sortedMonths = sortMonths(monthsArray);
+                setMonths(sortedMonths);
+
+                const amountsArray = Object.values(responseData.monthlyRevenue) as number[];
+                const totalAmount = amountsArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+                setTotal(totalAmount);
+                setAmount(amountsArray);
+
+            } catch (error) {
+                console.error('Error fetching monthly revenue:', error);
+            }
+        };
+
+        getMonthlyRevenue();
+    }, []);
+
     const data = {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        labels: months,
         datasets: [
             {
                 label: 'Monthly Revenue',
-                data: [10000, 15000, 18000, 16000, 22000, 25000, 28000, 30000, 26000, 24000, 20000, 18000],
+                data: amount,
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 borderColor: '#4CAF50', // Change the line color to a nice green
                 borderWidth: 3, // Increase the line width
@@ -31,6 +106,11 @@ function Payment() {
             },
         ],
     };
+
+    const sortMonths = (months: Month[]): Month[] => {
+        return months.sort((a, b) => monthOrder[a] - monthOrder[b]);
+    };
+
 
     const options = {
         responsive: true,
@@ -68,13 +148,18 @@ function Payment() {
         },
     };
 
+    function formatDateTime(dateTimeString: any) {
+        return format(new Date(dateTimeString), "yyyy-MM-dd @ hh:mm a");
+    }
+
+
     return (
         <div className="w-[100%] min-h-screen">
             <div className="w-full h-[540px] flex">
                 <Line data={data} options={options} />
                 <div className="w-full">
                     <div className="w-full mt-8">
-                        <div className=" items-center justify-between border-2 w-[250px] p-4 rounded-lg">
+                        <div className=" items-center justify-between border-2 w-[250px] p-4 ml-2 rounded-lg">
                             <div className="flex items-center">
                                 <div className="bg-teal-500 p-2 rounded-full">
                                     <FaWallet />
@@ -84,41 +169,30 @@ function Payment() {
                             <div className="flex items-center mt-2">
                                 <span className="text-black text-lg font-bold">Card Number</span>
                             </div>
-                            <div className="text-black text-3xl font-bold">$1500</div>
+                            <div className="text-black text-3xl font-bold">${total}</div>
                         </div>
+                        <div className="bg-background border-2 w-full h-[300px] mt-4 ml-2 rounded-lg">
+                            {transaction.map((trans) => {
+                                const transactionTime = new Date(trans.transactionDate).toLocaleTimeString([], {
+                                    hour: 'numeric',
+                                    minute: 'numeric',
+                                    hour12: true
+                                });
 
-                        <div className="bg-background border-2 w-full h-[300px] mt-4 rounded-lg">
-                            <div className="flex justify-between items-center p-4">
-                                <div className=" items-center gap-4">
-                                    <div className="flex items-center gap-4">
-                                        <img className="w-10 h-10 rounded-full" src="https://www.pngfind.com/pngs/m/317-3177131_636682202684372240-user-profile-photo-round-hd-png-download.png" />
-                                        <h1 className="poetsen-one-regular">Amrithesh A</h1>
-                                    </div>
-                                    <sub className="ml-14 poetsen-one-regular">3.40pm</sub>
-                                </div>
-                                <h1 className="text-orange-600 poetsen-one-regular ">+ 6000</h1>
-                            </div>
+                                return (
 
-                            <div className="flex justify-between items-center p-4">
-                                <div className=" items-center gap-4">
-                                    <div className="flex items-center gap-4">
-                                        <img className="w-10 h-10 rounded-full" src="https://www.pngfind.com/pngs/m/317-3177131_636682202684372240-user-profile-photo-round-hd-png-download.png" />
-                                        <h1 className="poetsen-one-regular">Amrithesh A</h1>
+                                    <div key={trans.transactionId} className="flex justify-between items-center p-4">
+                                        <div className="items-center gap-4">
+                                            <div className="flex items-center gap-4">
+                                                <img className="w-10 h-10 rounded-full" src="https://www.pngfind.com/pngs/m/317-3177131_636682202684372240-user-profile-photo-round-hd-png-download.png" alt="User Profile" />
+                                                <h1 className="poetsen-one-regular">{trans.clientName}</h1>
+                                            </div>
+                                            <sub className="ml-14 poetsen-one-regular">{transactionTime}</sub>
+                                        </div>
+                                        <h1 className="text-orange-600 poetsen-one-regular">{user?.role =="FREELANCER" ? '+' : "-"} {(trans.transactionAmount) * 80}</h1>
                                     </div>
-                                    <sub className="ml-14 poetsen-one-regular">3.40pm</sub>
-                                </div>
-                                <h1 className="text-orange-600 poetsen-one-regular ">+ 6000</h1>
-                            </div>
-                            <div className="flex justify-between items-center p-4">
-                                <div className=" items-center gap-4">
-                                    <div className="flex items-center gap-4">
-                                        <img className="w-10 h-10 rounded-full" src="https://www.pngfind.com/pngs/m/317-3177131_636682202684372240-user-profile-photo-round-hd-png-download.png" />
-                                        <h1 className="poetsen-one-regular">Amrithesh A</h1>
-                                    </div>
-                                    <sub className="ml-14 poetsen-one-regular">3.40pm</sub>
-                                </div>
-                                <h1 className="text-orange-600 poetsen-one-regular ">+ 6000</h1>
-                            </div>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>
@@ -145,32 +219,35 @@ function Payment() {
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        <tr>
-                            <td className="px-6 py-4 whitespace-nowrap flex items-center">
-                                <div className="w-10 h-10 rounded-full bg-gray-300 flex-shrink-0 mr-3">
-                                    <img src="https://via.placeholder.com/150" className="rounded-full h-10 w-12" alt="Client Picture" />
-                                </div>
-                                <div>
-                                    <div className="text-lg font-semibold text-gray-800">
-                                        Acme Corporation
+                        {transaction.map((transaction: Transaction, index: number) => (
+                            <tr key={index}>
+                                <td className="px-6 py-4 whitespace-nowrap flex items-center">
+                                    <div className="w-10 h-10 rounded-full bg-gray-300 flex-shrink-0 mr-3">
+                                        <img src="https://www.pngfind.com/pngs/m/317-3177131_636682202684372240-user-profile-photo-round-hd-png-download.png" className="rounded-full h-10 w-12" alt="Client Picture" />
                                     </div>
-                                </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                                2024-05-10 @ 10:00 AM
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-600">
-                                $1,200.00
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                                <span className="px-2 inline-flex text-md font-semibold rounded-full bg-green-100 text-green-800">
-                                    Pending
-                                </span>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                                <Button variant="outlined">View Details</Button>
-                            </td>
-                        </tr>
+                                    <div>
+                                        <div className="text-lg font-semibold text-gray-800">
+                                            {transaction.clientName}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    {formatDateTime(transaction.transactionDate)}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-600">
+                                    {(transaction.transactionAmount) * 80}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <span className={`px-2 inline-flex text-md font-semibold rounded-full ${transaction.transactionStatus === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}>
+                                        {transaction.transactionStatus}
+                                    </span>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <Button variant="outlined" >View Details</Button>
+                                </td>
+                            </tr>
+                        ))}
+
                     </tbody>
                 </table>
 

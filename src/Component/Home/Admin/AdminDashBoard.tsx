@@ -1,15 +1,22 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaInfoCircle, FaRupeeSign, FaUsers, FaWallet } from 'react-icons/fa'
 import AdminSideBar from './AdminSideBar'
 import { Doughnut, Line, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import { MdOutlineBlock } from "react-icons/md";
-import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
-import { Button } from '@mui/material';
 
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@nextui-org/react";
+import axiosInstance from '@/Config/AxiosConfig/axiosConfig';
+import freelancerProfile from "@/Interfaces/userInterface"
+import clientProfile from "@/Interfaces/userInterface"
 
+
+interface Transactions{
+  transactionStatus:string;
+  transactionAmount:number;
+  clientName:string
+}
 
 ChartJS.register(
   CategoryScale,
@@ -25,6 +32,42 @@ ChartJS.register(
 function AdminDashoBoard() {
 
   const [value, setValue] = useState<number | null>(2);
+  const [freelancer, setFreelancer] = useState<freelancerProfile[]>([]);
+  const [cleint, setClient] = useState<clientProfile[]>([]);
+  const [lastTransaction, setLastTransaction] = useState<Transactions[]>([]);
+
+  console.log(lastTransaction);
+  
+
+  useEffect(() => {
+    const getFreelancer = async () => {
+      const response = await axiosInstance.get("/api/v1/user/getTopFreelancer");
+
+      setFreelancer(response.data);
+
+    }
+    getFreelancer();
+  }, []);
+
+  useEffect(() => {
+    const getCleints = async () => {
+      const response = await axiosInstance.get("/api/v1/user/getTopClients");
+
+      setClient(response.data);
+
+    }
+    getCleints();
+  }, [])
+
+  useEffect(() => {
+    const lastTransaction = async () => {
+      const response = await axiosInstance.get("/api/v1/payment/getLastTransaction");
+
+      setLastTransaction(response.data);
+
+    }
+    lastTransaction();
+  }, [])
 
 
   const pieData = {
@@ -109,40 +152,6 @@ function AdminDashoBoard() {
     ],
   };
 
-  const freelancers = [
-    {
-      name: 'John Thomas',
-      rating: 3,
-      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D',
-      jobTitle: 'UI/UX Designer',
-      location: 'New York, USA',
-      company: "SourceBeee"
-    },
-    {
-      name: 'Emily Johnson',
-      rating: 4,
-      avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
-      jobTitle: 'Web Developer',
-      location: 'London, UK',
-      company: "SourceBeee"
-    },
-    {
-      name: 'Michael Davis',
-      rating: 5,
-      avatar: 'https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
-      jobTitle: 'Digital Marketer',
-      location: 'San Francisco, USA',
-      company: "SourceBeee"
-    },
-
-  ];
-
-  const demoData = [
-    { key: "1", name: "Tony Reichert", amount: "10000", status: "Active" },
-    { key: "2", name: "Zoey Lang", amount: "30200", status: "Paused" },
-    { key: "3", name: "Jane Fisher", amount: "63000", status: "Active" },
-    { key: "4", name: "William Howard", amount: "12020", status: "Vacation" },
-  ];
 
   return (
     <AdminSideBar>
@@ -173,12 +182,12 @@ function AdminDashoBoard() {
             <div className="flex items-center bg-teal-500 text-white rounded-full p-2">
               <FaRupeeSign size={20} color='black' />
             </div>
-            <span className="text-gray-950 font-medium ml-2">Subscribed Users</span>
+            <span className="text-gray-950 font-medium ml-2">Total Transaction Amount</span>
           </div>
           <div className="flex justify-end mt-2">
-            <span className="text-gray-500 text-sm">Premium Users</span>
+            <span className="text-gray-500 text-sm">Amount</span>
           </div>
-          <div className="text-teal-500 text-3xl font-bold flex justify-end">280</div>
+          <div className="text-teal-500 text-3xl font-bold flex justify-end">$280</div>
         </div>
 
         <div className="flex flex-col bg-gray-100 w-[260px] rounded-lg shadow-md p-4">
@@ -232,20 +241,20 @@ function AdminDashoBoard() {
               <TableColumn>Amount</TableColumn>
             </TableHeader>
             <TableBody>
-              {demoData.map((row) => (
-                <TableRow className='hover:bg-slate-100' key={row.key}>
+              {lastTransaction.map((row:Transactions) => (
+                <TableRow className='hover:bg-slate-100'>
                   <TableCell >
                     <div className="flex items-center">
                       <img
                         src={"https://github.com/shadcn.png"}
-                        alt={row.name}
+                        alt={row.clientName}
                         className="w-8 h-8 rounded-full mr-2"
                       />
-                      {row.name}
+                      {row.clientName}
                     </div>
                   </TableCell>
-                  <TableCell>{row.status}</TableCell>
-                  <TableCell>{row.amount}</TableCell>
+                  <TableCell>{row.transactionStatus}</TableCell>
+                  <TableCell>{row.transactionAmount}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -255,17 +264,17 @@ function AdminDashoBoard() {
         <div className="w-[400px] h-full bg-white shadow-lg rounded-lg">
           <h1 className="p-4 text-xl font-bold text-gray-800">Top Freelancers</h1>
           <div className="p-3">
-            {freelancers.map((freelancer, index) => (
+            {freelancer.map((freelancer: freelancerProfile, index) => (
               <div key={index} className="flex items-center justify-between p-4 bg-white rounded-lg shadow-md mb-4">
                 <div className="flex items-center gap-4">
                   <img
                     className="w-12 h-12 rounded-full"
-                    src={freelancer.avatar}
-                    alt={freelancer.name}
+                    src={freelancer.profileImgUrl}
+                    alt={freelancer.userName}
                   />
                   <div>
                     <h1 className="text-sm font-semibold text-gray-800">
-                      {freelancer.name}
+                      {freelancer.userName}
                     </h1>
                     <Rating
                       name="simple-controlled"
@@ -277,12 +286,12 @@ function AdminDashoBoard() {
                     />
                   </div>
                 </div>
-                <div>
-                  <div className="flex items-center gap-1 text-xs text-gray-500 mb-1">
-                    <span>{freelancer.jobTitle}</span>
+                <div >
+                  <div className="flex items-center justify-end gap-1 text-xs text-gray-500 mb-1">
+                    <span>{freelancer?.professionalRole}</span>
                   </div>
-                  <div className="flex items-center gap-1 text-xs text-gray-500">
-                    <span>{freelancer.location}</span>
+                  <div className="flex items-center gap-1 justify-end text-xs text-gray-500">
+                    <span>{freelancer.country},{freelancer.city}</span>
                   </div>
                 </div>
               </div>
@@ -293,17 +302,17 @@ function AdminDashoBoard() {
         <div className="w-[400px] h-full bg-white shadow-lg rounded-lg">
           <h1 className="p-4 text-xl font-bold text-gray-800">Top Client</h1>
           <div className="p-3">
-            {freelancers.map((freelancer, index) => (
+            {cleint.map((freelancer, index) => (
               <div key={index} className="flex items-center justify-between p-4 bg-white rounded-lg shadow-md mb-4">
                 <div className="flex items-center gap-4">
                   <img
                     className="w-12 h-12 rounded-full"
-                    src={freelancer.avatar}
-                    alt={freelancer.name}
+                    src={freelancer.profileImgUrl}
+                    alt={freelancer.clientName}
                   />
                   <div>
                     <h1 className="text-sm font-semibold text-gray-800">
-                      {freelancer.name}
+                      {freelancer.clientName}
                     </h1>
                     <Rating
                       name="simple-controlled"
@@ -317,10 +326,10 @@ function AdminDashoBoard() {
                 </div>
                 <div>
                   <div className="flex items-center justify-end gap-1 text-xs text-gray-500 mb-1">
-                    <span>{freelancer.company}</span>
+                    <span>{freelancer.clientCountry}</span>
                   </div>
                   <div className="flex items-center gap-1 justify-end text-xs text-gray-500">
-                    <span>{freelancer.location}</span>
+                    <span>{freelancer.clientCity}</span>
                   </div>
                 </div>
               </div>

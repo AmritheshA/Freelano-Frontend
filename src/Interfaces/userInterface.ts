@@ -17,7 +17,7 @@ export default interface DecodedToken {
 export default interface jwtPayload {
   userName: string;
   email: string | any;
-   role: string;
+  role: string;
   userId: string;
 }
 
@@ -41,4 +41,20 @@ export default interface userFullDetails {
   service: any
   skills: any
   profileImgUrl: string;
+}
+
+export default interface freelancerProfile {
+  userName: string;
+  rating: number;
+  profileImgUrl: string;
+  professionalRole: string | null;
+  city:string;
+  country: string;
+}
+
+export default interface clientProfile{
+  clientName:string;
+  clientCity:string;
+  clientCountry:string;
+  profileImgUrl:string;
 }
