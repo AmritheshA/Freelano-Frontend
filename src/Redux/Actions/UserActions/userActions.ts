@@ -6,6 +6,7 @@ import { handleErrors } from "../../../Util/handleErrors";
 import JwtPayload from '../../../Interfaces/userInterface'
 import { AxiosRequestConfig } from "axios";
 import profileDetails from '../../../Interfaces/userInterface'
+import Client from "@/Interfaces/clientInterface";
 
 export const userLoginAction = createAsyncThunk(
   "user/userLogin",
@@ -19,7 +20,7 @@ export const userLoginAction = createAsyncThunk(
 
       const response = await axiosInstance.post('/api/v1/auth/login', userCredentail, config);
       const data = response?.data;
-      const decodedJwt = jwtDecode<JwtPayload>(data.accessToken);  
+      const decodedJwt = jwtDecode<JwtPayload>(data.accessToken);
       console.log("Authenticated Successfully");
 
       return {
@@ -56,7 +57,7 @@ export const userRegisterAction = createAsyncThunk(
         username: data.userName,
         email: data.email,
         role: data.role,
-        userId:data.userId
+        userId: data.userId
       }
 
     } catch (error: any) {
@@ -84,7 +85,7 @@ export const userOauthLogin = createAsyncThunk(
       return {
         username: decodedJwt.sub,
         role: decodedJwt.role,
-        userId:decodedJwt.userId
+        userId: decodedJwt.userId
       };
     } catch (error: any) {
       console.error(error);
@@ -147,6 +148,31 @@ export const freelancerProfileSubmit = createAsyncThunk(
     }
   }
 );
+
+export const clientProfileSubmit = createAsyncThunk(
+  "user/clientProfileSumit",
+  async (clientDetails: Client, { rejectWithValue }): Promise<any> => {
+    try {
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const response = await axiosInstance.put("/api/v1/user/save-client", clientDetails, config);
+      const meessage = response.data;
+
+      return meessage;
+    } catch (error: any) {
+      console.error(error);
+      if (error.response && error.response.status) {
+        return rejectWithValue(error.response.status);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+)
 
 export const userLogoutAction = createAsyncThunk("user/userLogoutAction", async (_, { rejectWithValue }): Promise<any> => {
   try {

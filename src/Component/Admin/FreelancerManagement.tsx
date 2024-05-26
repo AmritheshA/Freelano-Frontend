@@ -82,9 +82,10 @@ import axiosInstance from "@/Config/AxiosConfig/axiosConfig"
 
 export type Freelancer = {
     freelancerId: string
+    freelancersAuthId: string
     userName: string
     email: string
-    projectsCompleted: number
+    projectCompleted: number
     blocked: true | false
     profileImgUrl: string
 }
@@ -158,34 +159,32 @@ export const columns: ColumnDef<Freelancer>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => <div>{row.getValue("projectsCompleted")}</div>,
-    },
-    {
-        accessorKey: "status",
-        header: "Status",
-        cell: ({ row }) => (
-            
-            <div className={`capitalize ${row.getValue("blocked") ? "text-green-500" : "text-red-500"} font-semibold`}>
-                {row.getValue("blocked") ? "Blocked" :" Unblocked"}
-            </div>
-        ),
+
+        cell: ({ row }) => {
+            const freelancer = row.original;
+            return (
+                <div>
+                    {freelancer.projectCompleted}
+                </div>
+            );
+        }
+        
     },
     {
         id: "actions",
-        enableHiding: false,
+        header: "Actions",
         cell: ({ row }) => {
             const freelancer = row.original;
-
             const handleBlock = () => {
-                console.log("Block freelancer with ID:", freelancer.userName);
+                axiosInstance.get(`/api/v1/user/blockFreelancer?freelancerId=${freelancer.freelancersAuthId}&booleans=${freelancer.blocked}`)
             };
 
             return (
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Action</span>
-                            {freelancer.blocked ? "Block" : "Un-Block"}
+                            <span className={`sr-only  ${freelancer.blocked ? "text-green-500" : "text-red-500"}`}>Action</span>
+                            {freelancer.blocked ? "Un-Block" : "Block"}
                         </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
@@ -199,7 +198,7 @@ export const columns: ColumnDef<Freelancer>[] = [
                         <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
                             <AlertDialogAction className="bg-slate-900" onClick={handleBlock}>
-                                {freelancer.blocked ? "Block" : "Un-Block"}
+                                {freelancer.blocked ? "Un-Block" : "Block"}
                             </AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
@@ -222,11 +221,14 @@ export function FreelancerManagement() {
 
             const responce = await axiosInstance.get("/api/v1/user/getAllFreelancer");
             setData(responce.data);
+
+            console.log(responce.data);
+
         }
         fetchAllFreelancer();
     }, []);
 
-    
+
 
     const table = useReactTable({
         data,

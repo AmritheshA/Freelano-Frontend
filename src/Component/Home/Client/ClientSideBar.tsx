@@ -1,4 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react';
+import ogLogo from "@/assets/ogLogo.png";
+import logo from "@/assets/freelancer/image.png";
 import { Link } from 'react-router-dom'
 import { userLogoutAction } from "@/Redux/Actions/UserActions/userActions";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu";
@@ -8,6 +10,7 @@ import axiosInstance from '@/Config/AxiosConfig/axiosConfig';
 import toast from 'react-hot-toast';
 import { DropdownMenuItem } from '@radix-ui/react-dropdown-menu';
 import { FaWallet } from 'react-icons/fa';
+import Client from '@/Interfaces/clientInterface';
 
 
 interface FreelancerSideBarProps {
@@ -21,8 +24,6 @@ function ClientSideBar({ children, setUserInfoToChild }: FreelancerSideBarProps)
     const user = useSelector((state: RootState) => state.userDetails.user);
     const dispatch = useDispatch<TypeDispatch>();
     const [userInfo, setUserInfo] = useState<Client>();
-
-    console.log("🚀 ~ ClientSideBar ~ userInfo:", userInfo)
 
     const Menus = [
         {
@@ -137,14 +138,14 @@ function ClientSideBar({ children, setUserInfoToChild }: FreelancerSideBarProps)
                     } bg-dark-purple h-full p-5  pt-8 sticky left-0 top-0 duration-300`}
             >
                 <img
-                    src="./src/assets/freelancer/image.png"
+                    src={logo}
                     className={`absolute cursor-pointer -right-3  top-9 w-7 border-dark-purple
        border-2 rounded-full  ${!open && "rotate-180"}`}
                     onClick={() => setOpen(!open)}
                 />
                 <div className="flex gap-x-4 items-center ">
                     <img
-                        src="./src/assets/ogLogo.png"
+                        src={ogLogo}
                         className={`cursor-pointer sm:w-40 sm:h-30 duration-500 ${open && "rotate-[360deg]"
                             }`}
                     />
@@ -193,16 +194,16 @@ function ClientSideBar({ children, setUserInfoToChild }: FreelancerSideBarProps)
                                     className="w-10 h-10 rounded-full"
                                 />
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent className="bg-white shadow-lg rounded-md p-2">
+                            <DropdownMenuContent className="bg-white min-w-[220px] shadow-lg rounded-md p-2">
 
                                 <DropdownMenuItem>
-                                    <div className="flex items-center justify-center gap-3">
+                                    <div className="flex items-center gap-3">
                                         <img
                                             src={`${userInfo?.profileImgUrl}`}
                                             alt="Profile"
                                             className="w-10 h-10 rounded-full"
                                         />
-                                        <h1 className="text-lg poetsen-one-regular">Joseph John</h1>
+                                        <h1 className="text-lg poetsen-one-regular">{userInfo?.clientName}</h1>
                                     </div>
                                 </DropdownMenuItem>
 
@@ -228,10 +229,12 @@ function ClientSideBar({ children, setUserInfoToChild }: FreelancerSideBarProps)
 
                                 <DropdownMenuSeparator className="my-2 bg-gray-200 h-px" />
                                 <DropdownMenuItem className="px-3 py-2 rounded-md hover:bg-gray-100 transition-colors cursor-pointer flex items-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clipRule="evenodd" />
-                                    </svg>
-                                    <span onClick={() => dispatch(userLogoutAction())}>Log out</span>
+                                        <span onClick={() => dispatch(userLogoutAction())} className='flex items-center gap-2'>
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clipRule="evenodd" />
+                                            </svg>
+                                            Log out
+                                        </span>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>

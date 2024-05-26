@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import userReducer from './Slices/UserReducer/userReducer'
+import AdminReducer from './Slices/AdminReducer';
 
 export const store = configureStore({
     reducer: {
-        userDetails: userReducer
+        userDetails: userReducer,
+        adminUserDetails: AdminReducer
     },
 });
 

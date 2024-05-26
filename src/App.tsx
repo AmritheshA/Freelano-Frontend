@@ -28,6 +28,10 @@ import { ClientManagement } from "./Component/Admin/ClientManagement";
 import AdminSubscription from "./Component/Admin/Subscription";
 import { FreelancerProvider } from "./Context/UserContext/FreelancerProvider";
 import Complete from "./Component/Freelancer/Complete";
+import { ClientProvider } from "./Context/UserContext/ClientProvider";
+import ClientSettings from "./Pages/ClientPages/Settings/ClientSettings";
+import ClientRegistration from "./Pages/Registration/ClientRegister";
+import { onMessageListener, requestPermission } from "./Config/FirebaseConfig/FirebaseConfig";
 
 
 function App() {
@@ -36,7 +40,6 @@ function App() {
 
   const [activeComponent, setActiveComponent] = useState("component1");
   const [isProfileComplete, setIsProfileComplete] = useState<boolean>();
-
   const handleActiveComponent = (value: string) => {
     setActiveComponent(value);
   }
@@ -46,7 +49,7 @@ function App() {
       axiosInstance.get(`/api/v1/user/checkRegistrationCompleted?userId=${user.userId}`)
         .then((response) => {
           if (response.status === 200) {
-            setIsProfileComplete(response.data);
+            setIsProfileComplete(response?.data);
           }
         })
         .catch((error) => {
@@ -61,32 +64,54 @@ function App() {
 
   }, [user]);
 
+  useEffect(() => {
+
+    console.log("token is called");
+
+    requestPermission()
+      .then((token) => {
+        if (token) {
+          console.log(token);
+          
+        } else {
+          console.log('Failed to get token');
+        }
+      })
+      .catch((err) => {
+        console.error('Error requesting permission:', err);
+      });
+    console.log("for each refresh ...");
+
+  }, [user,]);
+
   return (
     <ProjectProvider>
       <MessageProvider>
         <FreelancerProvider>
-          <Routes>
-            <Route path="/login" element={user ? <Navigate to={"/home"} /> : <LoginPage />} />
-            <Route path="/signup" element={user ? <Navigate to={"/home"} /> : <SignupPage />} />
-            <Route path="/home" element={user ? <HomePages user={user} /> : <Navigate to={"/login"} />} />
-            <Route path="/selection" element={<FreelancerReg />} />
-            <Route path="/verifyEmail" element={user ? <Navigate to={"/registration"} /> : <VerifyEmail />} />
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/registration" element={isProfileComplete || user?.role == "CLIENT" ? <Navigate to={"/home"} /> : <Registration activeComponent={activeComponent} handleActiveComponent={handleActiveComponent} />} />
-            <Route path="/jobs" element={user ? <Allworks /> : <Navigate to={"/home"} />} />
-            <Route path="/projects" element={user ? user?.role == "FREELANCER" ? <Project /> : <ClientProject /> : <Navigate to={"/login"} />} />
-            <Route path="/projects/addTasks/:commitedProjectId" element={user ? <AddTasks /> : <Navigate to={"/login"} />} />
-            <Route path="*" element={<NotFoundPage />} />
-            <Route path="/message" element={user ? user?.role == "CLIENT" ? <ClientChat /> : <Chat /> : <Navigate to={"/login"} />} />
-            <Route path="/meeting" element={user ? <VideoCallPage /> : <Navigate to={"/login"} />} />
-            {/* <Route path="/sample" element={user ? <Sample /> : <Navigate to={"/login"} />} /> */}
-            <Route path="/settings/:state/:freelancerId" element={user ? <Settings /> : <Navigate to={"/login"} />} />
-            <Route path="/freelancers" element={user ? <FreelancerManagement /> : <Navigate to={"/login"} />} />
-            <Route path="/clients" element={user ? <ClientManagement /> : <Navigate to={"/login"} />} />
-            <Route path="/subscription" element={user ? <AdminSubscription /> : <Navigate to={"/login"} />} />
-            {/* <Route path="/payment" element={<Payment />} /> */}
-            <Route path="/complete" element={<Complete />} />
-          </Routes>
+          <ClientProvider>
+            <Routes>
+              <Route path="/login" element={user ? <Navigate to={"/home"} /> : <LoginPage />} />
+              <Route path="/signup" element={user ? <Navigate to={"/home"} /> : <SignupPage />} />
+              <Route path="/home" element={user ? <HomePages user={user} /> : <Navigate to={"/login"} />} />
+              <Route path="/selection" element={<FreelancerReg />} />
+              <Route path="/verifyEmail" element={user ? <Navigate to={"/registration"} /> : <VerifyEmail />} />
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/registration" element={isProfileComplete || user?.role == "CLIENT" ? <ClientRegistration /> : <Registration activeComponent={activeComponent} handleActiveComponent={handleActiveComponent} />} />
+              <Route path="/jobs" element={user ? <Allworks /> : <Navigate to={"/home"} />} />
+              <Route path="/projects" element={user ? user?.role == "FREELANCER" ? <Project /> : <ClientProject /> : <Navigate to={"/login"} />} />
+              <Route path="/projects/addTasks/:commitedProjectId" element={user ? <AddTasks /> : <Navigate to={"/login"} />} />
+              <Route path="*" element={<NotFoundPage />} />
+              <Route path="/message" element={user ? user?.role == "CLIENT" ? <ClientChat /> : <Chat /> : <Navigate to={"/login"} />} />
+              <Route path="/meeting" element={user ? <VideoCallPage /> : <Navigate to={"/login"} />} />
+              {/* <Route path="/sample" element={user ? <Sample /> : <Navigate to={"/login"} />} /> */}
+              <Route path="/settings/:state/:freelancerId" element={user ? (user.role == "FREELANCER" ? <Settings /> : <ClientSettings />) : <Navigate to={"/login"} />} />
+              <Route path="/freelancers" element={user ? <FreelancerManagement /> : <Navigate to={"/login"} />} />
+              <Route path="/clients" element={user ? <ClientManagement /> : <Navigate to={"/login"} />} />
+              <Route path="/subscription" element={user ? <AdminSubscription /> : <Navigate to={"/login"} />} />
+              {/* <Route path="/payment" element={<Payment />} /> */}
+              <Route path="/complete" element={<Complete />} />
+            </Routes>
+          </ClientProvider>
         </FreelancerProvider>
       </MessageProvider>
     </ProjectProvider>

@@ -7,10 +7,11 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import Profile from "./Profile";
 import Payment from "./Payment";
-import FreelancerSideBar from "@/Component/Home/Freelancer/FreelancerSideBar";
+import ClientSideBar from "@/Component/Home/Client/ClientSideBar";
 
 
-function Settings() {
+function ClientSettings() {
+
 
     const [value, setValue] = useState('1');
     const { state, freelancerId } = useParams();
@@ -24,7 +25,7 @@ function Settings() {
 
 
     return (
-        <FreelancerSideBar>
+        <ClientSideBar>
             <h1 className="text-2xl font-bold mb-8">Profile</h1>
             <Box sx={{ width: '100%', typography: 'body1', position: "sticky", top: "0", left: "0", zIndex: "9" }}>
                 <TabContext value={value}>
@@ -44,8 +45,8 @@ function Settings() {
                     {/* <TabPanel value="3"><Pricing /></TabPanel> */}
                 </TabContext>
             </Box>
-        </FreelancerSideBar>
+        </ClientSideBar>
     )
 }
 
-export default Settings
+export default ClientSettings;

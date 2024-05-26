@@ -1,17 +1,19 @@
-interface Client {
-    clientId: string;
-    clientAuthId: string;
-    clientName: string;
-    clientEmail: string;
-    clientPhone: string;
-    clientAddress: string;
-    clientCity: string;
-    clientState: string;
-    clientZip: string;
-    clientCountry: string;
-    profileImgUrl: string;
-    projects: string[];
-    companies: Company[];
+export default interface Client {
+    clientId?: string;
+    clientAuthId?: string;
+    clientName?: string;
+    clientEmail?: string;
+    clientPhone?: string;
+    clientAddress?: string;
+    clientCity?: string;
+    clientState?: string;
+    clientZip?: string;
+    clientCountry?: string;
+    profileImgUrl?: string;
+    coverImage?:string;
+    blocked?:string;
+    projects?: string[];
+    companies?: Company[];
 }
 
 interface Company {
@@ -33,11 +35,11 @@ interface IntentRequestObj {
     clientId: string;
     projectId: string;
     commitedProjectId: string;
-    clientName:string
+    clientName: string
 }
 
 interface Transaction {
-    transactionId: string; 
+    transactionId: string;
     clientId: string;
     freelancerId: string;
     projectId: string;

@@ -34,50 +34,13 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import AdminSideBar from "../Home/Admin/AdminSideBar"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import Client from "@/Interfaces/clientInterface"
+import { useDispatch, useSelector } from "react-redux"
+import { RootState, TypeDispatch } from "@/Redux/Store"
+import { blockClient, fetchClients } from "@/Redux/Actions/AdminActions"
+import axiosInstance from "@/Config/AxiosConfig/axiosConfig"
 
-const data: Freelancer[] = [
-    {
-        id: "m5gr84i9",
-        name: "John Doe",
-        email: "john@example.com",
-        projectsCompleted: 12,
-        status: "active",
-        image: "https://cdn.pixabay.com/photo/2022/09/08/15/16/cute-7441224_640.jpg",
-    },
-    {
-        id: "3u1reuv4",
-        name: "Jane Smith",
-        email: "jane@example.com",
-        projectsCompleted: 8,
-        status: "active",
-        image: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-    },
-    {
-        id: "derv1ws0",
-        name: "Bob Johnson",
-        email: "bob@example.com",
-        projectsCompleted: 5,
-        status: "blocked",
-        image: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-    },
-    {
-        id: "5kma53ae",
-        name: "Sarah Lee",
-        email: "sarah@example.com",
-        projectsCompleted: 15,
-        status: "active",
-        image: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-    },
-    {
-        id: "bhqecj4p",
-        name: "Michael Chen",
-        email: "michael@example.com",
-        projectsCompleted: 10,
-        status: "blocked",
-        image: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-    },
-]
 
 export type Freelancer = {
     id: string
@@ -88,7 +51,7 @@ export type Freelancer = {
     image: string
 }
 
-export const columns: ColumnDef<Freelancer>[] = [
+export const columns: ColumnDef<Client>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -113,8 +76,8 @@ export const columns: ColumnDef<Freelancer>[] = [
     },
     {
         accessorFn: (row) => {
-            const image = row.image;
-            const name = row.name;
+            const image = row.profileImgUrl;
+            const name = row.clientName;
             return { image, name };
         },
         header: "Freelancer",
@@ -142,7 +105,13 @@ export const columns: ColumnDef<Freelancer>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="lowercase font-semibold">{row.getValue("email")}</div>,
+        cell: ({ row }) => {
+            const freelancer = row.original
+            return (
+                <div className="lowercase font-semibold">
+                    {freelancer.clientEmail}
+                </div>)
+        },
     },
     {
         accessorKey: "projectsCompleted",
@@ -152,37 +121,36 @@ export const columns: ColumnDef<Freelancer>[] = [
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
-                    Projects Completed
+                    Posted Projects
                     <ArrowUpDown className=" ml-2 h-4 w-4" />
                 </Button>
             )
         },
-        cell: ({ row }) => <div>{row.getValue("projectsCompleted")}</div>,
-    },
-    {
-        accessorKey: "status",
-        header: "Status",
-        cell: ({ row }) => (
-            <div className={`capitalize ${row.getValue("status") === "active" ? "text-green-500" : "text-red-500"} font-semibold`}>
-                {row.getValue("status")}
-            </div>
-        ),
+        cell: ({ row }) => {
+            const freelancer = row.original;
+            return (
+                <div>
+                    {freelancer?.projects?.length}
+                </div>
+            )
+        },
     },
     {
         id: "actions",
-        enableHiding: false,
+        header: "Actions",
         cell: ({ row }) => {
-            const freelancer = row.original;
+            const client = row.original;
 
             const handleBlock = () => {
-                console.log("Block freelancer with ID:", freelancer.id);
+                // dispatch(blockClient({ clientAuthId: client.clientAuthId, blocked: client.blocked }))
+                axiosInstance.put(`/api/v1/user/blockClient?clientId=${client.clientAuthId}&status=${client.blocked}`)
             };
             return (
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
                             <span className="sr-only">Action</span>
-                            {freelancer.status === "active" ? "Block" : "Un Block"}
+                            {client.blocked ? "Block" : "Un Block"}
                         </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
@@ -196,7 +164,7 @@ export const columns: ColumnDef<Freelancer>[] = [
                         <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
                             <AlertDialogAction className="bg-slate-900" onClick={handleBlock}>
-                                {freelancer.status === "active" ? "Block" : "Un Block"}
+                                {client.blocked ? "Block" : "Un Block"}
                             </AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
@@ -209,9 +177,17 @@ export const columns: ColumnDef<Freelancer>[] = [
 export function ClientManagement() {
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-    const [columnVisibility, setColumnVisibility] =
-        useState<VisibilityState>({})
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = useState({})
+    const dispatch: TypeDispatch = useDispatch();
+    const data = useSelector((state: RootState) => state.adminUserDetails.data) || [];
+
+
+
+    useEffect(() => {
+        dispatch(fetchClients())
+    }, []);
+
 
     const table = useReactTable({
         data,

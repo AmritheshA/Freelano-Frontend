@@ -19,17 +19,14 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { SelectOption } from "../Custom/Selects";
+import { SelectOption } from "@/Component/Custom/Selects";
 import { FaCirclePlus } from "react-icons/fa6";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { freelancerProfileSubmit } from "@/Redux/Actions/UserActions/userActions";
+import { clientProfileSubmit } from "@/Redux/Actions/UserActions/userActions";
 import { RootState, TypeDispatch } from "@/Redux/Store";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-interface ChildComponent1Props {
-    setActive: (componentName: string) => void;
-}
 
 const validationSchema = Yup.object().shape({
     streetAddress: Yup.string().required("Street address is required"),
@@ -49,19 +46,19 @@ interface Details {
     streetAddress: string;
     district: string;
     city: string;
-    mobile: number;
-    zipCode: number;
+    mobile: string;
+    zipCode: string;
 }
 
 
-const Details_8: React.FC<ChildComponent1Props> = () => {
+const ClientRegistration: React.FC = () => {
     const initialValues: Details = {
         photo: "",
         streetAddress: "",
         district: "",
         city: "",
-        mobile: 123456,
-        zipCode: 1234567890,
+        mobile: '9999 999 999',
+        zipCode: '123456',
     };
 
     const countries: SelectOption[] = [
@@ -83,33 +80,21 @@ const Details_8: React.FC<ChildComponent1Props> = () => {
     const dispatch: TypeDispatch = useDispatch();
     const { user, message } = useSelector((state: RootState) => state.userDetails);
     const [selectedImage, setSelectedImage] = useState("/src/assets/image.png");
-    
+
 
     const handleSubmit = (values: Details) => {
 
-        const userData: any = {
-            freelancersAuthId: user.userId,
-            professionalRole: JSON.parse(localStorage.getItem("role") as string),
-            education: JSON.parse(localStorage.getItem("education") as string),
-            languages: JSON.parse(localStorage.getItem("languages") as string),
-            experience: JSON.parse(localStorage.getItem("experience") as string),
-            description: JSON.parse(localStorage.getItem("description") as string),
-            service: JSON.parse(localStorage.getItem("service") as string),
-            skills: JSON.parse(localStorage.getItem("skills") as string),
-            dateOfBirth: date,
+        const payload = {
             profileImgUrl: selectedImage,
-            country: country,
-            streetAddress: values.streetAddress,
-            district: values.district,
-            city: values.city,
-            mobileNumber: values.mobile,
-            zipCode: values.zipCode,
-            isProfileComplete: true,
-        };
-
-        console.log(userData);
-
-        dispatch(freelancerProfileSubmit(userData)).then((response) => {
+            clientCountry: country,
+            clientAddress: values.streetAddress,
+            clientState: values.district,
+            clientCity: values.city,
+            clientPhone: values.mobile,
+            clientZip: values.zipCode,
+            clientAuthId:user.userId,
+        }
+        dispatch(clientProfileSubmit(payload)).then((response) => {
             if (response.type.endsWith('fulfilled')) {
                 toast.success(message);
                 navigate("/home");
@@ -152,9 +137,9 @@ const Details_8: React.FC<ChildComponent1Props> = () => {
                 </div>
             </div>
             <div className="flex flex-col">
-                <div className="p-10 sm:pl-36 font-bold text-xl">8/8</div>
+                <div className="p-10 sm:pl-36 font-bold text-xl"></div>
                 <div className="pr-10 pl-10 sm:max-w-[1200px]  freelancerFont sm:pl-36 pb-0 font-semibold text-xl sm:text-4xl">
-                    A few last details, then you can check and publish your profile.
+                    A few basic details, then you can check and publish your profile.
                 </div>
                 <div className="pr-10 pl-10 pt-2 sm:pl-36 freelancerFont sm:max-w-[1200px] font-semibold text-sm">
                     A professional photo helps you build trust with your clients. To keep things safe and simple,
@@ -245,7 +230,7 @@ const Details_8: React.FC<ChildComponent1Props> = () => {
                                                         id="streetAddress"
                                                         type="text"
                                                         name="streetAddress"
-                                                        className="w-full px-3 py-2 rounded-md border-2 border-gray-300 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                                        className="w-full px-3 py-2 rounded-md border-2 border-gray-300 bg-background focus:outline-none focus:ring-1 focus:ring-indigo-500"
                                                         placeholder="Enter your address"
                                                         required
                                                     />
@@ -265,7 +250,7 @@ const Details_8: React.FC<ChildComponent1Props> = () => {
                                                         id="district"
                                                         type="text"
                                                         name="district"
-                                                        className="w-full px-3 py-2 rounded-md border-2 border-gray-300 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                                        className="w-full px-3 py-2 rounded-md border-2 bg-background border-gray-300 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                                                         placeholder="Enter your district"
                                                     />
                                                     <ErrorMessage
@@ -282,7 +267,7 @@ const Details_8: React.FC<ChildComponent1Props> = () => {
                                                         id="city"
                                                         type="text"
                                                         name="city"
-                                                        className="w-full px-3 py-2 rounded-md border-2 border-gray-300 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                                        className="w-full px-3 py-2 rounded-md border-2 bg-background border-gray-300 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                                                         placeholder="Enter your city"
                                                         required
                                                     />
@@ -302,7 +287,7 @@ const Details_8: React.FC<ChildComponent1Props> = () => {
                                                         id="zipCode"
                                                         type="text"
                                                         name="zipCode"
-                                                        className="w-full px-3 py-2 rounded-md border-2 border-gray-300 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                                        className="w-full px-3 py-2 rounded-md border-2 bg-background border-gray-300 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                                                         placeholder="Enter your zip code"
                                                     />
                                                 </div>
@@ -314,7 +299,7 @@ const Details_8: React.FC<ChildComponent1Props> = () => {
                                                         id="mobile"
                                                         type="text"
                                                         name="mobile"
-                                                        className="w-full px-3 py-2 rounded-md border-2 border-gray-300 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                                        className="w-full px-3 py-2 rounded-md border-2 bg-background border-gray-300 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                                                         placeholder="Enter your mobile number"
                                                         required
                                                     />
@@ -344,4 +329,4 @@ const Details_8: React.FC<ChildComponent1Props> = () => {
     );
 };
 
-export default Details_8;
+export default ClientRegistration;

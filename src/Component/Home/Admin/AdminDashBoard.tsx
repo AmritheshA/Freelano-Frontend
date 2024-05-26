@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { FaInfoCircle, FaRupeeSign, FaUsers, FaWallet } from 'react-icons/fa'
+import { FaRupeeSign, FaUsers, FaWallet } from 'react-icons/fa'
 import AdminSideBar from './AdminSideBar'
-import { Doughnut, Line, Pie } from 'react-chartjs-2';
+import { Doughnut, Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import { MdOutlineBlock } from "react-icons/md";
 import Rating from '@mui/material/Rating';
@@ -11,11 +11,23 @@ import axiosInstance from '@/Config/AxiosConfig/axiosConfig';
 import freelancerProfile from "@/Interfaces/userInterface"
 import clientProfile from "@/Interfaces/userInterface"
 
+interface LastTransactions {
+  transactions: Transaction[];
+  totalSum: number;
+  totalRevenue: number;
+  freelancerRevenue: number;
+}
 
-interface Transactions{
-  transactionStatus:string;
-  transactionAmount:number;
-  clientName:string
+interface Transaction {
+  transactionStatus: string;
+  transactionAmount: number;
+  clientName?: string;
+}
+
+interface Counts {
+  totalFreelancer: number;
+  totalClients: number;
+  blockedUser: number;
 }
 
 ChartJS.register(
@@ -29,15 +41,15 @@ ChartJS.register(
   Legend
 );
 
+
+
 function AdminDashoBoard() {
 
-  const [value, setValue] = useState<number | null>(2);
   const [freelancer, setFreelancer] = useState<freelancerProfile[]>([]);
   const [cleint, setClient] = useState<clientProfile[]>([]);
-  const [lastTransaction, setLastTransaction] = useState<Transactions[]>([]);
+  const [lastTransaction, setLastTransaction] = useState<LastTransactions>({ transactions: [], totalSum: 0, totalRevenue: 0, freelancerRevenue: 0 });
+  const [counts, setCounts] = useState<Counts>();
 
-  console.log(lastTransaction);
-  
 
   useEffect(() => {
     const getFreelancer = async () => {
@@ -69,6 +81,13 @@ function AdminDashoBoard() {
     lastTransaction();
   }, [])
 
+  useEffect(() => {
+    const getCounts = async () => {
+      const response = await axiosInstance.get("/api/v1/user/usersCount");
+      setCounts(response.data);
+    }
+    getCounts();
+  }, [])
 
   const pieData = {
     labels: [
@@ -77,8 +96,8 @@ function AdminDashoBoard() {
       'Profit'
     ],
     datasets: [{
-      label: 'My First Dataset',
-      data: [1300, 700, 2000],
+      label: 'Profit chart',
+      data: [-lastTransaction.totalSum, lastTransaction.freelancerRevenue, lastTransaction.totalRevenue],
       backgroundColor: [
         'rgb(255, 99, 132)',
         'rgb(54, 162, 235)',
@@ -174,7 +193,7 @@ function AdminDashoBoard() {
           <div className="flex justify-end mt-2">
             <span className="text-gray-700  text-sm">Monthly</span>
           </div>
-          <div className="text-teal-500 text-3xl font-bold flex justify-end">$1500</div>
+          <div className="text-teal-500 text-3xl font-bold flex justify-end">{lastTransaction.totalRevenue}</div>
         </div>
 
         <div className="flex flex-col bg-gray-100 w-[250px] rounded-lg shadow-md p-4">
@@ -187,7 +206,7 @@ function AdminDashoBoard() {
           <div className="flex justify-end mt-2">
             <span className="text-gray-500 text-sm">Amount</span>
           </div>
-          <div className="text-teal-500 text-3xl font-bold flex justify-end">$280</div>
+          <div className="text-teal-500 text-3xl font-bold flex justify-end">{lastTransaction.totalSum}</div>
         </div>
 
         <div className="flex flex-col bg-gray-100 w-[260px] rounded-lg shadow-md p-4">
@@ -200,7 +219,7 @@ function AdminDashoBoard() {
           <div className="flex justify-end mt-2">
             <span className="text-gray-500 text-sm">Active Freelancers</span>
           </div>
-          <div className="text-teal-500 text-3xl font-bold flex justify-end">750</div>
+          <div className="text-teal-500 text-3xl font-bold flex justify-end">{counts?.totalFreelancer}</div>
         </div>
 
         <div className="flex flex-col bg-gray-100 w-[250px] rounded-lg shadow-md p-4">
@@ -213,7 +232,7 @@ function AdminDashoBoard() {
           <div className="flex justify-end mt-2">
             <span className="text-gray-500 text-sm">Active Clients</span>
           </div>
-          <div className="text-teal-500 text-3xl font-bold flex justify-end">100</div>
+          <div className="text-teal-500 text-3xl font-bold flex justify-end">{counts?.totalClients}</div>
         </div>
 
         <div className="flex flex-col bg-gray-100 w-[250px] rounded-lg shadow-md p-4">
@@ -226,9 +245,8 @@ function AdminDashoBoard() {
           <div className="flex justify-end mt-2">
             <span className="text-gray-500 text-sm">Non-Active Users</span>
           </div>
-          <div className="text-teal-500 text-3xl font-bold flex justify-end">10</div>
+          <div className="text-teal-500 text-3xl font-bold flex justify-end">{counts?.blockedUser}</div>
         </div>
-
       </div>
 
       <div className="w-full h-[350px] mt-20 flex gap-5 ">
@@ -241,13 +259,13 @@ function AdminDashoBoard() {
               <TableColumn>Amount</TableColumn>
             </TableHeader>
             <TableBody>
-              {lastTransaction.map((row:Transactions) => (
+              {lastTransaction.transactions.map((row) => (
                 <TableRow className='hover:bg-slate-100'>
-                  <TableCell >
+                  <TableCell>
                     <div className="flex items-center">
                       <img
                         src={"https://github.com/shadcn.png"}
-                        alt={row.clientName}
+                        alt={row.clientName || ""}
                         className="w-8 h-8 rounded-full mr-2"
                       />
                       {row.clientName}
@@ -257,6 +275,7 @@ function AdminDashoBoard() {
                   <TableCell>{row.transactionAmount}</TableCell>
                 </TableRow>
               ))}
+
             </TableBody>
           </Table>
         </div>

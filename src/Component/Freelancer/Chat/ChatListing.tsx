@@ -9,7 +9,7 @@ import { MessageContext } from "@/Context/MessageContext/MessageProvider";
 function ChatListing() {
 
     const [loading, setLoading] = useState(false);
-    const { contacts, setContacts, setReceivedMessages, contactId, setContactId } = useContext(MessageContext);
+    const { contacts, setContacts, setReceivedMessages, contactId, setContactId, receivedMessages } = useContext(MessageContext);
     const user = useSelector((state: RootState) => state.userDetails.user);
 
 
@@ -50,6 +50,8 @@ function ChatListing() {
                 console.error(error);
             });
     }, []);
+
+
 
     return (
         <div className="no-scrollbar overflow-y-auto h-[86%]">

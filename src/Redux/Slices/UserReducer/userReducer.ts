@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { freelancerProfileSubmit, userLoginAction, userLogoutAction, userOauthLogin, userRegisterAction } from '../../Actions/UserActions/userActions';
+import { clientProfileSubmit, freelancerProfileSubmit, userLoginAction, userLogoutAction, userOauthLogin, userRegisterAction } from '../../Actions/UserActions/userActions';
 import { getCookie, removeCookie } from "typescript-cookie";
 import { jwtDecode } from 'jwt-decode';
 import DecodedToken from "../../../Interfaces/userInterface";
@@ -22,7 +22,7 @@ if (accessToken) {
   const userName = token.sub;
   const role = token.role;
   const userId = token.userId;
-  
+
   if (token.exp * 1000 < Date.now()) {
     console.log("Unauthorized request!");
     removeCookie("AccessToken");
@@ -123,14 +123,26 @@ const userReducer = createSlice({
       .addCase(freelancerProfileSubmit.rejected, (state, action) => {
         state.error = action.payload;
       })
+      // Client Profile Submit
+      .addCase(clientProfileSubmit.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(clientProfileSubmit.fulfilled, (state, action) => {
+        state.loading = false
+        state.message = action.payload.message;
+      })
+      .addCase(clientProfileSubmit.rejected, (state) => {
+        state.loading = false
+      })
       .addCase(userLogoutAction.pending, (state, _) => {
         state.loading = true;
       })
       .addCase(userLogoutAction.fulfilled, (state, action) => {
-        toast.success(action.payload.meessage)
         state.message = action.payload.meessage;
         state.loading = false;
         state.user = null;
+        toast.success(action.payload.meessage)
+
       })
       .addCase(userLogoutAction.rejected, (state, _) => {
         state.message = "Something Went Wrong"

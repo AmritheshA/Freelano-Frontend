@@ -1,9 +1,8 @@
-import { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState, Dispatch, SetStateAction } from "react";
 import { Stomp } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { useSelector } from "react-redux";
 import { RootState } from "@/Redux/Store";
-import { Dispatch, SetStateAction } from 'react';
 
 
 interface ContactType {
@@ -14,7 +13,6 @@ interface ContactType {
   lastUpdatedMessage: string;
 }
 
-
 export interface messageType {
   contactId: string;
   senderId: string
@@ -23,8 +21,6 @@ export interface messageType {
   role: string;
   timestamp: Date;
 }
-
-
 
 interface MessageContextValue {
   receivedMessages: messageType[];
@@ -54,18 +50,16 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children }) =>
 
 
   useEffect(() => {
+    const socket = new SockJS(`${import.meta.env.VITE_LOCALHOST_URL}`);
+    const stompClient = Stomp.over(socket);
     if (user) {
-      const socket = new SockJS(`${import.meta.env.VITE_LOCALHOST_URL}`);
-      const stompClient = Stomp.over(socket);
       stompClient.connect({}, () => {
         console.log('Connected to server');
         setStompClient(stompClient);
-      });
-    } else {
-      if (stompClient) {
-        stompClient.disconnect();
-        console.log("disconnected from server");
-      }
+      })}
+    else {
+      stompClient.disconnect();
+      console.log("disconnected from server");
     }
   }, [user]);
 
@@ -96,7 +90,6 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children }) =>
       {},
       JSON.stringify(messageObj)
     );
-
   };
 
   return (

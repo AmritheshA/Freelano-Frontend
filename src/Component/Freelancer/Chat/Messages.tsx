@@ -12,7 +12,7 @@ import toast, { Toaster } from 'react-hot-toast';
 function Messages() {
 
 
-    const { sendMessage, receivedMessages, contactId } = useContext(MessageContext);
+    const { sendMessage, receivedMessages, contactId, contacts } = useContext(MessageContext);
     const { user } = useSelector((state: RootState) => state.userDetails);
     const [textInput, setTextInput] = useState("");
     const scrollableElementRef = useRef<HTMLDivElement>(null);
@@ -31,13 +31,21 @@ function Messages() {
             {(receivedMessages != null && contactId != "") ?
                 <>
                     <div className="px-6 py-4 bg-white shadow-md">
-                        <h2 className="text-2xl font-semibold">Chat</h2>
+                        <div className="flex items-center gap-4">
+                            <div className="avatar online">
+                                <div className="w-10 rounded-full">
+                                    <img src={contacts.find((contact) => contact.contactsId === contactId)?.userProfile} />
+                                </div>
+                            </div>
+                            <h2 className="text-2xl font-semibold">{contacts.find((contact) => contact.contactsId === contactId)?.userName}</h2>
+                        </div>
                     </div>
                     <div ref={scrollableElementRef} id="scrollableElement" className="flex-1 overflow-y-auto no-scrollbar p-6 flex flex-col">
                         {receivedMessages.map((message: messageType) =>
                             message.senderId !== user.userId ? (
                                 <div className="chat chat-start">
                                     <div className="chat-bubble chat-bubble-info">{message.messageData}</div>
+                                    <span>3.10</span>
                                 </div>
                             ) : (
                                 <div className="chat chat-end">

@@ -49,6 +49,7 @@ const monthOrder: { [key in Month]: number } = {
 };
 
 
+
 function Payment() {
 
     const [amount, setAmount] = useState<number[]>([]);
@@ -66,8 +67,6 @@ function Payment() {
                         "Content-Type": "application/json",
                     },
                 };
-
-
                 const response = await axiosInstance.get(`/api/v1/payment/monthly-revenue?freelancerId=${user?.userId}&role=${user?.role}`, config);
 
                 const responseData = response.data;
