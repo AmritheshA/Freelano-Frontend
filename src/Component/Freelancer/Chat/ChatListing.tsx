@@ -9,7 +9,7 @@ import { MessageContext } from "@/Context/MessageContext/MessageProvider";
 function ChatListing() {
 
     const [loading, setLoading] = useState(false);
-    const { contacts, setContacts, setReceivedMessages, contactId, setContactId, receivedMessages } = useContext(MessageContext);
+    const { contacts, setContacts, setReceivedMessages, receivedMessages, contactId, setContactId } = useContext(MessageContext);
     const user = useSelector((state: RootState) => state.userDetails.user);
 
 
@@ -51,6 +51,21 @@ function ChatListing() {
             });
     }, []);
 
+    const handleContactClick = async (id: string) => {
+        setContactId(id);
+
+        const responce = await axiosInstance.put(`/api/v1/chat/markAsRead?contactId=${id}&userId=${user.userId}`);
+
+        if (responce.data) {
+            setReceivedMessages((prevMessages) =>
+                prevMessages.map((message) =>
+                ({
+                    ...message, isRead: true
+                })))
+        }
+        console.log(receivedMessages);
+
+    }
 
 
     return (
@@ -82,7 +97,7 @@ function ChatListing() {
                         <div
                             key={contact.contactsId}
                             className="flex justify-between p-4  hover:bg-gray-100 cursor-pointer border-b border-gray-200"
-                            onClick={() => setContactId(contact.contactsId)} >
+                            onClick={() => handleContactClick(contact.contactsId)} >
                             <div className="flex gap-3 items-start">
                                 <div className="avatar online">
                                     <div className="w-10 rounded-full">

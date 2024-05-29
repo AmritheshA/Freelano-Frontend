@@ -20,6 +20,7 @@ export interface messageType {
   messageData: string;
   role: string;
   timestamp: Date;
+  isRead: boolean;
 }
 
 interface MessageContextValue {
@@ -56,7 +57,8 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children }) =>
       stompClient.connect({}, () => {
         console.log('Connected to server');
         setStompClient(stompClient);
-      })}
+      })
+    }
     else {
       stompClient.disconnect();
       console.log("disconnected from server");
@@ -82,7 +84,9 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children }) =>
 
   const sendMessage = (message: string) => {
 
-    const messageObj: messageType = { messageData: message, senderId: user.userId, role: user.role, contactId, messageType: typeof message, timestamp: new Date() };
+
+
+    const messageObj: messageType = { messageData: message, senderId: user.userId, role: user.role, contactId, messageType: typeof message, timestamp: new Date(), isRead: false };
     setReceivedMessages(prevMessages => [...prevMessages, messageObj]);
 
     stompClient.send(
