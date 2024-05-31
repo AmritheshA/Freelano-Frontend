@@ -31,7 +31,7 @@ import Complete from "./Component/Freelancer/Complete";
 import { ClientProvider } from "./Context/UserContext/ClientProvider";
 import ClientSettings from "./Pages/ClientPages/Settings/ClientSettings";
 import ClientRegistration from "./Pages/Registration/ClientRegister";
-import { onMessageListener, requestPermission } from "./Config/FirebaseConfig/FirebaseConfig";
+import { requestPermission } from "./Config/FirebaseConfig/FirebaseConfig";
 
 
 function App() {
@@ -72,7 +72,7 @@ function App() {
       .then((token) => {
         if (token) {
           console.log(token);
-          
+
         } else {
           console.log('Failed to get token');
         }

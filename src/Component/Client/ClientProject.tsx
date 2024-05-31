@@ -19,6 +19,7 @@ import { GET_CLIENTSIDE_PROJECTS } from "@/Graphql/query";
 import ClientSideBar from "../Home/Client/ClientSideBar";
 import axiosInstance from "@/Config/AxiosConfig/axiosConfig";
 import { toast } from "react-toastify";
+import Client from "@/Interfaces/clientInterface";
 
 function ClientProject() {
 
@@ -46,7 +47,7 @@ function ClientProject() {
     const handleConfromPayment = async (project: Project) => {
         try {
 
-            const payload: IntentRequestObj = {
+            const payload: any = {
                 amount: project.prize,
                 name: userInfo?.clientName || " ",
                 email: userInfo?.clientEmail || " ",
@@ -55,7 +56,7 @@ function ClientProject() {
                 projectId: project?.projectId,
                 clientId: user.userId || "",
                 commitedProjectId: project.freelancerId || "",
-                clientName:user?.userName
+                clientName: user?.userName
             }
 
             const response = await axiosInstance.post('/api/v1/payment/create-intent', payload);

@@ -38,7 +38,7 @@ import { useEffect, useState } from "react"
 import Client from "@/Interfaces/clientInterface"
 import { useDispatch, useSelector } from "react-redux"
 import { RootState, TypeDispatch } from "@/Redux/Store"
-import { blockClient, fetchClients } from "@/Redux/Actions/AdminActions"
+import { fetchClients } from "@/Redux/Actions/AdminActions"
 import axiosInstance from "@/Config/AxiosConfig/axiosConfig"
 
 

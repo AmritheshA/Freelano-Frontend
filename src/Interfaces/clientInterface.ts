@@ -25,25 +25,25 @@ interface Company {
     companyDescription: string;
 }
 
-interface IntentRequestObj {
-    name: string;
+export default interface IntentRequestObj {
+    name?: string;
     description?: string;
-    email: string;
-    amount: number;
-    projectTitle: string;
+    email?: string;
+    amount?: number;
+    projectTitle?: string;
     freelancerId: string;
-    clientId: string;
+    clientId?: string;
     projectId: string;
     commitedProjectId: string;
-    clientName: string
+    clientName?: string
 }
 
-interface Transaction {
+export default interface Transaction {
     transactionId: string;
-    clientId: string;
+    clientId?: string;
     freelancerId: string;
     projectId: string;
-    clientName: string;
+    clientName?: string;
     transactionAmount: number;
     transactionDate: Date;
     transactionCompletedDate: Date;
