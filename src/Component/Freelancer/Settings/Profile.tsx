@@ -199,8 +199,7 @@ function Profile() {
         }
     }
 
-    const handlePersonalDetails = async (event: React.ChangeEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    const handlePersonalDetails = async () => {
 
         try {
             const payload = {
@@ -222,9 +221,7 @@ function Profile() {
         }
     }
 
-    const handleRestPassword = async (event: React.ChangeEvent<HTMLElement>) => {
-        event.preventDefault();
-
+    const handleRestPassword = async () => {
         try {
             if (oldPassword != '' || newPassword != '' && newPassword == confirmPassword) {
                 const response = await axiosInstance.put(`/api/v1/auth/restFreelancerPassword?freelancerId=${freelancerDetails?.freelancersAuthId}&oldPassword=${oldPassword}&newPassword=${newPassword}`);

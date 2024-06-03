@@ -25,12 +25,12 @@ interface Company {
     companyDescription: string;
 }
 
-export default interface IntentRequestObj {
-    name?: string;
+export interface IntentRequestObj {
+    name: string;
     description?: string;
-    email?: string;
-    amount?: number;
-    projectTitle?: string;
+    email: string;
+    amount: number;
+    projectTitle: string;
     freelancerId: string;
     clientId?: string;
     projectId: string;
@@ -38,12 +38,12 @@ export default interface IntentRequestObj {
     clientName?: string
 }
 
-export default interface Transaction {
+export interface Transaction {
     transactionId: string;
-    clientId?: string;
+    clientId: string;
     freelancerId: string;
     projectId: string;
-    clientName?: string;
+    clientName: string;
     transactionAmount: number;
     transactionDate: Date;
     transactionCompletedDate: Date;

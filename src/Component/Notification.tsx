@@ -1,9 +1,7 @@
-import { onMessageListener, requestPermission } from '@/Config/FirebaseConfig/FirebaseConfig'
-import React, { useEffect } from 'react'
+import { requestPermission } from '@/Config/FirebaseConfig/FirebaseConfig'
+import { useEffect } from 'react'
 
 function Notification() {
-
-
 
     useEffect(() => {
         const data = async () => {

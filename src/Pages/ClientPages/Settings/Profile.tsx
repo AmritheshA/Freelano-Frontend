@@ -21,18 +21,18 @@ import { Link } from "react-router-dom";
 import { ClientContext } from "@/Context/UserContext/ClientProvider";
 
 interface FormData {
-    username: string;
-    location: string;
+    username: string | undefined;
+    location: string | undefined;
 }
 
 function Profile() {
 
     const { clientDetails, setClientDetails } = useContext(ClientContext);
 
-    const [coverImage, setCoverImage] = useState('');
-    const [profilePic, setProfilePic] = useState('');
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
+    const [coverImage, setCoverImage] = useState<string | undefined>('');
+    const [profilePic, setProfilePic] = useState<string | undefined>('');
+    const [email, setEmail] = useState<string | undefined>('');
+    const [phone, setPhone] = useState<string | undefined>('');
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewpassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -170,9 +170,8 @@ function Profile() {
 
 
 
-    const handlePersonalDetails = async (event: React.ChangeEvent<HTMLFormElement>) => {
-        event.preventDefault();
-
+    const handlePersonalDetails = async () => {
+    
         try {
             const payload = {
                 phone,
@@ -191,9 +190,7 @@ function Profile() {
         }
     }
 
-    const handleRestPassword = async (event: React.ChangeEvent<HTMLElement>) => {
-        event.preventDefault();
-
+    const handleRestPassword = async () => {
         try {
             if (oldPassword != '' || newPassword != '' && newPassword == confirmPassword) {
                 const response = await axiosInstance.put(`/api/v1/auth/restFreelancerPassword?freelancerId=${clientDetails?.clientAuthId}&oldPassword=${oldPassword}&newPassword=${newPassword}`);
@@ -443,7 +440,7 @@ function Profile() {
                                                 </div>
                                             </div>
                                             <div className="flex justify-end mt-2">
-                                                <Button onClick={handlePersonalDetails} variant="outlined" >Update</Button>
+                                                <Button onClick={handlePersonalDetails} variant="outlined"  >Update</Button>
                                             </div>
                                         </form>
                                         <form>

@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import { FaLocationDot } from "react-icons/fa6";
 import { SiLevelsdotfyi } from "react-icons/si";
 import { TechBox } from "../../Custom/TechBox";
-import userFullDetails from "@/Interfaces/userInterface";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, } from "@/components/ui/dialog";
 import { useSelector } from "react-redux";
 import { RootState } from "@/Redux/Store";

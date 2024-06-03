@@ -7,7 +7,7 @@ import axiosInstance from "@/Config/AxiosConfig/axiosConfig";
 import { useSelector } from "react-redux";
 import { RootState } from "@/Redux/Store";
 import { format } from "date-fns";
-import Transaction  from "@/Interfaces/clientInterface"
+import {Transaction}  from "@/Interfaces/clientInterface"
 
 
 ChartJS.register(
