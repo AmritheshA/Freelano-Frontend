@@ -2,6 +2,11 @@ import LandingNav from "./LandingNav";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import FreelanoFooter from "../FreelanoFooter";
+import landingImage from "@/assets/landingImage.png"
+import search from "/src/assets/search.png"
+import lock from "@/assets/lock.png"
+import saveWork from "@/assets/saveWorks.png"
+import landingPageJob from "@/assets/landingPageJob.png"
 
 function LandingPage() {
   return (
@@ -10,14 +15,14 @@ function LandingPage() {
         <LandingNav />
       </div>
       <div className="flex justify-center items-center mt-12 ">
-        <img src="/src/assets/landingImage.png" className="w-[88%] sm:w-[70%] md:w-[70%] lg:w-[75%] xl:w-[80%] sm:h-[550px] md:[600px] max-h-[80%] cursor-pointer" alt="ahfjakfh" />
+        <img src={landingImage} className="w-[88%] sm:w-[70%] md:w-[70%] lg:w-[75%] xl:w-[80%] sm:h-[550px] md:[600px] max-h-[80%] cursor-pointer" alt="ahfjakfh" />
       </div>
       <div className="flex sm:mt-36 mt-20 justify-center items-center">
         <div className="bg-white w-[70%] sm:h-[180px] h-[500px]  flex flex-col sm:flex-row justify-center items-center sm:justify-between ">
           <div className="w-[85%] mb-5 sm:w-[33%]  flex justify-center ">
             <div className="w-[30%] flex justify-center ">
               <div className="flex flex-col justify-center items-center">
-                <img src="/src/assets/lock.png" className="w-20 h-20" />
+                <img src={lock} className="w-20 h-20" />
                 <h1 className="w-[175px] text-2xl items-center sm:text-xl font-bold text-black mt-2">Create Account</h1>
                 <h1 className="w-[250px] text-md items-center text-center text-slate-400 mt-2">First you have to create a Freelano account here</h1>
               </div>
@@ -27,7 +32,7 @@ function LandingPage() {
             <div className="flex justify-center ">
               <div className=" bg-white w-[30%] flex justify-center">
                 <div className="flex flex-col justify-center items-center">
-                  <img src="/src/assets/search.png" className="w-20 h-20" />
+                  <img src={search} className="w-20 h-20" />
                   <h1 className="w-[175px] text-xl items-center font-bold text-black mt-2">Find Your Jobs</h1>
                   <h1 className="w-[250px] text-md items-center text-center font- text-slate-400 mt-2">Search the best Freelance work here</h1>
                 </div>
@@ -38,7 +43,7 @@ function LandingPage() {
             <div className=" bg-white w-[30%] flex justify-center">
               <div className="flex justify-center ">
                 <div className="flex flex-col justify-center items-center">
-                  <img src="/src/assets/saveWorks.png" className="w-20 h-20" />
+                  <img src={saveWork} className="w-20 h-20" />
                   <h1 className="w-[175px] text-xl items-center font-bold text-black mt-2">Save and apply</h1>
                   <h1 className="w-[250px] text-md items-center text-center font- text-slate-400 mt-2">Apply or save and start your work</h1>
                 </div>
@@ -49,7 +54,7 @@ function LandingPage() {
       </div>
       <div className="flex justify-center items-center mt-20 flex-wrap">
         <div className="hidden sm:flex w-full md:w-1/2">
-          <img src="/src/assets/landingPageJob.png" alt="" className="max-w-full" />
+          <img src={landingPageJob} alt="" className="max-w-full" />
         </div>
         <div className="w-full md:w-1/2 flex flex-col justify-center text-center md:text-right max-w-[516px]">
           <div className="text-4xl md:text-6xl font-medium text-black">
