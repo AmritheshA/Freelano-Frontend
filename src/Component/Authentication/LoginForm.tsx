@@ -8,8 +8,7 @@ import { userLoginAction, userOauthLogin } from "../../Redux/Actions/UserActions
 import { RootState, TypeDispatch } from "../../Redux/Store";
 import ScaleLoader from "react-spinners/ScaleLoader";
 import { GoogleLogin } from "@react-oauth/google";
-
-
+import loginImage from "@/assets/loginImage.png"
 
 
 function LoginForm() {
@@ -31,10 +30,9 @@ function LoginForm() {
             .min(8, "Minimum 8 characters")
     });
 
-    const handleSubmit = (values: any, { setSubmitting }: any) => {
-        dispatch(userLoginAction(values))
+    const handleSubmit = async (values: any, { setSubmitting }: any) => {
+        await dispatch(userLoginAction(values))
         setSubmitting(false);
-
     };
 
     return (
@@ -135,7 +133,7 @@ function LoginForm() {
             </div>
             <div className="hidden lg:flex items-center justify-center lg:w-[50%] md:ml-[3%] ml-auto max-w-[700px]">
                 <img
-                    src="/src/assets/loginImage.png"
+                    src={loginImage}
                     alt="Login Image"
                     className="object-cover "
                 />
