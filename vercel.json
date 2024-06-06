@@ -2,7 +2,7 @@
     "rewrites": [
       {
         "source": "/**",
-        "destination": "https://amrithesh.shop/"
+        "destination": "https://freelano.vercel.app/"
       }
     ]
   }
