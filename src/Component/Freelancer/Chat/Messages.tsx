@@ -8,6 +8,8 @@ import { SlPicture } from "react-icons/sl";
 import { useSelector } from "react-redux";
 import toast, { Toaster } from 'react-hot-toast';
 import { Check, CheckCheck } from "lucide-react";
+import EmojiPicker from 'emoji-picker-react';
+
 
 
 function Messages() {
@@ -97,26 +99,7 @@ function Messages() {
 
                     </div>
                     <div className="p-4 bg-white shadow-md flex items-center gap-2">
-                        <SpeedDial
-                            ariaLabel="SpeedDial example"
-                            icon={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-paperclip w-5 cursor-pointer" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="radix-:rn:" data-state="closed"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>}
-                            className="ml-2 h-10"
-                        >
-                            <SpeedDialAction
-                                icon={<FaFileAlt size={20} />}
-                                tooltipTitle="Documents"
-                                onClick={() => {
-                                    setTextInput(textInput + "😊");
-                                }}
-                            />
-                            <SpeedDialAction
-                                icon={<SlPicture size={20} />}
-                                tooltipTitle="Picture"
-                                onClick={() => {
-                                    setTextInput(textInput + "😊");
-                                }}
-                            />
-                        </SpeedDial>
+                        <EmojiPicker />
 
                         <input
                             type="text"
@@ -193,8 +176,8 @@ const getSeperationDate = (date: Date) => {
     return displayDate;
 }
 
-function getFormatedData(date:Date) {
-    
+function getFormatedData(date: Date) {
+
     const day = String(date.getUTCDate()).padStart(2, '0');
     const month = String(date.getUTCMonth() + 1).padStart(2, '0');
     const year = date.getUTCFullYear();
