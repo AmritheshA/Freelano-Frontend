@@ -2,7 +2,6 @@ import { MessageContext, messageType } from "@/Context/MessageContext/MessagePro
 import { RootState } from "@/Redux/Store";
 import { useContext, useEffect, useRef, useState } from "react";
 import { FiSend } from "react-icons/fi";
-
 import { useSelector } from "react-redux";
 import toast, { Toaster } from 'react-hot-toast';
 import { Check, CheckCheck } from "lucide-react";
@@ -23,9 +22,6 @@ function Messages() {
             scrollableElement.scrollTop = scrollableElement.scrollHeight;
         }
     });
-
-
-
 
     return (
         <>
