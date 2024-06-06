@@ -18,9 +18,12 @@ export const userLoginAction = createAsyncThunk(
         },
       };
 
+      console.log("🚀 ~ response:")
       const response = await axiosInstance.post('/api/v1/auth/login', userCredentail, config);
       const data = response?.data;
       const decodedJwt = jwtDecode<JwtPayload>(data.accessToken);
+      console.log("token seted to localstoarage");
+      localStorage.setItem("token", data.accessToken);
       console.log("Authenticated Successfully");
 
       return {
@@ -52,6 +55,7 @@ export const userRegisterAction = createAsyncThunk(
       console.log("token" + token)
       const response = await axiosInstance.get(`/api/v1/auth/register?token=${token}`, config);
       const data = response.data;
+      localStorage.setItem("token", data.accessToken);
 
       return {
         username: data.userName,
@@ -183,7 +187,7 @@ export const userLogoutAction = createAsyncThunk("user/userLogoutAction", async 
     };
     const response = await axiosInstance.get("/api/v1/auth/logout", config);
     const meessage = response.data;
-
+    localStorage.removeItem("token");
     console.log(meessage);
 
     return {

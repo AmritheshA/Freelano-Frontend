@@ -2,13 +2,14 @@ import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { getCookie } from 'typescript-cookie';
 
-const GRAPHQL_ENDPOINT = "http://localhost:8765/graphql";
+const GRAPHQL_ENDPOINT = "https://amrithesh.shop/graphql";
 const httpLink = createHttpLink({ uri: GRAPHQL_ENDPOINT });
 
 const authLink = setContext((_, { headers }) => {
     
-    const accessToken = getCookie("AccessToken") ?? '';
-    const token = atob(accessToken);
+    const accessToken = getCookie("AccessToken") ?? '';    
+    const localToken = localStorage.getItem("token");
+    const token = atob(accessToken) || localToken;
 
     return {
         headers: {

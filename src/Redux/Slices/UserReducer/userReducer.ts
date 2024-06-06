@@ -14,15 +14,15 @@ interface userDetails {
 }
 
 const accessToken = getCookie("AccessToken");
+const localToken = localStorage.getItem("token");
 let user = null;
 if (accessToken) {
-
   const decodedToken = atob(accessToken);
   const token: DecodedToken = jwtDecode(decodedToken);
+  localStorage.setItem("token", atob(accessToken));
   const userName = token.sub;
   const role = token.role;
   const userId = token.userId;
-
   if (token.exp * 1000 < Date.now()) {
     console.log("Unauthorized request!");
     removeCookie("AccessToken");
@@ -33,8 +33,20 @@ if (accessToken) {
       role,
     };
   }
-} else {
-  console.log("AccessToken not found");
+} else if (localToken) {
+  const token: DecodedToken = jwtDecode(localToken);
+  const userName = token.sub;
+  const role = token.role;
+  const userId = token.userId;
+  user = {
+    userId,
+    userName,
+    role,
+  };
+}
+else {
+  console.log("User token not found");
+
 }
 
 const initialState: userDetails = {
@@ -142,7 +154,6 @@ const userReducer = createSlice({
         state.loading = false;
         state.user = null;
         toast.success(action.payload.meessage)
-
       })
       .addCase(userLogoutAction.rejected, (state, _) => {
         state.message = "Something Went Wrong"
