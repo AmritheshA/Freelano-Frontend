@@ -8,8 +8,8 @@ import { SlPicture } from "react-icons/sl";
 import { useSelector } from "react-redux";
 import toast, { Toaster } from 'react-hot-toast';
 import { Check, CheckCheck } from "lucide-react";
-import EmojiPicker from 'emoji-picker-react';
-
+import data from '@emoji-mart/data'
+import Picker from '@emoji-mart/react'
 
 
 function Messages() {
@@ -99,7 +99,8 @@ function Messages() {
 
                     </div>
                     <div className="p-4 bg-white shadow-md flex items-center gap-2">
-                        <EmojiPicker />
+                        
+                        <Picker data={data} onEmojiSelect={console.log} />
 
                         <input
                             type="text"
