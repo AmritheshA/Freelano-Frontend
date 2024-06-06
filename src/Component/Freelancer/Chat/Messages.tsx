@@ -88,20 +88,18 @@ function Messages() {
                                                     </div>
                                                 </div>
                                             </div>
-                                        )
-                                    ))
+                                        ))
+                            )
                         })}
-
                     </div>
                     <div className="p-4 bg-white shadow-md flex items-center gap-2">
 
                         <Popover>
                             <PopoverTrigger><Smile /></PopoverTrigger>
                             <PopoverContent>
-                                <Picker data={data} onEmojiSelect={console.log} />
+                                <Picker data={data} onEmojiSelect={(eve: any) => setTextInput(eve.target.value)} />
                             </PopoverContent>
                         </Popover>
-
 
                         <input
                             type="text"
