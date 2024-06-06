@@ -39,49 +39,59 @@ function Messages() {
                         </div>
                     </div>
                     <div ref={scrollableElementRef} id="scrollableElement" className="flex-1 overflow-y-auto no-scrollbar p-6 flex flex-col bg-[url('https://lh3.googleusercontent.com/SZ97RCEv5EVH6iMCDIdHeGJM_BNyHYcnRQ4EdK4V_VyVxLlQS8GY1U3xB8atEBH55OM=h310')]">
-                        {receivedMessages.map((message: messageType) =>
-                            message.senderId !== user.userId ? (
-                                <div className="flex flex-col chat chat-start">
-                                    <div className="chat chat-start">
-                                        <div className="chat-image avatar">
-                                            <div className="w-10 rounded-full">
-                                                <img alt="Tailwind CSS chat bubble component" src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-                                            </div>
-                                        </div>
-                                        <div className="flex justify-center mb-4">
-                                            <div className="bg-gray-800 text-white px-4 py-2 rounded-full font-bold uppercase">
-                                                Monday
-                                            </div>
-                                        </div>
-                                        <div className="chat-bubble min-w-[110px]">
-                                            {message.messageData}
-                                            <div className="flex justify-end">
-                                                <span className="text-gray-500 text-sm">{formatDateAndConvert(new Date(message.timestamp))}</span>
-                                            </div>
-                                        </div>
+                        {receivedMessages.map((message: messageType, index) => {
+                            const isDateDifferent =
+                                index === 0 ||
+                                new Date(message.timestamp).toDateString() !==
+                                new Date(receivedMessages[index - 1].timestamp).toDateString();
+
+                            return (
+                                isDateDifferent ? <div className="flex justify-center mb-4">
+                                    <div className="bg-gray-800 text-white px-4 py-2 rounded-full font-bold uppercase">
+                                        Monday
                                     </div>
                                 </div>
-                            ) : (
-                                <div className="flex flex-col chat chat-end">
-                                    <div className="chat chat-start">
-                                        <div className="chat-image avatar">
-                                            <div className="w-10 rounded-full">
-                                                <img alt="Tailwind CSS chat bubble component" src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-                                            </div>
-                                        </div>
-                                        <div className="chat-bubble chat-bubble-accent min-w-[120px] max-w-[300px]">
-                                            <div className="flex flex-col">
-                                                <h1 className="max-w-[250px] break-words">{message.messageData}</h1>
-                                                <div className="flex justify-end gap-1">
-                                                    <span className="text-gray-500 text-sm">{formatDateAndConvert(new Date(message.timestamp))}</span>
-                                                    {message.isRead ? <CheckCheck className="h-5" /> : <Check className="w-4 h-4" />}
+                                    :
+                                    (
+                                        message.senderId !== user.userId ? (
+                                            <div className="flex flex-col chat chat-start">
+                                                <div className="chat chat-start">
+                                                    <div className="chat-image avatar">
+                                                        <div className="w-10 rounded-full">
+                                                            <img alt="Tailwind CSS chat bubble component" src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                                                        </div>
+                                                    </div>
+                                                    <div className="chat-bubble min-w-[110px]">
+                                                        {message.messageData}
+                                                        <div className="flex justify-end">
+                                                            <span className="text-gray-500 text-sm">{formatDateAndConvert(new Date(message.timestamp))}</span>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )
-                        )}
+                                        ) : (
+                                            <div className="flex flex-col chat chat-end">
+                                                <div className="chat chat-start">
+                                                    <div className="chat-image avatar">
+                                                        <div className="w-10 rounded-full">
+                                                            <img alt="Tailwind CSS chat bubble component" src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                                                        </div>
+                                                    </div>
+                                                    <div className="chat-bubble chat-bubble-accent min-w-[120px] max-w-[300px]">
+                                                        <div className="flex flex-col">
+                                                            <h1 className="max-w-[250px] break-words">{message.messageData}</h1>
+                                                            <div className="flex justify-end gap-1">
+                                                                <span className="text-gray-500 text-sm">{formatDateAndConvert(new Date(message.timestamp))}</span>
+                                                                {message.isRead ? <CheckCheck className="h-5" /> : <Check className="w-4 h-4" />}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )
+                                    ))
+                        })}
+
                     </div>
                     <div className="p-4 bg-white shadow-md flex items-center gap-2">
 
