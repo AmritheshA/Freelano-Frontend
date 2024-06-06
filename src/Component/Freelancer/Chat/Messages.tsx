@@ -48,7 +48,7 @@ function Messages() {
                             return (
                                 isDateDifferent ? <div className="flex justify-center mb-4">
                                     <div className="bg-gray-800 text-white px-4 py-2 rounded-full font-bold uppercase">
-                                        Monday
+                                        {new Date(message.timestamp) == new Date() ? "Today" : new Date(new Date().getTime() - (24 * 60 * 60 * 1000)) == new Date(message.timestamp) ? "Yesterday" : getDate(message.timestamp)}
                                     </div>
                                 </div>
                                     :
@@ -94,9 +94,6 @@ function Messages() {
 
                     </div>
                     <div className="p-4 bg-white shadow-md flex items-center gap-2">
-
-
-
                         <SpeedDial
                             ariaLabel="SpeedDial example"
                             icon={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-paperclip w-5 cursor-pointer" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="radix-:rn:" data-state="closed"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>}
@@ -172,4 +169,17 @@ const formatDateAndConvert = (date: Date) => {
     let minutesString: string = minutes < 10 ? '0' + minutes : minutes.toString();
     let timeString: string = `${hour}.${minutesString} ${meridiem}`;
     return timeString;
+}
+
+const getDate = (date: Date) => {
+
+    if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
+        date = new Date();
+    }
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${day}/${month}/${year}`;
+
 }
