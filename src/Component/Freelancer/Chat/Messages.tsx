@@ -39,6 +39,7 @@ function Messages() {
                         </div>
                     </div>
                     <div ref={scrollableElementRef} id="scrollableElement" className="flex-1 overflow-y-auto no-scrollbar p-6 flex flex-col bg-[url('https://lh3.googleusercontent.com/SZ97RCEv5EVH6iMCDIdHeGJM_BNyHYcnRQ4EdK4V_VyVxLlQS8GY1U3xB8atEBH55OM=h310')]">
+
                         {receivedMessages.map((message: messageType) =>
                             message.senderId !== user.userId ? (
                                 <div className="flex flex-col chat chat-start">
@@ -150,7 +151,7 @@ const formatDateAndConvert = (date: Date) => {
 
     let meridiem: string = hours >= 12 ? 'PM' : 'AM';
 
-    let hour: number = hours >= 12 ? hours - 12 : hours;
+    let hour: number = hours > 12 ? hours - 12 : hours;
 
     let minutesString: string = minutes < 10 ? '0' + minutes : minutes.toString();
     let timeString: string = `${hour}.${minutesString} ${meridiem}`;
