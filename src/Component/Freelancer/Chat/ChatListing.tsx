@@ -98,12 +98,17 @@ function ChatListing() {
                             key={contact.contactsId}
                             className="flex justify-between p-4  hover:bg-gray-100 cursor-pointer border-b border-gray-200"
                             onClick={() => handleContactClick(contact.contactsId)} >
+                            <div className="bg-gray-200 rounded-full px-3 py-1 sticky top-0 left-0 text-gray-700 text-sm font-semibold">
+                                {new Date().toLocaleDateString()}
+                            </div>
+
                             <div className="flex gap-3 items-start">
                                 <div className="avatar online">
                                     <div className="w-10 rounded-full">
                                         <img src={contact.userProfile} />
                                     </div>
                                 </div>
+
                                 <div className="flex flex-col items-start">
                                     <span className="font-semibold text-lg">{contact.userName}</span>
                                     <span className="font-medium text-sm">{contact.lastUpdatedMessage}</span>
