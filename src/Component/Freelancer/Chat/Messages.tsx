@@ -188,7 +188,7 @@ const getSeperationDate = (date: Date) => {
     } else if (messageDate.toDateString() === yesterday.toDateString()) {
         displayDate = "Yesterday";
     } else {
-        displayDate = getDate(date);
+        displayDate = getSeperationDate(date);
     }
 
     return displayDate;
