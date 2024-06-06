@@ -8,7 +8,6 @@ import { SlPicture } from "react-icons/sl";
 import { useSelector } from "react-redux";
 import toast, { Toaster } from 'react-hot-toast';
 import { Check, CheckCheck } from "lucide-react";
-import { getDate } from "date-fns";
 
 
 function Messages() {
@@ -188,8 +187,17 @@ const getSeperationDate = (date: Date) => {
     } else if (messageDate.toDateString() === yesterday.toDateString()) {
         displayDate = "Yesterday";
     } else {
-        displayDate = getSeperationDate(date);
+        displayDate = getFormatedData(date);
     }
 
     return displayDate;
+}
+
+function getFormatedData(date:Date) {
+    
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const year = date.getUTCFullYear();
+
+    return `${day}/${month}/${year}`;
 }
