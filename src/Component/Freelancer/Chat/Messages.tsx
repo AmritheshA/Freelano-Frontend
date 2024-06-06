@@ -4,7 +4,8 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { FiSend } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import toast, { Toaster } from 'react-hot-toast';
-import { Check, CheckCheck } from "lucide-react";
+import { Check, CheckCheck, Smile } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger, } from "@/components/ui/popover"
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 
@@ -94,7 +95,13 @@ function Messages() {
                     </div>
                     <div className="p-4 bg-white shadow-md flex items-center gap-2">
 
-                        <Picker data={data} onEmojiSelect={console.log} />
+                        <Popover>
+                            <PopoverTrigger><Smile /></PopoverTrigger>
+                            <PopoverContent>
+                                <Picker data={data} onEmojiSelect={console.log} />
+                            </PopoverContent>
+                        </Popover>
+
 
                         <input
                             type="text"
