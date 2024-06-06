@@ -8,6 +8,7 @@ import { SlPicture } from "react-icons/sl";
 import { useSelector } from "react-redux";
 import toast, { Toaster } from 'react-hot-toast';
 import { Check, CheckCheck } from "lucide-react";
+import { getDate } from "date-fns";
 
 
 function Messages() {
@@ -23,6 +24,9 @@ function Messages() {
             scrollableElement.scrollTop = scrollableElement.scrollHeight;
         }
     });
+
+
+
 
     return (
         <>
@@ -48,7 +52,7 @@ function Messages() {
                             return (
                                 isDateDifferent ? <div className="flex justify-center mb-4">
                                     <div className="bg-gray-800 text-white px-4 py-2 rounded-full font-bold uppercase">
-                                        {new Date(message.timestamp) == new Date() ? "Today" : new Date(new Date().getTime() - (24 * 60 * 60 * 1000)) == new Date(message.timestamp) ? "Yesterday" : getDate(message.timestamp)}
+                                        {getSeperationDate(new Date(message.timestamp))}
                                     </div>
                                 </div>
                                     :
@@ -171,14 +175,21 @@ const formatDateAndConvert = (date: Date) => {
     return timeString;
 }
 
-const getDate = (date: Date) => {
+const getSeperationDate = (date: Date) => {
 
-    console.log("🚀 ~ getDate ~ date:", date)
+    const messageDate = new Date(date);
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
 
+    let displayDate;
+    if (messageDate.toDateString() === today.toDateString()) {
+        displayDate = "Today";
+    } else if (messageDate.toDateString() === yesterday.toDateString()) {
+        displayDate = "Yesterday";
+    } else {
+        displayDate = getDate(date);
+    }
 
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${day}/${month}/${year}`;
-
+    return displayDate;
 }
