@@ -40,6 +40,10 @@ function Messages() {
                     </div>
                     <div ref={scrollableElementRef} id="scrollableElement" className="flex-1 overflow-y-auto no-scrollbar p-6 flex flex-col bg-[url('https://lh3.googleusercontent.com/SZ97RCEv5EVH6iMCDIdHeGJM_BNyHYcnRQ4EdK4V_VyVxLlQS8GY1U3xB8atEBH55OM=h310')]">
 
+                        <div className="bg-gray-200 rounded-full px-3 py-1 text-gray-700 text-sm font-semibold mb-4">
+                            {new Date().toLocaleDateString()}
+                        </div>
+
                         {receivedMessages.map((message: messageType) =>
                             message.senderId !== user.userId ? (
                                 <div className="flex flex-col chat chat-start">
@@ -81,7 +85,7 @@ function Messages() {
                     </div>
                     <div className="p-4 bg-white shadow-md flex items-center gap-2">
 
-                      
+
 
                         <SpeedDial
                             ariaLabel="SpeedDial example"
