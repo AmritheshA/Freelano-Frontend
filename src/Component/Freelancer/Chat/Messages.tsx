@@ -39,11 +39,6 @@ function Messages() {
                         </div>
                     </div>
                     <div ref={scrollableElementRef} id="scrollableElement" className="flex-1 overflow-y-auto no-scrollbar p-6 flex flex-col bg-[url('https://lh3.googleusercontent.com/SZ97RCEv5EVH6iMCDIdHeGJM_BNyHYcnRQ4EdK4V_VyVxLlQS8GY1U3xB8atEBH55OM=h310')]">
-
-                        <div className="bg-gray-200 rounded-full px-3 py-1 text-gray-700 text-sm font-semibold mb-4">
-                            {new Date().toLocaleDateString()}
-                        </div>
-
                         {receivedMessages.map((message: messageType) =>
                             message.senderId !== user.userId ? (
                                 <div className="flex flex-col chat chat-start">
@@ -51,6 +46,11 @@ function Messages() {
                                         <div className="chat-image avatar">
                                             <div className="w-10 rounded-full">
                                                 <img alt="Tailwind CSS chat bubble component" src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                                            </div>
+                                        </div>
+                                        <div className="flex justify-center mb-4">
+                                            <div className="bg-gray-800 text-white px-4 py-2 rounded-full font-bold uppercase">
+                                                Monday
                                             </div>
                                         </div>
                                         <div className="chat-bubble min-w-[110px]">
