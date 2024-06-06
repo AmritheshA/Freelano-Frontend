@@ -97,7 +97,7 @@ function Messages() {
                         <Popover>
                             <PopoverTrigger><Smile /></PopoverTrigger>
                             <PopoverContent>
-                                <Picker data={data} onEmojiSelect={(eve: any) => setTextInput(eve.target.value)} />
+                                <Picker data={data} onEmojiSelect={(e: { native: string }) => setTextInput((prev) => `${prev}${e.native}`)} />
                             </PopoverContent>
                         </Popover>
 
