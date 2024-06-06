@@ -1,10 +1,8 @@
 import { MessageContext, messageType } from "@/Context/MessageContext/MessageProvider";
 import { RootState } from "@/Redux/Store";
-import { SpeedDial, SpeedDialAction } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
-import { FaFileAlt } from "react-icons/fa";
 import { FiSend } from "react-icons/fi";
-import { SlPicture } from "react-icons/sl";
+
 import { useSelector } from "react-redux";
 import toast, { Toaster } from 'react-hot-toast';
 import { Check, CheckCheck } from "lucide-react";
@@ -99,7 +97,7 @@ function Messages() {
 
                     </div>
                     <div className="p-4 bg-white shadow-md flex items-center gap-2">
-                        
+
                         <Picker data={data} onEmojiSelect={console.log} />
 
                         <input
