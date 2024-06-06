@@ -1,9 +1,8 @@
 {
     "rewrites": [
       {
-        "source": "/**",
-        "destination": "https://freelano.vercel.app/"
+        "source": "/*",
+        "destination": "freelano.vercel.app"
       }
     ]
   }
-  
