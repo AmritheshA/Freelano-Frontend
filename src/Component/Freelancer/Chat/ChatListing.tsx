@@ -58,6 +58,7 @@ function ChatListing() {
 
         if (responce.data) {
             setReceivedMessages((prevMessages) =>
+                
                 prevMessages.map((message) =>
                 ({
                     ...message, isRead: true
@@ -67,6 +68,7 @@ function ChatListing() {
 
     }
 
+    let unreadMessageLeng = receivedMessages.filter((message) => message.isRead == false).length;
 
     return (
         <div className="no-scrollbar overflow-y-auto h-[86%]">
@@ -109,7 +111,10 @@ function ChatListing() {
                                 <div className="flex flex-col items-start">
                                     <div className="flex gap-2">
                                         <span className="font-semibold text-lg">{contact.userName}</span>
-                                        <div className="badge">{receivedMessages.filter((message) => message.isRead == false).length}</div>
+                                        {unreadMessageLeng != 0 &&
+                                            <div className="badge">
+                                                {unreadMessageLeng}
+                                            </div>}
                                     </div>
                                     <span className="font-medium text-sm">{contact.lastUpdatedMessage}</span>
                                 </div>

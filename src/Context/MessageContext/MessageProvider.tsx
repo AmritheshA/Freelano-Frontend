@@ -21,6 +21,7 @@ export interface messageType {
   role: string;
   timestamp: Date;
   isRead: boolean;
+  chatRoomId?: string;
 }
 
 interface MessageContextValue {
@@ -29,7 +30,7 @@ interface MessageContextValue {
   setReceivedMessages: Dispatch<SetStateAction<messageType[]>>;
   contacts: ContactType[];
   setContacts: (contacts: ContactType[] | ((prevContacts: ContactType[]) => ContactType[])) => void;
-  contactId: string;
+  contactId: string | undefined;
   setContactId: Dispatch<string>;
 }
 
@@ -69,9 +70,12 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children }) =>
   useEffect(() => {
     if (stompClient && user) {
       const subscription = stompClient.subscribe(`/queue/message/${user.userId}`, (payload: any) => {
-        const message = JSON.parse(payload.body);
+        const message = JSON.parse(payload.body) as messageType;
         if (message) {
           setReceivedMessages(prevMessages => [...prevMessages, message]);
+        }
+        if (user.userId != contactId) {
+          markMessageAsRead(message?.chatRoomId)
         }
       });
 
@@ -82,17 +86,38 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children }) =>
   }, [user, stompClient]);
 
 
+  useEffect(() => {
+    console.log("subscribing read-message");
+
+    const readMessage = stompClient.subscribe(`/queue/read-message/${user.userId}`, (payload: any) => {
+      const messageId = JSON.parse(payload.body);
+
+      if (user.userId != contactId) {
+        setReceivedMessages((prevMsg) =>
+          prevMsg.map((msg) => msg.chatRoomId == messageId ? { ...msg, isRead: true } : msg))
+      }
+    })
+    return () => {
+      readMessage.unsubscribe();
+    };
+  }, [stompClient]);
+
+
   const sendMessage = (message: string) => {
-
-
 
     const messageObj: messageType = { messageData: message, senderId: user.userId, role: user.role, contactId, messageType: typeof message, timestamp: new Date(), isRead: false };
     setReceivedMessages(prevMessages => [...prevMessages, messageObj]);
-
     stompClient.send(
       `/app/client-message/${contactId}`,
       {},
       JSON.stringify(messageObj)
+    );
+  };
+
+  const markMessageAsRead = (messageId: string | undefined) => {
+
+    stompClient.send(`/app/read-message/${messageId}`, {},
+      JSON.stringify({ messageId })
     );
   };
 
