@@ -107,8 +107,10 @@ function ChatListing() {
                                 </div>
 
                                 <div className="flex flex-col items-start">
-                                    <span className="font-semibold text-lg">{contact.userName}</span>
-                                    <div className="badge">{receivedMessages.filter((message) => message.isRead === false).length}</div>
+                                    <div className="flex gap-2">
+                                        <span className="font-semibold text-lg">{contact.userName}</span>
+                                        <div className="badge">{receivedMessages.filter((message) => message.isRead == false).length}</div>
+                                    </div>
                                     <span className="font-medium text-sm">{contact.lastUpdatedMessage}</span>
                                 </div>
                             </div>
