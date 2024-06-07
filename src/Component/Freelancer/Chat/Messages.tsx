@@ -113,7 +113,7 @@ function Messages() {
                             onClick={() => {
                                 if (textInput != "") {
                                     sendMessage(textInput);
-                                    setTextInput("");
+                                    setTextInput(" ");
                                 } else {
                                     toast.error("Message Is Empty")
                                 }
