@@ -88,19 +88,20 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children }) =>
 
   useEffect(() => {
     console.log("subscribing read-message");
+    if (stompClient && user) {
+      const readMessage = stompClient.subscribe(`/queue/read-message/${user.userId}`, (payload: any) => {
+        const messageId = JSON.parse(payload.body);
 
-    const readMessage = stompClient.subscribe(`/queue/read-message/${user.userId}`, (payload: any) => {
-      const messageId = JSON.parse(payload.body);
-
-      if (user.userId != contactId) {
-        setReceivedMessages((prevMsg) =>
-          prevMsg.map((msg) => msg.chatRoomId == messageId ? { ...msg, isRead: true } : msg))
-      }
-    })
-    return () => {
-      readMessage.unsubscribe();
-    };
-  }, [stompClient]);
+        if (user.userId != contactId) {
+          setReceivedMessages((prevMsg) =>
+            prevMsg.map((msg) => msg.chatRoomId == messageId ? { ...msg, isRead: true } : msg))
+        }
+      })
+      return () => {
+        readMessage?.unsubscribe();
+      };
+    }
+  }, [user, stompClient]);
 
 
   const sendMessage = (message: string) => {
