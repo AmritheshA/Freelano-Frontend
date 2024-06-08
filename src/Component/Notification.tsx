@@ -6,7 +6,7 @@ function Notification() {
     useEffect(() => {
         const data = async () => {
             const deviceToken = await requestPermission();
-            console.log(deviceToken)
+            console.log("🚀 ~ data ~ deviceToken:", deviceToken)
         }
         data();
     }, [])

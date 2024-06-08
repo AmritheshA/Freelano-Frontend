@@ -1,4 +1,4 @@
-import { ReactNode, useContext, useState } from 'react';
+import { ReactNode, useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
 import { userLogoutAction } from "@/Redux/Actions/UserActions/userActions";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu";
@@ -9,10 +9,20 @@ import { FaWallet } from 'react-icons/fa';
 import { FreelancerContext } from '@/Context/UserContext/FreelancerProvider';
 import arrow from "@/assets/freelancer/image.png"
 import logo from "@/assets/ogLogo.png"
+import axiosInstance from '@/Config/AxiosConfig/axiosConfig';
+import EmptyNotification from "@/assets/freelancer/EmptyNotification.jpg";
 
 
 interface FreelancerSideBarProps {
     children: ReactNode;
+}
+
+interface Notification {
+    title: string;
+    body: any;
+    senderProfile: string;
+    timestamp: string;
+    isRead: boolean;
 }
 
 function FreelancerSideBar({ children }: FreelancerSideBarProps) {
@@ -20,6 +30,18 @@ function FreelancerSideBar({ children }: FreelancerSideBarProps) {
     const [open, setOpen] = useState(true);
     const dispatch = useDispatch<TypeDispatch>();
     const { freelancerDetails } = useContext(FreelancerContext);
+    const [notifications, SetNotification] = useState<Notification[]>([]);
+
+    useEffect(() => {
+        const fetNotification = async () => {
+            const response = await axiosInstance.get("/api/v1/notification/getAllNotification");
+            const data = response.data;
+            SetNotification(data);
+        }
+        fetNotification();
+    }, []);
+
+
 
     const Menus = [
         {
@@ -225,9 +247,43 @@ function FreelancerSideBar({ children }: FreelancerSideBarProps) {
                             </DropdownMenuContent>
                         </DropdownMenu>
 
-                        <div
-                            className={`w-10 h-10 rounded-full bg-cover bg-[url('https://cdn-icons-png.flaticon.com/512/3119/3119338.png')]`}
-                        ></div>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger className="">
+                                <div className={`w-10 h-10 rounded-full bg-cover bg-[url('https://cdn-icons-png.flaticon.com/512/3119/3119338.png')]`}>
+                                    <div className="badge badge-primary w-8 -mr-4 badge-md">
+                                        10+
+                                    </div>
+                                </div>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className={`bg-white shadow-lg ${notifications.length === 0 ? "w-[300px]" : "w-[400px]"}  rounded-md p-2 mt-2`}>
+                                <DropdownMenuItem>
+                                    {notifications.length === 0 ?
+                                        <div className="h-56 w-full relative">
+                                            <img src={EmptyNotification} className="absolute inset-0 w-full h-full object-fit" />
+                                        </div>
+                                        :
+                                        <div className="overflow-y-auto max-h-56 no-scrollbar">
+                                            {notifications.map((notification) => (
+                                                <div className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md">
+                                                    <img
+                                                        src={notification?.senderProfile}
+                                                        alt="Profile"
+                                                        className="w-10 h-10 rounded-full"
+                                                    />
+                                                    <div className="flex-1">
+                                                        <div className="flex justify-between">
+                                                            <h4 className="font-semibold">{notification.title}</h4>
+                                                            <span className="text-gray-500 text-sm">{notification.timestamp}</span>
+                                                        </div>
+                                                        <p className="text-gray-500">status: {notification.body}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    }
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </div>
                 {children}
