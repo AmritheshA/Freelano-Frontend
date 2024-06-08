@@ -3,6 +3,7 @@ import { Stomp } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { useSelector } from "react-redux";
 import { RootState } from "@/Redux/Store";
+import axiosInstance from "@/Config/AxiosConfig/axiosConfig";
 
 
 interface ContactType {
@@ -50,7 +51,6 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children }) =>
   const [contacts, setContacts] = useState<ContactType[]>([]);
   const [contactId, setContactId] = useState("");
   const [onlineUsers, setOnlineUsers] = useState([]);
-  console.log("🚀 ~ onlineUsers:", onlineUsers)
 
 
   useEffect(() => {
@@ -60,18 +60,33 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children }) =>
       stompClient.connect({}, () => {
         console.log('Connected to server');
         setStompClient(stompClient);
-        stompClient.subscribe('/queue/online-users', (message) => {
-          const users = JSON.parse(message.body);
-          console.log("🚀 ~ .....................stompClient.subscribe ~ users:..................", users)          
-          setOnlineUsers(users)
-        });
+        markAsOnline();
+        console.log("🚀 ~ onlineUsers:", onlineUsers)
+
       })
     }
     else {
       stompClient.disconnect();
       console.log("disconnected from server");
+      markAsOffline();
     }
   }, [user]);
+
+  const markAsOnline = async () => {
+    const response = await axiosInstance.get(`/api/v1/markAsOnline?userId=${user.userId}&condition=Online`);
+    const data = response.data;
+
+    console.log("🚀 ~ markAsOnline ~ data:", data)
+    setOnlineUsers(data);
+  }
+
+  const markAsOffline = async () => {
+    const response = await axiosInstance.get(`/api/v1/markAsOnline?userId=${user.userId}&condition=Offline`);
+    const data = response.data;
+
+    console.log("🚀 ~ markAsOnline ~ data:", data)
+    setOnlineUsers(data);
+  }
 
 
   useEffect(() => {
