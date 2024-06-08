@@ -33,10 +33,11 @@ interface MessageContextValue {
   setContacts: (contacts: ContactType[] | ((prevContacts: ContactType[]) => ContactType[])) => void;
   contactId: string | undefined;
   setContactId: Dispatch<string>;
+  onlineUsers: string[];
 }
 
 export const MessageContext = createContext<MessageContextValue>({
-  receivedMessages: [], setReceivedMessages: () => { }, sendMessage: () => { }, contacts: [], setContacts: () => { }, contactId: "", setContactId: () => { }
+  receivedMessages: [], setReceivedMessages: () => { }, sendMessage: () => { }, contacts: [], setContacts: () => { }, contactId: "", onlineUsers: [], setContactId: () => { }
 });
 
 interface MessageProviderProps {
@@ -50,7 +51,7 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children }) =>
   const [receivedMessages, setReceivedMessages] = useState<messageType[]>([]);
   const [contacts, setContacts] = useState<ContactType[]>([]);
   const [contactId, setContactId] = useState("");
-  const [onlineUsers, setOnlineUsers] = useState([]);
+  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
 
 
   useEffect(() => {
@@ -69,7 +70,7 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children }) =>
       console.log("disconnected from server");
       markAsOffline();
     }
-  }, [user,setContactId]);
+  }, [user, setContactId]);
 
   const markAsOnline = async () => {
     const response = await axiosInstance.get(`/api/v1/chat/markAsOnline?userId=${user.userId}&condition=Online`);
@@ -144,7 +145,7 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children }) =>
   };
 
   return (
-    <MessageContext.Provider value={{ receivedMessages, sendMessage, setReceivedMessages, contacts, setContacts, contactId, setContactId }}>
+    <MessageContext.Provider value={{ receivedMessages, sendMessage, setReceivedMessages, onlineUsers, contacts, setContacts, contactId, setContactId }}>
       {children}
     </MessageContext.Provider>
   )
