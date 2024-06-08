@@ -68,6 +68,9 @@ function ChatListing() {
 
     }
 
+    console.log(receivedMessages);
+    
+
     let unreadMessageLeng = receivedMessages.filter((message) => message.isRead == false).length;
 
     return (
