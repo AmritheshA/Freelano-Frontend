@@ -67,11 +67,15 @@ function ChatListing() {
         console.log(receivedMessages);
 
     }
+    let unreadMessageLeng = 0;
 
-    console.log(receivedMessages);
-    
+    useEffect(() => {
+        unreadMessageLeng = receivedMessages.filter((message) => message.isRead == false).length;
 
-    let unreadMessageLeng = receivedMessages.filter((message) => message.isRead == false).length;
+    }, [receivedMessages])
+
+
+
 
     return (
         <div className="no-scrollbar overflow-y-auto h-[86%]">
