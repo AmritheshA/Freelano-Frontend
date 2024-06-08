@@ -55,6 +55,18 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children }) =>
 
 
   useEffect(() => {
+
+    const getOnlineUser = async() => {
+      const response = await axiosInstance.get("/api/v1/chat/getOnlineContacts")
+
+      const data = response.data;
+      console.log("🚀 ~ ...getOnlineUser ~ data:", data)
+      
+    }
+
+  }, [onlineUsers]);
+
+  useEffect(() => {
     const socket = new SockJS(`${import.meta.env.VITE_LOCALHOST_URL}`);
     const stompClient = Stomp.over(socket);
     if (user) {
