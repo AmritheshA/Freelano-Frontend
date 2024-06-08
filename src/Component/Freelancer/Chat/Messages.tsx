@@ -8,7 +8,6 @@ import { Check, CheckCheck, Smile } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger, } from "@/components/ui/popover"
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
-import { FreelancerContext } from "@/Context/UserContext/FreelancerProvider";
 
 
 function Messages() {
@@ -17,7 +16,6 @@ function Messages() {
     const { user } = useSelector((state: RootState) => state.userDetails);
     const [textInput, setTextInput] = useState("");
     const scrollableElementRef = useRef<HTMLDivElement>(null);
-    const { freelancerDetails } = useContext(FreelancerContext);
 
 
     useEffect(() => {
@@ -33,12 +31,15 @@ function Messages() {
                 <>
                     <div className="px-6 py-4 bg-white shadow-md">
                         <div className="flex items-center gap-4">
-                            <div className="avatar online">
+                            <div className="avatar">
                                 <div className="w-10 rounded-full">
                                     <img src={contacts.find((contact) => contact.contactsId === contactId)?.userProfile} />
                                 </div>
                             </div>
-                            <h2 className="text-2xl font-semibold">{contacts.find((contact) => contact.contactsId === contactId)?.userName}</h2>
+                            <div className="flex flex-col">
+                                <h2 className="text-2xl font-semibold">{contacts.find((contact) => contact.contactsId === contactId)?.userName}</h2>
+                                {true && "online"}
+                            </div>
                         </div>
                     </div>
                     <div ref={scrollableElementRef} id="scrollableElement" className="flex-1 overflow-y-auto no-scrollbar p-6 flex flex-col bg-[url('https://lh3.googleusercontent.com/SZ97RCEv5EVH6iMCDIdHeGJM_BNyHYcnRQ4EdK4V_VyVxLlQS8GY1U3xB8atEBH55OM=h310')]">

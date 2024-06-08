@@ -58,7 +58,7 @@ function ChatListing() {
 
         if (responce.data) {
             setReceivedMessages((prevMessages) =>
-                
+
                 prevMessages.map((message) =>
                 ({
                     ...message, isRead: true
@@ -73,13 +73,12 @@ function ChatListing() {
     return (
         <div className="no-scrollbar overflow-y-auto h-[86%]">
             {loading ?
-                <div className="flex justify-between p-4 hover:bg-gray-100 cursor-pointer border-b border-gray-200">
+                <div className="flex  justify-between p-4 hover:bg-gray-100 cursor-pointer border-b border-gray-200">
                     <div className="flex gap-3 items-start">
                         <div className="skeleton avatar">
                             <div className="w-10 rounded-full bg-gray-300"></div>
                         </div>
                         <div className="flex flex-col gap-2">
-
                             <span className="skeleton font-semibold text-lg h-4 w-44 bg-gray-300"></span>
                             <span className="skeleton font-semibold text-lg h-4 w-32 bg-gray-300"></span>
                         </div>
@@ -102,7 +101,7 @@ function ChatListing() {
                             onClick={() => handleContactClick(contact.contactsId)} >
 
                             <div className="flex gap-3 items-start">
-                                <div className="avatar online">
+                                <div className="avatar">
                                     <div className="w-10 rounded-full">
                                         <img src={contact.userProfile} />
                                     </div>
