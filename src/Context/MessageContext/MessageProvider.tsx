@@ -50,6 +50,7 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children }) =>
   const [contacts, setContacts] = useState<ContactType[]>([]);
   const [contactId, setContactId] = useState("");
   const [onlineUsers, setOnlineUsers] = useState([]);
+  console.log("🚀 ~ onlineUsers:", onlineUsers)
 
 
   useEffect(() => {
