@@ -2,8 +2,8 @@ import { ReactNode, useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
 import { userLogoutAction } from "@/Redux/Actions/UserActions/userActions";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu";
-import { useDispatch } from 'react-redux';
-import { TypeDispatch } from '@/Redux/Store';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, TypeDispatch } from '@/Redux/Store';
 import { DropdownMenuItem } from '@radix-ui/react-dropdown-menu';
 import { FaWallet } from 'react-icons/fa';
 import { FreelancerContext } from '@/Context/UserContext/FreelancerProvider';
@@ -31,17 +31,24 @@ function FreelancerSideBar({ children }: FreelancerSideBarProps) {
     const dispatch = useDispatch<TypeDispatch>();
     const { freelancerDetails } = useContext(FreelancerContext);
     const [notifications, SetNotification] = useState<Notification[]>([]);
+    const user = useSelector((state: RootState) => state.userDetails.user);
+    let unreadMsg = (notifications.map(notification => (notification.isRead == false)).length);
 
     useEffect(() => {
         const fetNotification = async () => {
-            const response = await axiosInstance.get("/api/v1/notification/getAllNotification");
+            const response = await axiosInstance.get(`/api/v1/notification/getAllNotification?userId=${user.userId}`);
             const data = response.data;
             SetNotification(data);
         }
         fetNotification();
     }, []);
 
-
+    const MarkNotificationReaded = async () => {
+        await axiosInstance.put(`/api/v1/notification/markAsRead?userId=${user.userId}`);
+        SetNotification((prevNotification) =>
+            prevNotification.map(notification => ({ ...notification, isRead: true }))
+        );
+    }
 
     const Menus = [
         {
@@ -249,10 +256,12 @@ function FreelancerSideBar({ children }: FreelancerSideBarProps) {
 
                         <DropdownMenu>
                             <DropdownMenuTrigger className="">
-                                <div className={`w-10 h-10 rounded-full bg-cover bg-[url('https://cdn-icons-png.flaticon.com/512/3119/3119338.png')]`}>
-                                    <div className="badge badge-primary w-8 -mr-4 badge-md">
-                                        10+
-                                    </div>
+                                <div className={`w-10 h-10 rounded-full bg-cover bg-[url('https://cdn-icons-png.flaticon.com/512/3119/3119338.png')]`} onClick={MarkNotificationReaded}>
+                                    {notifications.length !== 0 &&
+                                        <div className="badge badge-primary w-8 -mr-4 badge-md">
+                                            {unreadMsg > 10 ? unreadMsg + "+" : unreadMsg}
+                                        </div>
+                                    }
                                 </div>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className={`bg-white shadow-lg ${notifications.length === 0 ? "w-[300px]" : "w-[400px]"}  rounded-md p-2 mt-2`}>
