@@ -38,7 +38,7 @@ function Messages() {
                             </div>
                             <div className="flex flex-col">
                                 <h2 className="text-2xl font-semibold">{contacts.find((contact) => contact.contactsId === contactId)?.userName}</h2>
-                                {!onlineUsers.includes(user.userId) ? "online" : "offline"}
+                                {onlineUsers.includes(user.userId) ? "online" : "offline"}
                             </div>
                         </div>
                     </div>
