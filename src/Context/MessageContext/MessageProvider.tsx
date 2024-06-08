@@ -72,7 +72,7 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children }) =>
   }, [user,setContactId]);
 
   const markAsOnline = async () => {
-    const response = await axiosInstance.get(`/api/v1/markAsOnline?userId=${user.userId}&condition=Online`);
+    const response = await axiosInstance.get(`/api/v1/chat/markAsOnline?userId=${user.userId}&condition=Online`);
     const data = response.data;
 
     console.log("🚀 ~ markAsOnline ~ data:", data)
@@ -80,7 +80,7 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children }) =>
   }
 
   const markAsOffline = async () => {
-    const response = await axiosInstance.get(`/api/v1/markAsOnline?userId=${user.userId}&condition=Offline`);
+    const response = await axiosInstance.get(`/api/v1/chat/markAsOnline?userId=${user.userId}&condition=Offline`);
     const data = response.data;
 
     console.log("🚀 ~ markAsOnline ~ data:", data)
