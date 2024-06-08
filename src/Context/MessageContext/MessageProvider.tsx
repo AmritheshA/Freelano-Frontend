@@ -49,6 +49,7 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children }) =>
   const [receivedMessages, setReceivedMessages] = useState<messageType[]>([]);
   const [contacts, setContacts] = useState<ContactType[]>([]);
   const [contactId, setContactId] = useState("");
+  const [onlineUsers, setOnlineUsers] = useState([]);
 
 
   useEffect(() => {
@@ -58,6 +59,11 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children }) =>
       stompClient.connect({}, () => {
         console.log('Connected to server');
         setStompClient(stompClient);
+        stompClient.subscribe('/queue/online-users', (message) => {
+          const users = JSON.parse(message.body);
+          console.log("🚀 ~ .....................stompClient.subscribe ~ users:..................", users)          
+          setOnlineUsers(users)
+        });
       })
     }
     else {
