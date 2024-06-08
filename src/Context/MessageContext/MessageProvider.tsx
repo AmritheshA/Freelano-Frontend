@@ -62,7 +62,6 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children }) =>
         setStompClient(stompClient);
         markAsOnline();
         console.log("🚀 ~ onlineUsers:", onlineUsers)
-
       })
     }
     else {
@@ -70,7 +69,7 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children }) =>
       console.log("disconnected from server");
       markAsOffline();
     }
-  }, [user]);
+  }, [user,setContactId]);
 
   const markAsOnline = async () => {
     const response = await axiosInstance.get(`/api/v1/markAsOnline?userId=${user.userId}&condition=Online`);
