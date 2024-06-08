@@ -8,6 +8,7 @@ import { Check, CheckCheck, Smile } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger, } from "@/components/ui/popover"
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
+import { FreelancerContext } from "@/Context/UserContext/FreelancerProvider";
 
 
 function Messages() {
@@ -16,6 +17,8 @@ function Messages() {
     const { user } = useSelector((state: RootState) => state.userDetails);
     const [textInput, setTextInput] = useState("");
     const scrollableElementRef = useRef<HTMLDivElement>(null);
+    const { freelancerDetails } = useContext(FreelancerContext);
+
 
     useEffect(() => {
         const scrollableElement = scrollableElementRef.current;
@@ -74,7 +77,7 @@ function Messages() {
                                                 <div className="chat chat-start">
                                                     <div className="chat-image avatar">
                                                         <div className="w-10 rounded-full">
-                                                            <img alt="Tailwind CSS chat bubble component" src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                                                            <img alt="Tailwind CSS chat bubble component" src={freelancerDetails.profileImgUrl} />
                                                         </div>
                                                     </div>
                                                     <div className="chat-bubble chat-bubble-accent min-w-[120px] max-w-[300px]">
