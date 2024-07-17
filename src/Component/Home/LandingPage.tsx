@@ -2,13 +2,50 @@ import LandingNav from "./LandingNav";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import FreelanoFooter from "../FreelanoFooter";
+<<<<<<< HEAD
 import landingImage from "@/assets/landingImage.png"
 import search from "/src/assets/search.png"
 import lock from "@/assets/lock.png"
 import saveWork from "@/assets/saveWorks.png"
 import landingPageJob from "@/assets/landingPageJob.png"
+=======
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { useRef } from "react";
+
+>>>>>>> 5709ea7 (fix: some ui updates)
 
 function LandingPage() {
+
+  const categories = [
+    { name: "Web Developer", icon: "💻", color: "bg-blue-100" },
+    { name: "Graphic Designer", icon: "🎨", color: "bg-purple-100" },
+    { name: "Content Writer", icon: "✍️", color: "bg-green-100" },
+    { name: "Digital Marketer", icon: "📱", color: "bg-yellow-100" },
+    { name: "Data Analyst", icon: "📊", color: "bg-red-100" },
+    { name: "Mobile App Developer", icon: "📱", color: "bg-indigo-100" },
+    { name: "UI/UX Designer", icon: "🎨", color: "bg-pink-100" },
+    { name: "Video Editor", icon: "🎥", color: "bg-teal-100" }
+  ];
+
+  const freelancerRef = useRef<HTMLDivElement>(null);
+  const categoriesRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress: freelancerProgress } = useScroll({
+    target: freelancerRef,
+    offset: ["start end", "end start"]
+  });
+
+  const { scrollYProgress: categoriesProgress } = useScroll({
+    target: categoriesRef,
+    offset: ["start end", "end start"]
+  });
+
+  const freelancerOpacity = useTransform(freelancerProgress, [0, 0.3], [0, 1]);
+  const freelancerY = useTransform(freelancerProgress, [0, 0.3], [50, 0]);
+
+  const categoriesOpacity = useTransform(categoriesProgress, [0, 0.3], [0, 1]);
+  const categoriesY = useTransform(categoriesProgress, [0, 0.3], [50, 0]);
+
   return (
     <div className="h-full bg-white">
       <div className="w-full h-auto">
@@ -22,8 +59,13 @@ function LandingPage() {
           <div className="w-[85%] mb-5 sm:w-[33%]  flex justify-center ">
             <div className="w-[30%] flex justify-center ">
               <div className="flex flex-col justify-center items-center">
+<<<<<<< HEAD
                 <img src={lock} className="w-20 h-20" />
                 <h1 className="w-[175px] text-2xl items-center sm:text-xl font-bold text-black mt-2">Create Account</h1>
+=======
+                <img src="/src/assets/lock.png" className="w-20 h-20" />
+                <h1 className="w-[175px] text-2xl items-center text-center sm:text-xl font-bold text-black mt-2">Create Account</h1>
+>>>>>>> 5709ea7 (fix: some ui updates)
                 <h1 className="w-[250px] text-md items-center text-center text-slate-400 mt-2">First you have to create a Freelano account here</h1>
               </div>
             </div>
@@ -52,53 +94,68 @@ function LandingPage() {
           </div>
         </div>
       </div>
+
       <div className="flex justify-center items-center mt-20 flex-wrap">
         <div className="hidden sm:flex w-full md:w-1/2">
           <img src={landingPageJob} alt="" className="max-w-full" />
         </div>
-        <div className="w-full md:w-1/2 flex flex-col justify-center text-center md:text-right max-w-[516px]">
-          <div className="text-4xl md:text-6xl font-medium text-black">
+        <motion.div
+          ref={freelancerRef}
+          className="w-full md:w-1/2 flex flex-col justify-center text-center md:text-right max-w-[516px]"
+          style={{ opacity: freelancerOpacity, y: freelancerY }}
+        >
+          <motion.div
+            className="text-4xl md:text-6xl font-medium text-black"
+            style={{ opacity: useTransform(freelancerProgress, [0.1, 0.3], [0, 1]) }}
+          >
             Find The Best <span className="text-sky-500">Freelancers</span> Here
-          </div>
-          <div className="mt-5 text-lg md:text-2xl text-neutral-400">
-            Elevate your expertise and experience by diving into the perfect job opportunities tailored to your skills.
-            With unwavering dedication and smart work, pave your way to financial success and fulfillment. Seamlessly post your job or
-            projects whenever you desire, showcasing your evolving skills and meeting the requirements head-on
-          </div>
-        </div>
+          </motion.div>
+          <motion.div
+            className="mt-5 text-lg md:text-2xl text-neutral-400"
+            style={{ opacity: useTransform(freelancerProgress, [0.2, 0.4], [0, 1]) }}
+          >
+            Elevate your expertise and experience by diving into the perfect job opportunities tailored to your skills. With unwavering dedication and smart work, pave your way to financial success and fulfillment. Seamlessly post your job or projects whenever you desire, showcasing your evolving skills and meeting the requirements head-on
+          </motion.div>
+        </motion.div>
       </div>
-      <div className="flex flex-col justify-center items-center mt-10 sm:mt-52  ">
-        <h1 className="text-black font-medium text-6xl tracking-wider">Choose Your <span className="text-blue-800 font-medium tracking-wider ">Category</span></h1>
-        <div className="flex  gap-5">
-          {[...Array(4)].map(() => (
-            <div className="relative grid h-52 rounded-3xl mt-20 w-[300px] max-w-md mx-auto overflow-hidden text-center bg-cover bg-center bg-opacity-50 shadow-xl">
-              <div className="absolute bg-cover inset-0 bg-[url('/src/assets/image.png')]" ></div>
-              <div className="relative z-10 flex flex-col justify-center items-center h-full">
-                <h2 className="text-xl font-bold text-white">
-                  Web Developer
-                </h2>
+
+      <div className="mt-16 sm:mt-32 mb-16 mx-4 sm:mx-8 md:mx-12 lg:mx-16" ref={categoriesRef}>
+        <motion.h1
+          className="text-black font-medium text-4xl sm:text-6xl tracking-wider text-center mb-12"
+          style={{ opacity: categoriesOpacity, y: categoriesY }}
+        >
+          Choose Your <span className="text-blue-800 font-medium tracking-wider">Category</span>
+        </motion.h1>
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6"
+          style={{ opacity: categoriesOpacity }}
+        >
+          {categories.map((category, index) => (
+            <motion.div
+              key={index}
+              className={`${category.color} rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer`}
+              style={{
+                y: useTransform(categoriesProgress,
+                  [0.1 + index * 0.02, 0.3 + index * 0.02],
+                  [50, 0]
+                )
+              }}
+              whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
+            >
+              <div className="p-6 sm:p-8 flex flex-col items-center justify-center h-32 sm:h-36">
+                <span className="text-4xl sm:text-5xl mb-3">{category.icon}</span>
+                <h3 className="text-sm sm:text-base font-medium text-gray-800 text-center">{category.name}</h3>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
-        <div className="flex  gap-5">
-          {[...Array(4)].map(() => (
-            <div className="relative grid h-52 rounded-3xl mt-20 w-[300px] max-w-md mx-auto overflow-hidden text-center bg-cover bg-center bg-opacity-50 shadow-xl">
-              <div className="absolute bg-cover inset-0 bg-[url('/src/assets/image.png')]" ></div>
-              <div className="relative z-10 flex flex-col justify-center items-center h-full">
-                <h2 className="text-xl font-bold text-white">
-                  Web Developer
-                </h2>
-              </div>
-            </div>
-          ))}
-        </div>
+        </motion.div>
       </div>
+
       <section className="bg-white mt-36">
         <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
           <div className="mx-auto max-w-screen-md sm:text-center">
-            <h2 className="mb-4 text-3xl tracking-tight font-extrabold text-gray-900 sm:text-4xl dark:text-white">Sign up for our newsletter</h2>
-            <p className="mx-auto mb-8 max-w-2xl font-light text-gray-500 md:mb-12 sm:text-xl dark:text-gray-400">Stay up to date with the our progress, announcements </p>
+            <h2 className="mb-4 text-3xl tracking-tight font-extrabold text-gray-900 sm:text-4xl text-center dark:text-white">Sign up for our newsletter</h2>
+            <p className="mx-auto mb-8 max-w-2xl font-light text-gray-500 md:mb-12 sm:text-xl text-center dark:text-gray-400">Stay up to date with the our progress, announcements </p>
             <form action="#">
               <div className="items-center mx-auto mb-3 space-y-4 max-w-screen-sm sm:flex sm:space-y-0">
                 <div className="relative w-full">
