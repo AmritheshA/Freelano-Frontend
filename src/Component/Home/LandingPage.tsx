@@ -2,17 +2,13 @@ import LandingNav from "./LandingNav";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import FreelanoFooter from "../FreelanoFooter";
-<<<<<<< HEAD
-import landingImage from "@/assets/landingImage.png"
-import search from "/src/assets/search.png"
-import lock from "@/assets/lock.png"
-import saveWork from "@/assets/saveWorks.png"
-import landingPageJob from "@/assets/landingPageJob.png"
-=======
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from "react";
 
->>>>>>> 5709ea7 (fix: some ui updates)
+import landingImage from "@/assets/landingImage.png"
+import search from "/src/assets/search.png"
+import saveWork from "@/assets/saveWorks.png"
+import landingPageJob from "@/assets/landingPageJob.png"
 
 function LandingPage() {
 
@@ -59,13 +55,8 @@ function LandingPage() {
           <div className="w-[85%] mb-5 sm:w-[33%]  flex justify-center ">
             <div className="w-[30%] flex justify-center ">
               <div className="flex flex-col justify-center items-center">
-<<<<<<< HEAD
-                <img src={lock} className="w-20 h-20" />
-                <h1 className="w-[175px] text-2xl items-center sm:text-xl font-bold text-black mt-2">Create Account</h1>
-=======
                 <img src="/src/assets/lock.png" className="w-20 h-20" />
-                <h1 className="w-[175px] text-2xl items-center text-center sm:text-xl font-bold text-black mt-2">Create Account</h1>
->>>>>>> 5709ea7 (fix: some ui updates)
+                <h1 className="w-[175px] text-2xl items-center sm:text-xl font-bold text-black mt-2">Create Account</h1>
                 <h1 className="w-[250px] text-md items-center text-center text-slate-400 mt-2">First you have to create a Freelano account here</h1>
               </div>
             </div>
