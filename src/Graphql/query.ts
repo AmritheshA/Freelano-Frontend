@@ -1,8 +1,14 @@
 import { gql } from "@apollo/client";
 
+<<<<<<< HEAD
 export const GET_RECOMMANDED_PROJECTS = gql`
   query RecommendedProject($freelancerId: String!) {
     recommendedProject(freelancerId: $freelancerId) {
+=======
+export const GET_PROJECTS = gql`
+  query GetAllProjects($page: Int) {
+    getAllProjects(page: $page) {
+>>>>>>> 5709ea7 (fix: some ui updates)
       projectId
       projectTitle
       projectPostedDate
@@ -20,6 +26,7 @@ export const GET_RECOMMANDED_PROJECTS = gql`
       freelancerId
     }
   }
+<<<<<<< HEAD
 `;
 
 
@@ -98,3 +105,6 @@ export const GET_COMMITED_PROJECT = gql`
   }
 }
 `;
+=======
+`;
+>>>>>>> 5709ea7 (fix: some ui updates)
