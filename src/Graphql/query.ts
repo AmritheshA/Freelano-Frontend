@@ -53,8 +53,6 @@ query GetFilteredProjects($experience: [String], $jobType: [String], $category: 
 }
 `
 
-
-
 export const GET_CLIENTSIDE_PROJECTS = gql`
   query getPendingProject($clientId: String!,$status:String!,$markAsCompleted:Boolean){
     getPendingProject(clientId: $clientId,status: $status,markAsCompleted:$markAsCompleted){
