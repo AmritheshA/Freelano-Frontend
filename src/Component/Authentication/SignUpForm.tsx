@@ -9,6 +9,7 @@ import ScaleLoader from "react-spinners/ScaleLoader";
 import axiosInstance from "@/Config/AxiosConfig/axiosConfig";
 import { toast } from "react-toastify";
 import { registerUser, registerUserLoading } from "@/Redux/Slices/UserReducer/userReducer";
+import loginImage from "@/assets/loginImage.png";
 
 
 
@@ -192,7 +193,7 @@ function AuthForm() {
       </div>
       <div className="hidden lg:flex items-center justify-center lg:w-[50%] md:ml-[3%] ml-auto max-w-[700px]">
         <img
-          src="/src/assets/loginImage.png"
+          src={loginImage}
           alt="Login Image"
           className="object-cover "
         />
