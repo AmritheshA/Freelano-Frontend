@@ -8,6 +8,7 @@ import { useRef } from "react";
 import landingImage from "@/assets/landingImage.png"
 import search from "/src/assets/search.png"
 import saveWork from "@/assets/saveWorks.png"
+import lock from "@/assets/lock.png"
 import landingPageJob from "@/assets/landingPageJob.png"
 
 function LandingPage() {
@@ -55,7 +56,7 @@ function LandingPage() {
           <div className="w-[85%] mb-5 sm:w-[33%]  flex justify-center ">
             <div className="w-[30%] flex justify-center ">
               <div className="flex flex-col justify-center items-center">
-                <img src="/src/assets/lock.png" className="w-20 h-20" />
+                <img src={lock} className="w-20 h-20" />
                 <h1 className="w-[175px] text-2xl items-center sm:text-xl font-bold text-black mt-2">Create Account</h1>
                 <h1 className="w-[250px] text-md items-center text-center text-slate-400 mt-2">First you have to create a Freelano account here</h1>
               </div>
