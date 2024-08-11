@@ -4,10 +4,9 @@ import * as Yup from "yup";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { userLoginAction, userOauthLogin } from "../../Redux/Actions/UserActions/userActions";
+import { userLoginAction } from "../../Redux/Actions/UserActions/userActions";
 import { RootState, TypeDispatch } from "../../Redux/Store";
 import ScaleLoader from "react-spinners/ScaleLoader";
-import { GoogleLogin } from "@react-oauth/google";
 import loginImage from "@/assets/loginImage.png"
 
 
