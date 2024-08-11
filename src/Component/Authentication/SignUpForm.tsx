@@ -130,13 +130,13 @@ function AuthForm() {
               <div className="relative flex">
                 <Field
                   type={showPassword ? "text" : "password"}
-                  name="confirmPassword" // Changed name to "confirmPassword"
+                  name="confirmPassword"
                   className="flex-1 px-6 py-4 pr-16 mt-2.5 text-sm whitespace-nowrap bg-white rounded-3xl text-black font-bold max-md:px-5 outline-none border-none"
                   placeholder="Confirm Password"
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)} // Changed state variable to setShowConfirmPassword
+                  onClick={() => setShowPassword(!showPassword)}
                   className="absolute inset-y-9 right-0 flex items-center px-4 focus:outline-none"
                 >
                   {!showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -170,14 +170,6 @@ function AuthForm() {
                     />
                   ) : "Register"}
                 </button>
-                {/* <div className="self-center mt-4 text-sm whitespace-nowrap text-slate-900 max-md:mt-10">
-                  or continue with
-                </div> */}
-                {/* <div className="flex gap-10 sm:gap-24 justify-between self-center mt-4">
-                  <div className="text-4xl sm:bg-white w-24 rounded-[23px] h-12 flex justify-center items-center">
-                    <FcGoogle />
-                  </div>
-                </div> */}
                 <div className="self-start mt-5 ml-10 text-sm whitespace-nowrap text-slate-900 max-md:ml-2.5">
                   <h1 className="flex">
                     Don’t have an account yet ?

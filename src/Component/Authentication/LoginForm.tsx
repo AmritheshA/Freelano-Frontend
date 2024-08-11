@@ -19,7 +19,7 @@ function LoginForm() {
     const isLoaded = state.loading;
 
     const initialValues = {
-        email: "amrithesh0000@gmail.com",
+        email: "xiwapib352@eryod.com",
         password: "password",
     };
 
@@ -103,11 +103,11 @@ function LoginForm() {
                                         />
                                     ) : "Login"}
                                 </button>
-                                <div className="self-center mt-11 text-sm whitespace-nowrap text-slate-900 max-md:mt-10">
+                                {/* <div className="self-center mt-11 text-sm whitespace-nowrap text-slate-900 max-md:mt-10">
                                     or continue with
                                 </div>
-                                <div className="flex gap-10 sm:gap-24 justify-between self-center mt-4">
-                                    <GoogleLogin
+                                <div className="flex gap-10 sm:gap-24 justify-between self-center mt-4 bg-background">
+                                    <GoogleLogin 
                                         onSuccess={(credentialResponse) => {
                                             dispatch(userOauthLogin(credentialResponse.credential))
                                         }}
@@ -116,8 +116,9 @@ function LoginForm() {
                                         }}
                                         useOneTap
                                         theme="outline"
-                                        shape="circle" />
-                                </div>
+                                        shape="circle"
+                                        />
+                                </div> */}
                                 <div className="self-start mt-8 ml-10 text-sm whitespace-nowrap text-slate-900 max-md:ml-2.5">
                                     <h1 className="flex">
                                         Don’t have an account yet ?

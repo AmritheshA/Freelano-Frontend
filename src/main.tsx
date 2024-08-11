@@ -10,18 +10,19 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ApolloProvider } from "@apollo/client";
 import { apolloClient } from "./Graphql/apolloClient.ts";
 
+const clientId = import.meta.env.VITE_OAUTH_CLIENT_ID;
+// "1012843152092-12e81f4ltttv10c4gf2itqjg9ukur34s.apps.googleusercontent.com";
+
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  // <React.StrictMode>
   <BrowserRouter>
     <ApolloProvider client={apolloClient}>
       <Provider store={store}>
-        <GoogleOAuthProvider clientId="185648007858-r1ljiemuucjleg0m1m7se6d20npuq0t6.apps.googleusercontent.com">
+        <GoogleOAuthProvider clientId={clientId}>
           <App />
           <ToastContainer position="top-center" autoClose={1500} theme="dark"/>
         </GoogleOAuthProvider>
       </Provider>
     </ApolloProvider>
   </BrowserRouter>
-  // </React.StrictMode>
 );
