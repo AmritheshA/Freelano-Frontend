@@ -4,6 +4,8 @@ import Alert from "@mui/material/Alert";
 import { TechBox } from "../Custom/TechBox";
 import { toast } from "react-toastify";
 import AddSkills from "../Custom/AddSkills";
+import logo from "@/assets/logo.png"
+
 
 
 interface ChildComponent1Props {
@@ -14,27 +16,6 @@ const Details_5: React.FC<ChildComponent1Props> = ({ setActive }) => {
 
     const [showAlert, setShowAlert] = useState<boolean>(false);
     const [skills, setSkills] = useState<string[]>([]);
-
-
-    // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     setInputValue(e.target.value);
-    // };
-
-    // const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    //     if (e.key === 'Enter' && inputValue.trim() !== '') {
-    //         if (!skills.some((skill) => skill === inputValue.trim())) {
-    //             if ((datas.some((data) => data == inputValue.trim()))) {
-    //                 setSkills([...skills, inputValue.trim()]);
-    //                 setInputValue('');
-    //             } else {
-    //                 toast.warn("Skill is not registered")
-    //             }
-    //         } else {
-    //             setShowAlert(true);
-    //         }
-    //     }
-    //     setTimeout(() => setShowAlert(false), 1500);
-    // };
 
     const onSkillChange = (value: any) => {
         setSkills([...skills, value]);
@@ -75,7 +56,7 @@ const Details_5: React.FC<ChildComponent1Props> = ({ setActive }) => {
                 <div className="text-white font-bold text-lg">
                     <img
                         className="h-16 xl:h-35 md:h-35 sm:h-22"
-                        src="/src/assets/logo.png"
+                        src={logo}
                         alt="Logo"
                     />
                 </div>

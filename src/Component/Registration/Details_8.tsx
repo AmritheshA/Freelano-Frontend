@@ -26,6 +26,8 @@ import { freelancerProfileSubmit } from "@/Redux/Actions/UserActions/userActions
 import { RootState, TypeDispatch } from "@/Redux/Store";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import logo from "@/assets/logo.png"
+
 
 interface ChildComponent1Props {
     setActive: (componentName: string) => void;
@@ -146,7 +148,7 @@ const Details_8: React.FC<ChildComponent1Props> = () => {
                 <div className="text-white font-bold text-lg">
                     <img
                         className="h-16 xl:h-35 md:h-35 sm:h-22"
-                        src="/src/assets/logo.png"
+                        src={logo}
                         alt="Logo"
                     />
                 </div>

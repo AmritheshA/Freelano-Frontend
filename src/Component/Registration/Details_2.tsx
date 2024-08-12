@@ -13,6 +13,7 @@ import { Selects, SelectOption } from "../Custom/Selects";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import logo from "@/assets/logo.png"
 import { X } from "lucide-react";
 
 interface ChildComponent1Props {
@@ -126,7 +127,7 @@ const Details_2: React.FC<ChildComponent1Props> = ({ setActive }) => {
         <div className="text-white font-bold text-lg">
           <img
             className="h-16 xl:h-35 md:h-35 sm:h-22"
-            src="/src/assets/logo.png"
+            src={logo}
             alt="Logo"
           />
         </div>

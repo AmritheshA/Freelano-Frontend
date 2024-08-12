@@ -9,6 +9,8 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Alert } from "@mui/material";
+import logo from "@/assets/logo.png"
+
 
 
 interface ChildComponent1Props {
@@ -64,7 +66,7 @@ const Details_7: React.FC<ChildComponent1Props> = ({ setActive }) => {
                 <div className="text-white font-bold text-lg">
                     <img
                         className="h-16 xl:h-35 md:h-35 sm:h-22"
-                        src="/src/assets/logo.png"
+                        src={logo}
                         alt="Logo"
                     />
                 </div>

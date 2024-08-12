@@ -7,6 +7,8 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { useEffect, useState } from "react";
+import logo from "@/assets/logo.png"
+
 
 const languages: string[] = ['English',
     'Spanish',
@@ -74,7 +76,7 @@ const Details_4: React.FC<ChildComponent1Props> = ({ setActive }) => {
                 <div className="text-white font-bold text-lg">
                     <img
                         className="h-16 xl:h-35 md:h-35 sm:h-22"
-                        src="/src/assets/logo.png"
+                        src={logo}
                         alt="Logo"
                     />
                 </div>
