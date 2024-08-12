@@ -12,7 +12,7 @@ import Picker from '@emoji-mart/react'
 
 function Messages() {
 
-    const { sendMessage, receivedMessages, onlineUsers, contactId, contacts } = useContext(MessageContext);
+    const { sendMessage, receivedMessages, contactId, contacts } = useContext(MessageContext);
     const { user } = useSelector((state: RootState) => state.userDetails);
     const [textInput, setTextInput] = useState("");
     const scrollableElementRef = useRef<HTMLDivElement>(null);
@@ -38,7 +38,7 @@ function Messages() {
                             </div>
                             <div className="flex flex-col">
                                 <h2 className="text-2xl font-semibold">{contacts.find((contact) => contact.contactsId === contactId)?.userName}</h2>
-                                {!onlineUsers.includes(user.userId) ? "online" : "offline"}
+                                {/* {!onlineUsers.includes(user.userId) ? "online" : "offline"} */}
                             </div>
                         </div>
                     </div>
