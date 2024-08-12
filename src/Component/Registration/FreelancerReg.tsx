@@ -1,6 +1,7 @@
 import { FaUserAlt } from "react-icons/fa";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import logo from "@/assets/logo.png";
 
 
 function FreelancerReg() {
@@ -20,7 +21,7 @@ function FreelancerReg() {
         <div className="text-white font-bold text-lg">
           <img
             className="h-16 xl:h-35 md:h-35 sm:h-22"
-            src="/src/assets/logo.png"
+            src={logo}
             alt="Logo"
           />
         </div>
