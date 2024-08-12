@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaInfoCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { userLoginAction } from "../../Redux/Actions/UserActions/userActions";
@@ -10,16 +10,18 @@ import ScaleLoader from "react-spinners/ScaleLoader";
 import loginImage from "@/assets/loginImage.png"
 
 
+
 function LoginForm() {
     const [showPassword, setShowPassword] = useState(false);
+
 
     const dispatch: TypeDispatch = useDispatch();
     const state = useSelector((state: RootState) => state.userDetails);
     const isLoaded = state.loading;
 
     const initialValues = {
-        email: "xiwapib352@eryod.com",
-        password: "password",
+        email: "",
+        password: "",
     };
 
     const validationSchema = Yup.object().shape({
@@ -34,6 +36,7 @@ function LoginForm() {
         setSubmitting(false);
     };
 
+
     return (
         <div className="flex sm:px-[12%] flex-col-reverse sm:flex-row px-4">
             <div className="lg:w-[50%] w-full flex justify-center items-center py-20 sm:backdrop-blur-[15px] sm:h-[750px] sm:bg-white sm:bg-opacity-30 sm:max-w-[640px] sm:min-w-[550px] rounded-[25px]">
@@ -44,8 +47,56 @@ function LoginForm() {
                 >
                     {({ isSubmitting }) => (
                         <Form className="flex flex-col mt-20 max-w-full w-[410px] max-md:mt-10">
-                            <div className="self-start ml-2.5 text-4xl font-bold text-slate-900">
-                                Login
+                            <div className="flex gap-3 justify-center items-center self-start ml-2.5 text-4xl font-bold text-slate-900">
+                                <div>
+                                    Login
+                                </div>
+                                <div className="cursor-pointer tooltip" data-tip="Sample user details">
+                                    <FaInfoCircle size={18} onClick={() => (document.getElementById('my_modal_2') as HTMLDialogElement)?.showModal()} />
+                                </div>
+                                <dialog id="my_modal_2" className="modal">
+                                    <div className="modal-box bg-gradient-to-br from-blue-50 to-indigo-100 p-6 rounded-lg shadow-lg max-w-md mx-auto">
+                                        <div className="space-y-6">
+                                            <div className="bg-white p-4 rounded-md shadow">
+                                                <h3 className="text-xl font-semibold text-indigo-700 mb-3">Freelancer</h3>
+                                                <div className="space-y-2">
+                                                    <div className="flex items-center justify-between">
+                                                        <h2 className="text-sm text-gray-600">Email:</h2>
+                                                        <div className="flex items-center space-x-2">
+                                                            <h1 className="text-sm font-medium">xiwapib352@eryod.com</h1>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center justify-between">
+                                                        <h2 className="text-sm text-gray-600">Password:</h2>
+                                                        <div className="flex items-center space-x-2">
+                                                            <span className="text-sm font-medium">password</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="bg-white p-4 rounded-md shadow">
+                                                <h3 className="text-xl font-semibold text-indigo-700 mb-3">Client</h3>
+                                                <div className="space-y-2">
+                                                    <div className="flex items-center justify-between">
+                                                        <h2 className="text-sm text-gray-600">Email:</h2>
+                                                        <div className="flex items-center space-x-2">
+                                                            <span className="text-sm font-medium">amrithesh0000@gmail.com</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center justify-between">
+                                                        <h2 className="text-sm text-gray-600">Password:</h2>
+                                                        <div className="flex items-center space-x-2">
+                                                            <span className="text-sm font-medium">password</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <form method="dialog" className="modal-backdrop">
+                                        <button>close</button>
+                                    </form>
+                                </dialog>
                             </div>
                             <label className="mt-7 text-sm text-slate-900">Email</label>
                             <Field
