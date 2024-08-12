@@ -3,6 +3,8 @@ import { Link } from "react-router-dom"
 import { FiMessageCircle } from "react-icons/fi";
 import ChatListing from "../Freelancer/Chat/ChatListing";
 import Messages from "../Freelancer/Chat/Messages";
+import arrow from "@/assets/freelancer/image.png";
+import logo from "@/assets/ogLogo.png"
 
 
 
@@ -97,14 +99,14 @@ function ClientChat() {
                     } bg-dark-purple h-full p-5  pt-8 sticky left-0 top-0 duration-300`}
             >
                 <img
-                    src="./src/assets/freelancer/image.png"
+                    src={arrow}
                     className={`absolute cursor-pointer -right-3  top-9 w-7 border-dark-purple
    border-2 rounded-full  ${!open && "rotate-180"}`}
                     onClick={() => setOpen(!open)}
                 />
                 <div className="flex gap-x-4 items-center ">
                     <img
-                        src="./src/assets/ogLogo.png"
+                        src={logo}
                         className={`cursor-pointer sm:w-40 sm:h-30 duration-500 ${open && "rotate-[360deg]"
                             }`}
                     />
