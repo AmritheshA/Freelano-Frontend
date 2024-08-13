@@ -52,9 +52,11 @@ export const userRegisterAction = createAsyncThunk(
         },
       };
 
-      console.log("token" + token)
+      console.log("token..." + token)
       const response = await axiosInstance.get(`/api/v1/auth/register?token=${token}`, config);
       const data = response.data;
+      console.log("data....",data);
+      
       localStorage.setItem("token", data.accessToken);
 
       return {
