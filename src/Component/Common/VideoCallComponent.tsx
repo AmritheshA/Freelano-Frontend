@@ -25,8 +25,8 @@ export default function VideoCallComponent(): JSX.Element {
     useEffect(() => {
         const myMeeting = async (element: HTMLDivElement | null): Promise<void> => {
             // generate Kit Token
-            const appID = 856049246;
-            const serverSecret = '1e5d739db000dbc2d023a43eec1411c3';
+            const appID = 985686886;
+            const serverSecret = 'f627cef240475f1c014e56a7d9d15a0b';
             const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, randomID(5), randomID(5));
 
             // Create instance object from Kit Token.
